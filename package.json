@@ -1,0 +1,31 @@
+{
+  "name": "festive-qr-photobooth",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Premium Mobile-First Festive QR Photo Booth & Discount Coupon Web Application with Next.js",
+  "scripts": {
+    "dev": "next dev -p 3000",
+    "build": "next build",
+    "start": "next start -p 3000",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "canvas-confetti": "^1.9.3",
+    "framer-motion": "^11.11.17",
+    "jpeg-js": "^0.4.4",
+    "lucide-react": "^0.460.0",
+    "next": "^14.2.18",
+    "pngjs": "^7.0.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/canvas-confetti": "^1.9.0",
+    "@types/node": "^20.17.0",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.15"
+  }
+}

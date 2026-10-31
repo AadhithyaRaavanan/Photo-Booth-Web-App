@@ -1,0 +1,111 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-palace-burgundy: #3d071e;
+    --color-gold: #d4af37;
+    --font-cinzel: 'Cinzel', serif;
+    --font-playfair: 'Playfair Display', serif;
+    --font-sans: 'Plus Jakarta Sans', system-ui, sans-serif;
+  }
+  
+  html, body {
+    margin: 0;
+    padding: 0;
+    min-height: 100%;
+    background-color: #1a030c;
+    color: #f7ebd2;
+    font-family: var(--font-sans);
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    padding-left: env(safe-area-inset-left, 0px);
+    padding-right: env(safe-area-inset-right, 0px);
+  }
+}
+
+/* Luxurious Gold Foil Gradients */
+.gold-gradient-text {
+  background: linear-gradient(135deg, #fff7d6 0%, #f7cf45 25%, #d4af37 55%, #fff3bf 75%, #a67919 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4));
+}
+
+.gold-shimmer {
+  background: linear-gradient(90deg, #d4af37 0%, #fff7d6 50%, #d4af37 100%);
+  background-size: 200% auto;
+  animation: shine 4s linear infinite;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+@keyframes shine {
+  to {
+    background-position: 200% center;
+  }
+}
+
+/* Royal Palace Burgundy Gradient */
+.palace-burgundy-bg {
+  background: radial-gradient(circle at 50% 25%, #590d2e 0%, #3d071e 45%, #22030f 100%);
+}
+
+.card-festive-royal {
+  background: linear-gradient(145deg, rgba(74, 11, 38, 0.85) 0%, rgba(41, 5, 20, 0.92) 100%);
+  border: 1px solid rgba(212, 175, 55, 0.45);
+  box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 247, 214, 0.2);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+/* Hide scrollbars */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Flickering Diya Flame Animation */
+@keyframes flameFlicker {
+  0% { transform: scale(1) rotate(-1deg); opacity: 0.95; filter: drop-shadow(0 0 6px #ff9800); }
+  25% { transform: scale(1.06, 1.03) rotate(2deg); opacity: 1; filter: drop-shadow(0 0 12px #ff6d00); }
+  50% { transform: scale(0.97, 1.05) rotate(-2deg); opacity: 0.9; filter: drop-shadow(0 0 8px #ffb300); }
+  75% { transform: scale(1.04, 0.98) rotate(1deg); opacity: 1; filter: drop-shadow(0 0 14px #ff8c00); }
+  100% { transform: scale(1) rotate(-1deg); opacity: 0.95; filter: drop-shadow(0 0 6px #ff9800); }
+}
+
+.animate-diya-flame {
+  animation: flameFlicker 1.8s infinite ease-in-out;
+  transform-origin: bottom center;
+}
+
+/* Hanging Lantern Sway with natural physics */
+@keyframes lanternSway {
+  0% { transform: rotate(0deg); }
+  33% { transform: rotate(1.8deg); }
+  66% { transform: rotate(-1.8deg); }
+  100% { transform: rotate(0deg); }
+}
+
+.animate-sway-slow {
+  animation: lanternSway 6.5s ease-in-out infinite;
+  transform-origin: top center;
+}
+
+/* Pulsing Gold Glow */
+@keyframes goldPulse {
+  0%, 100% { box-shadow: 0 0 15px rgba(212, 175, 55, 0.4); }
+  50% { box-shadow: 0 0 35px rgba(212, 175, 55, 0.8), 0 0 15px rgba(245, 197, 24, 0.6); }
+}
+
+.pulse-gold {
+  animation: goldPulse 2.5s infinite ease-in-out;
+}
