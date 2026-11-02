@@ -108,72 +108,79 @@ export default function RoyalMasterFrame({
         className="absolute inset-0 w-full h-full object-fill pointer-events-none z-10 transition-opacity duration-300"
       />
 
-      {/* 2. TOP BRAND HEADER: Prominent, Grand Store Branding Pill */}
-      <div className="relative pt-2 sm:pt-3 px-2 sm:px-3 text-center z-30 flex flex-col items-center">
-        <div className="inline-flex flex-col items-center justify-center px-4 sm:px-6 py-1.5 sm:py-2 rounded-2xl bg-gradient-to-b from-[#2e051a]/95 via-[#1a020e]/95 to-[#2e051a]/95 backdrop-blur-md border-2 border-amber-400/80 shadow-[0_8px_30px_rgba(0,0,0,0.9),0_0_20px_rgba(255,215,0,0.4)] max-w-[76%] sm:max-w-[80%]">
-          <div className="flex items-center gap-1.5 sm:gap-2">
-            <span className="text-amber-300 text-sm sm:text-base animate-pulse">🪔</span>
-            <h2 className="font-serif text-sm sm:text-lg md:text-xl font-black gold-gradient-text tracking-[0.22em] uppercase drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)] truncate">
-              {shopName}
-            </h2>
-          </div>
-          <span className="text-[7.5px] sm:text-[9.5px] font-sans tracking-[0.25em] text-[#fae7b4] uppercase font-bold mt-0.5">
-            {shopTagline}
-          </span>
-
-          {customerName && (
-            <div className="mt-1 px-3 py-0.5 rounded-full bg-amber-500/25 border border-amber-400/50 shadow-inner">
-              <span className="text-[9.5px] sm:text-[11px] text-amber-200 font-bold truncate block max-w-[200px]">
-                Happy Diwali, {customerName}! ✨
-              </span>
+      {/* 2. TOP UNIFIED LUXURY BRAND & OFFER HEADER: Spacious, Coordinated, Zero Collision */}
+      <div className="relative z-30 w-full pt-2 sm:pt-3 px-2.5 sm:px-3.5">
+        <div className="w-full flex items-center justify-between gap-2 px-3 sm:px-4 py-2 sm:py-2.5 rounded-2xl bg-gradient-to-r from-[#200312]/95 via-[#30051d]/90 to-[#1e0210]/95 backdrop-blur-md border border-amber-400/60 shadow-[0_4px_20px_rgba(0,0,0,0.85),0_0_15px_rgba(255,215,0,0.25)]">
+          {/* Left Column: Brand Identity */}
+          <div className="flex-1 flex flex-col items-start min-w-0 pr-1">
+            <div className="flex items-center gap-1.5 sm:gap-2 max-w-full">
+              <span className="text-amber-300 text-sm sm:text-base shrink-0 filter drop-shadow">🪔</span>
+              <h2 className="font-serif text-sm sm:text-lg md:text-xl font-black gold-gradient-text tracking-[0.16em] uppercase truncate drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
+                {shopName}
+              </h2>
             </div>
-          )}
-        </div>
-      </div>
-
-      {/* 3. TOP-RIGHT SCALLOPED GOLD ROSETTE MEDALLION: Extra Large & Commanding */}
-      <div className="absolute top-1 right-1 sm:top-2 sm:right-2 z-30 pointer-events-none">
-        <div className="relative flex items-center justify-center filter drop-shadow-[0_6px_18px_rgba(255,215,0,0.85)] scale-95 sm:scale-115 origin-top-right">
-          <svg viewBox="0 0 100 100" className="w-20 h-20 sm:w-22 sm:h-22 animate-pulse-slow">
-            <defs>
-              <radialGradient id="royalFestiveMed" cx="50%" cy="50%" r="50%">
-                <stop offset="0%" stopColor="#fff9e6" />
-                <stop offset="35%" stopColor="#f5c518" />
-                <stop offset="70%" stopColor="#d4af37" />
-                <stop offset="100%" stopColor="#7a5405" />
-              </radialGradient>
-            </defs>
-
-            {/* 16 scalloped 24K gold petals */}
-            <g transform="translate(50,50)">
-              {[0, 22.5, 45, 67.5, 90, 112.5, 135, 157.5, 180, 202.5, 225, 247.5, 270, 292.5, 315, 337.5].map((angle) => (
-                <path
-                  key={angle}
-                  d="M 0 -47 Q 6 -40 0 -31 Q -6 -40 0 -47 Z"
-                  fill="url(#royalFestiveMed)"
-                  stroke="#ffd700"
-                  strokeWidth="1"
-                  transform={`rotate(${angle})`}
-                />
-              ))}
-            </g>
-
-            {/* Central deep royal maroon medallion disc */}
-            <circle cx="50" cy="50" r="35" fill="#3b081e" stroke="#d4af37" strokeWidth="2.5" />
-            <circle cx="50" cy="50" r="31" fill="none" stroke="#ffd700" strokeWidth="1" strokeDasharray="3,2" />
-          </svg>
-
-          {/* Bold, prominent offer text */}
-          <div className="absolute inset-0 flex flex-col items-center justify-center text-center leading-none">
-            <span className="text-[8px] sm:text-[9px] font-black tracking-[0.18em] text-[#fae7b4] uppercase drop-shadow">
-              FLAT
+            <span className="text-[7.5px] sm:text-[9px] font-sans tracking-[0.22em] text-[#fae7b4]/90 uppercase font-semibold mt-0.5 truncate max-w-full">
+              {shopTagline}
             </span>
-            <span className="text-[19px] sm:text-[22px] font-black font-serif text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)] my-0.5">
-              30%
-            </span>
-            <span className="text-[8px] sm:text-[9px] font-black tracking-[0.18em] text-[#ffd700] uppercase drop-shadow">
-              OFF
-            </span>
+
+            {customerName && (
+              <div className="mt-1 flex items-center gap-1 text-[8.5px] sm:text-[10px] text-amber-200 font-medium italic truncate max-w-full">
+                <span className="text-amber-400 text-[10px]">✨</span>
+                <span className="truncate">Happy Diwali, <strong className="text-white font-bold">{customerName}</strong>!</span>
+              </div>
+            )}
+          </div>
+
+          {/* Right Column: Royal Scalloped FLAT 30% OFF Medallion */}
+          <div className="shrink-0 flex items-center justify-center pl-1">
+            <div className="relative flex items-center justify-center filter drop-shadow-[0_4px_14px_rgba(255,215,0,0.7)]">
+              <svg viewBox="0 0 100 100" className="w-16 h-16 sm:w-19 sm:h-19 animate-pulse-slow">
+                <defs>
+                  <radialGradient id="royalFestiveMed" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stopColor="#fff9e6" />
+                    <stop offset="35%" stopColor="#f5c518" />
+                    <stop offset="70%" stopColor="#d4af37" />
+                    <stop offset="100%" stopColor="#7a5405" />
+                  </radialGradient>
+                  <linearGradient id="medallionRimGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#ffffff" />
+                    <stop offset="50%" stopColor="#ffd700" />
+                    <stop offset="100%" stopColor="#8a5e0b" />
+                  </linearGradient>
+                </defs>
+
+                {/* 16 scalloped 24K gold petals */}
+                <g transform="translate(50,50)">
+                  {[0, 22.5, 45, 67.5, 90, 112.5, 135, 157.5, 180, 202.5, 225, 247.5, 270, 292.5, 315, 337.5].map((angle) => (
+                    <path
+                      key={angle}
+                      d="M 0 -48 Q 5.5 -41 0 -33 Q -5.5 -41 0 -48 Z"
+                      fill="url(#royalFestiveMed)"
+                      stroke="#ffd700"
+                      strokeWidth="0.8"
+                      transform={`rotate(${angle})`}
+                    />
+                  ))}
+                </g>
+
+                {/* Central deep royal maroon disc */}
+                <circle cx="50" cy="50" r="35" fill="#36041b" stroke="url(#medallionRimGrad)" strokeWidth="2.5" />
+                <circle cx="50" cy="50" r="30" fill="none" stroke="#ffd700" strokeWidth="1" strokeDasharray="3,2" />
+              </svg>
+
+              {/* Bold, prominent offer text */}
+              <div className="absolute inset-0 flex flex-col items-center justify-center text-center leading-none">
+                <span className="text-[7.5px] sm:text-[8.5px] font-black tracking-[0.16em] text-[#fae7b4] uppercase drop-shadow-sm">
+                  FLAT
+                </span>
+                <span className="text-[17px] sm:text-[20px] font-black font-serif text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)] my-0.5">
+                  30%
+                </span>
+                <span className="text-[7.5px] sm:text-[8.5px] font-black tracking-[0.16em] text-[#ffd700] uppercase drop-shadow-sm">
+                  OFF
+                </span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -256,57 +263,64 @@ export async function composeRoyalMasterPhoto({
     frameImg.src = `${currentFrame.image}?v=5`;
   });
 
-  // 3. Draw Store Branding Banner at Top Center (Large & Prominent)
+  // 3. Draw Unified Store Branding & 30% OFF Header across top (Spacious, Zero Overlap)
   const shopName = shopConfig.shopName || "Dream Salon";
   const shopTagline = shopConfig.shopTagline || "BEAUTY · STYLE · CONFIDENCE";
 
   ctx.save();
-  ctx.textAlign = "center";
 
-  // Banner background pill
-  ctx.fillStyle = "rgba(42, 5, 21, 0.95)";
+  // Unified Header Banner Background Bar
+  ctx.fillStyle = "rgba(32, 3, 18, 0.94)";
   ctx.beginPath();
-  ctx.roundRect(width / 2 - 320, 32, 640, 130, 26);
+  ctx.roundRect(40, 28, width - 80, 150, 24);
   ctx.fill();
-  ctx.lineWidth = 4;
-  ctx.strokeStyle = "#ffd700";
+  ctx.lineWidth = 3;
+  ctx.strokeStyle = "#d4af37";
   ctx.stroke();
 
-  // Store Title (Extra Large & Bold)
-  ctx.font = "900 54px 'Cinzel', serif";
-  ctx.fillStyle = "#fff4d4";
+  // Left Column: Brand Identity
+  ctx.textAlign = "left";
+  
+  // Gold gradient for Store Title
+  const goldGrad = ctx.createLinearGradient(90, 45, 90, 85);
+  goldGrad.addColorStop(0, "#fff5d6");
+  goldGrad.addColorStop(0.5, "#ffd700");
+  goldGrad.addColorStop(1, "#c59a1f");
+  ctx.fillStyle = goldGrad;
   ctx.shadowColor = "rgba(0, 0, 0, 0.95)";
-  ctx.shadowBlur = 16;
-  ctx.fillText(shopName, width / 2, 92);
+  ctx.shadowBlur = 12;
+  ctx.font = "900 48px 'Cinzel', serif";
+  ctx.fillText(`🪔 ${shopName}`, 80, 86);
 
   // Store Tagline
-  ctx.font = "bold 18px 'Plus Jakarta Sans', sans-serif";
-  ctx.fillStyle = "#ffd54f";
-  ctx.letterSpacing = "4px";
-  ctx.fillText(shopTagline, width / 2, 132);
+  ctx.font = "bold 17px 'Plus Jakarta Sans', sans-serif";
+  ctx.fillStyle = "#fae7b4";
+  ctx.fillText(shopTagline, 90, 122);
 
-  // Personalized Greeting
-  ctx.font = "italic bold 32px 'Playfair Display', serif";
-  ctx.fillStyle = "#ffffff";
-  ctx.fillText(`Happy Diwali, ${customerName || "Valued Guest"}! ✨`, width / 2, 210);
+  // Customer Personalized Greeting (neatly inside the bar)
+  if (customerName) {
+    ctx.font = "italic bold 21px 'Playfair Display', serif";
+    ctx.fillStyle = "#ffd54f";
+    ctx.fillText(`✨ Happy Diwali, ${customerName}!`, 90, 155);
+  }
   ctx.restore();
 
-  // 4. Draw Top-Right Scalloped Rosette Medallion ("FLAT 30% OFF" - Extra Large)
+  // 4. Draw Right Column: Royal Scalloped Rosette Medallion ("FLAT 30% OFF")
   const medX = width - 150;
-  const medY = 145;
-  const medRadius = 96;
+  const medY = 103;
+  const medRadius = 66;
 
   ctx.save();
-  ctx.shadowColor = "rgba(255, 215, 0, 0.95)";
-  ctx.shadowBlur = 30;
+  ctx.shadowColor = "rgba(255, 215, 0, 0.85)";
+  ctx.shadowBlur = 24;
 
   for (let i = 0; i < 16; i++) {
     const angle = (i * Math.PI) / 8;
     ctx.beginPath();
     ctx.arc(
-      medX + Math.cos(angle) * (medRadius - 10),
-      medY + Math.sin(angle) * (medRadius - 10),
-      24,
+      medX + Math.cos(angle) * (medRadius - 8),
+      medY + Math.sin(angle) * (medRadius - 8),
+      16,
       0,
       Math.PI * 2
     );
@@ -314,28 +328,29 @@ export async function composeRoyalMasterPhoto({
     ctx.fill();
   }
 
+  // Inner maroon disc
   ctx.beginPath();
-  ctx.arc(medX, medY, medRadius - 16, 0, Math.PI * 2);
-  ctx.fillStyle = "#38061c";
+  ctx.arc(medX, medY, medRadius - 12, 0, Math.PI * 2);
+  ctx.fillStyle = "#36041b";
   ctx.fill();
-  ctx.lineWidth = 5;
+  ctx.lineWidth = 4;
   ctx.strokeStyle = "#ffd700";
   ctx.stroke();
 
   ctx.textAlign = "center";
   ctx.fillStyle = "#fae7b4";
-  ctx.font = "900 18px 'Plus Jakarta Sans', sans-serif";
-  ctx.fillText("FLAT", medX, medY - 30);
+  ctx.font = "900 13px 'Plus Jakarta Sans', sans-serif";
+  ctx.fillText("FLAT", medX, medY - 18);
 
   ctx.fillStyle = "#ffffff";
-  ctx.font = "900 50px 'Cinzel', serif";
+  ctx.font = "900 36px 'Cinzel', serif";
   ctx.shadowColor = "rgba(0, 0, 0, 0.9)";
-  ctx.shadowBlur = 10;
-  ctx.fillText("30%", medX, medY + 16);
+  ctx.shadowBlur = 8;
+  ctx.fillText("30%", medX, medY + 14);
 
   ctx.fillStyle = "#ffd700";
-  ctx.font = "900 18px 'Plus Jakarta Sans', sans-serif";
-  ctx.fillText("OFF", medX, medY + 44);
+  ctx.font = "900 13px 'Plus Jakarta Sans', sans-serif";
+  ctx.fillText("OFF", medX, medY + 34);
   ctx.restore();
 
   // 5. Draw Bottom Watermark Footer
