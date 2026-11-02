@@ -134,6 +134,18 @@ export default function ExactDiwaliLanding({
             transition={{ duration: 0.6 }}
             className="w-full lg:w-[42%] flex flex-col items-center lg:items-start text-center lg:text-left space-y-4"
           >
+            {/* Top Brand & Offer Badge (First thing people see) */}
+            <div className="inline-flex items-center gap-2 sm:gap-2.5 px-4 py-1.5 rounded-full bg-gradient-to-r from-amber-500/25 via-pink-600/30 to-amber-500/25 border-2 border-amber-400/80 shadow-[0_0_25px_rgba(255,215,0,0.45)] mb-1">
+              <span className="text-sm sm:text-base">🪔</span>
+              <span className="font-serif text-xs sm:text-sm md:text-base font-black gold-gradient-text tracking-[0.22em] uppercase">
+                {shopName}
+              </span>
+              <span className="text-amber-400 font-bold">✦</span>
+              <span className="px-2.5 py-0.5 rounded-full bg-[#e91e63] text-white font-black text-xs sm:text-sm tracking-wider uppercase shadow-md animate-pulse">
+                FLAT 30% OFF
+              </span>
+            </div>
+
             {/* Main Title: "Happy Diwali" */}
             <h1 className="font-serif text-5xl sm:text-6xl md:text-7xl font-extrabold text-white tracking-tight leading-none drop-shadow-[0_4px_12px_rgba(0,0,0,0.6)]">
               Happy Diwali
@@ -269,12 +281,12 @@ export default function ExactDiwaliLanding({
             <div className="hidden lg:block w-full h-[1px] bg-violet-700/40" />
 
             {/* Block 3: Special Offer */}
-            <div className="space-y-0.5">
-              <span className="block font-serif text-base sm:text-lg font-black text-[#ffd54f] leading-tight">
-                Special
+            <div className="space-y-0.5 p-2 rounded-xl bg-amber-500/20 border border-amber-400/50 shadow-sm">
+              <span className="block font-serif text-xs sm:text-sm font-bold text-amber-300 uppercase tracking-wider leading-tight">
+                Special Reward
               </span>
-              <span className="block font-serif text-xs sm:text-sm font-bold text-[#ffd54f] leading-tight uppercase">
-                30% OFF Pass
+              <span className="block font-sans text-base sm:text-xl font-black text-white leading-tight uppercase drop-shadow">
+                FLAT 30% OFF
               </span>
             </div>
           </motion.div>
