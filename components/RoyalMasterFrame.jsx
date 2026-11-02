@@ -296,37 +296,37 @@ export default function RoyalMasterFrame({
         </div>
       </div>
 
-      {/* 3. BOTTOM BRAND BOX: Sits in decorative bottom border zone — BELOW camera area */}
-      <div className="absolute bottom-0 left-0 right-0 z-30 pointer-events-none" style={{ paddingBottom: '5.5rem' }}>
-        {/* Outer glowing border wrap — sits flush inside the frame's decorative bottom art */}
-        <div className="mx-2 sm:mx-3 rounded-2xl overflow-hidden shadow-[0_6px_32px_rgba(0,0,0,0.9),0_0_20px_rgba(212,175,55,0.25)] border border-amber-400/70">
+      {/* 3. BOTTOM BRAND BOX: Placed at the VERY BOTTOM of the frame, completely clear of the camera area */}
+      <div className="absolute bottom-2 left-0 right-0 z-30 pointer-events-none px-2 sm:px-3">
+        {/* Outer glowing border wrap — sits flush at the very bottom border of the frame */}
+        <div className="rounded-xl overflow-hidden shadow-[0_4px_20px_rgba(0,0,0,0.9),0_0_15px_rgba(212,175,55,0.2)] border border-amber-400/70 pointer-events-auto">
           {/* Top golden accent line */}
-          <div className="h-[2px] w-full bg-gradient-to-r from-transparent via-amber-400 to-transparent" />
+          <div className="h-[1.5px] w-full bg-gradient-to-r from-transparent via-amber-400 to-transparent" />
 
           {/* Main brand block */}
-          <div className="w-full bg-gradient-to-b from-[#240110]/97 via-[#1a0009]/96 to-[#0e0005]/97 backdrop-blur-md px-3 sm:px-4 py-2 sm:py-2.5 flex items-center justify-between gap-2">
+          <div className="w-full bg-gradient-to-b from-[#240110]/98 via-[#180009]/97 to-[#0c0004]/98 backdrop-blur-md px-3 sm:px-3.5 py-1.5 sm:py-2 flex items-center justify-between gap-2">
             {/* Left: Brand Name + Tagline + Greeting stacked */}
             <div className="flex-1 flex flex-col items-start min-w-0">
               {/* Brand Name Row */}
               <div className="flex items-center gap-1.5 max-w-full">
-                <span className="text-amber-300 text-sm sm:text-base shrink-0 filter drop-shadow-[0_1px_4px_rgba(255,180,0,0.9)]">
+                <span className="text-amber-300 text-xs sm:text-sm shrink-0 filter drop-shadow-[0_1px_4px_rgba(255,180,0,0.9)]">
                   🪔
                 </span>
-                <h2 className="font-serif text-sm sm:text-lg md:text-xl font-black gold-gradient-text tracking-[0.16em] uppercase truncate drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]">
+                <h2 className="font-serif text-xs sm:text-sm md:text-base font-black gold-gradient-text tracking-[0.14em] uppercase truncate drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
                   {shopName}
                 </h2>
               </div>
 
               {/* Tagline */}
-              <span className="text-[7px] sm:text-[9px] font-sans tracking-[0.25em] text-[#fae7b4] uppercase font-bold mt-0.5 truncate max-w-full drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]">
+              <span className="text-[6.5px] sm:text-[8px] font-sans tracking-[0.22em] text-[#fae7b4] uppercase font-bold mt-0.5 truncate max-w-full drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]">
                 {shopTagline}
               </span>
 
               {/* Greeting */}
               {customerName && (
-                <div className="mt-1 flex items-center gap-1 text-[9px] sm:text-[11px] text-amber-200 font-serif italic font-semibold truncate max-w-full">
-                  <span className="text-amber-400 text-[10px] shrink-0">✨</span>
-                  <span className="truncate drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]">
+                <div className="mt-0.5 flex items-center gap-1 text-[8px] sm:text-[9.5px] text-amber-200 font-serif italic font-semibold truncate max-w-full">
+                  <span className="text-amber-400 text-[9px] shrink-0">✨</span>
+                  <span className="truncate drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]">
                     Happy Diwali,{' '}
                     <strong className="text-white font-bold">{customerName}</strong>!
                   </span>
@@ -336,13 +336,13 @@ export default function RoyalMasterFrame({
 
             {/* Right: Decorative Diya + small brand flourish */}
             <div className="shrink-0 flex flex-col items-center justify-center gap-0.5 pl-1.5">
-              <span className="text-xl sm:text-2xl filter drop-shadow-[0_2px_8px_rgba(255,120,0,0.9)]">🪔</span>
-              <span className="text-[7px] text-amber-400/80 font-serif italic font-bold tracking-widest">Diwali</span>
+              <span className="text-base sm:text-lg filter drop-shadow-[0_2px_6px_rgba(255,120,0,0.9)]">🪔</span>
+              <span className="text-[6.5px] text-amber-400/80 font-serif italic font-bold tracking-widest">Diwali</span>
             </div>
           </div>
 
           {/* Bottom golden accent line */}
-          <div className="h-[2px] w-full bg-gradient-to-r from-transparent via-amber-400 to-transparent" />
+          <div className="h-[1.5px] w-full bg-gradient-to-r from-transparent via-amber-400 to-transparent" />
         </div>
       </div>
     </div>
@@ -429,11 +429,10 @@ export async function composeRoyalMasterPhoto({
 
   ctx.save();
   // Bottom brand block: anchor to very bottom of canvas, inside decorative frame border art
-  // Canvas 1080x1440 — frame's decorative bottom art occupies roughly the bottom 220px
-  // Place brand box from y=1210 to y=1370 (160px tall, 35px from bottom edge)
-  const boxH = 160;
-  const boxMargin = 28;
-  const boxY = height - 35 - boxH; // anchored to very bottom, 35px clearance
+  // Canvas 1080x1440 — frame's decorative bottom art occupies roughly the bottom 250px
+  const boxH = 135;
+  const boxMargin = 36;
+  const boxY = height - 25 - boxH; // y = 1280 (comfortably inside bottom border art)
 
   // Rounded rectangle with deep palace velvet gradient
   const boxGrad = ctx.createLinearGradient(0, boxY, 0, boxY + boxH);
@@ -442,7 +441,7 @@ export async function composeRoyalMasterPhoto({
   boxGrad.addColorStop(1, 'rgba(14, 0, 5, 0.97)');
   ctx.fillStyle = boxGrad;
   ctx.beginPath();
-  ctx.roundRect(boxMargin, boxY, width - boxMargin * 2, boxH, 22);
+  ctx.roundRect(boxMargin, boxY, width - boxMargin * 2, boxH, 20);
   ctx.fill();
 
   // Gold border
@@ -452,47 +451,46 @@ export async function composeRoyalMasterPhoto({
 
   // Top glowing accent line inside box
   ctx.beginPath();
-  ctx.moveTo(boxMargin + 50, boxY + 3);
-  ctx.lineTo(width - boxMargin - 50, boxY + 3);
-  ctx.lineWidth = 2;
+  ctx.moveTo(boxMargin + 40, boxY + 2.5);
+  ctx.lineTo(width - boxMargin - 40, boxY + 2.5);
+  ctx.lineWidth = 1.8;
   ctx.strokeStyle = '#ffd700';
   ctx.stroke();
 
   // Bottom glowing accent line inside box
   ctx.beginPath();
-  ctx.moveTo(boxMargin + 50, boxY + boxH - 3);
-  ctx.lineTo(width - boxMargin - 50, boxY + boxH - 3);
-  ctx.lineWidth = 2;
+  ctx.moveTo(boxMargin + 40, boxY + boxH - 2.5);
+  ctx.lineTo(width - boxMargin - 40, boxY + boxH - 2.5);
+  ctx.lineWidth = 1.8;
   ctx.strokeStyle = '#ffd700';
   ctx.stroke();
 
-  // Brand Name (center-aligned in box)
-  const textCenterX = (width - boxMargin * 2) / 2 + boxMargin - 40; // shift left of diya icon
+  // Brand Name
   ctx.textAlign = 'left';
-  const goldGrad = ctx.createLinearGradient(boxMargin + 40, boxY + 30, boxMargin + 40, boxY + 85);
+  const goldGrad = ctx.createLinearGradient(boxMargin + 35, boxY + 20, boxMargin + 35, boxY + 65);
   goldGrad.addColorStop(0, '#fffbe6');
   goldGrad.addColorStop(0.3, '#ffd700');
   goldGrad.addColorStop(0.7, '#ffb300');
   goldGrad.addColorStop(1, '#c59a1f');
 
   ctx.shadowColor = 'rgba(0, 0, 0, 0.95)';
-  ctx.shadowBlur = 12;
+  ctx.shadowBlur = 10;
   ctx.fillStyle = goldGrad;
-  ctx.font = "900 50px 'Cinzel', 'Playfair Display', serif";
-  ctx.fillText(`\u{1F54E} ${shopName}`, boxMargin + 40, boxY + 72);
+  ctx.font = "900 44px 'Cinzel', 'Playfair Display', serif";
+  ctx.fillText(`\u{1F54E} ${shopName}`, boxMargin + 35, boxY + 54);
 
   // Tagline
-  ctx.font = "bold 18px 'Plus Jakarta Sans', sans-serif";
+  ctx.font = "bold 15px 'Plus Jakarta Sans', sans-serif";
   ctx.fillStyle = '#fae7b4';
-  ctx.shadowBlur = 8;
-  ctx.fillText(shopTagline, boxMargin + 52, boxY + 108);
+  ctx.shadowBlur = 6;
+  ctx.fillText(shopTagline, boxMargin + 45, boxY + 84);
 
   // Greeting
   if (customerName) {
-    ctx.font = "italic bold 24px 'Playfair Display', serif";
+    ctx.font = "italic bold 20px 'Playfair Display', serif";
     ctx.fillStyle = '#ffd54f';
-    ctx.shadowBlur = 10;
-    ctx.fillText(`\u2728 Happy Diwali, ${customerName}!`, boxMargin + 52, boxY + 148);
+    ctx.shadowBlur = 8;
+    ctx.fillText(`\u2728 Happy Diwali, ${customerName}!`, boxMargin + 45, boxY + 116);
   }
   ctx.restore();
 
@@ -557,23 +555,6 @@ export async function composeRoyalMasterPhoto({
     sealImg.src = sealSvgDataUri;
   });
 
-  // 5. Draw Bottom Watermark (small pill, just below the brand box)
-  ctx.save();
-  ctx.textAlign = 'center';
-  ctx.fillStyle = 'rgba(10, 0, 3, 0.75)';
-  ctx.beginPath();
-  ctx.roundRect(width / 2 - 200, height - 90, 400, 38, 19);
-  ctx.fill();
-  ctx.lineWidth = 1.2;
-  ctx.strokeStyle = 'rgba(212, 175, 55, 0.4)';
-  ctx.stroke();
-
-  ctx.fillStyle = '#fae3b3';
-  ctx.font = "italic bold 16px 'Playfair Display', serif";
-  ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
-  ctx.shadowBlur = 5;
-  ctx.fillText(`Diwali Moments \u2022 ${shopName}`, width / 2, height - 65);
-  ctx.restore();
-
+  // 5. Finalize canvas
   return canvas.toDataURL('image/jpeg', 0.95);
 }
