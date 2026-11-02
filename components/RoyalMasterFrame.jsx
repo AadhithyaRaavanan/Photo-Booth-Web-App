@@ -313,7 +313,7 @@ export default function RoyalMasterFrame({
       {/* 1. THE AUTHENTIC USER FESTIVE FRAME OVERLAY (Transparent Center Opening) */}
       <img
         key={currentFrame.id}
-        src={`${currentFrame.image}?v=10`}
+        src={`${currentFrame.image}?v=11`}
         alt={currentFrame.name}
         onError={(e) => {
           if (!e.currentTarget.dataset.retried) {
@@ -408,7 +408,7 @@ export async function composeRoyalMasterPhoto({
       console.warn('Could not load frame overlay image:', currentFrame.image);
       resolve();
     };
-    frameImg.src = `${currentFrame.image}?v=10`;
+    frameImg.src = `${currentFrame.image}?v=11`;
   });
 
   // 3. Draw Identical Enlarged Top-Right 30% Offer Seal SVG (proportional to DOM: top 1.5%, right 2%, width 25%)

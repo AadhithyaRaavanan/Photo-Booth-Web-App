@@ -74,7 +74,9 @@ for (const frame of ROYAL_FRAMES) {
 
   const buf = fs.readFileSync(filePath);
   const png = PNG.sync.read(buf);
-  const centerIdx = (400 * png.width + 300) * 4;
+  const cx = Math.floor(png.width / 2);
+  const cy = Math.floor(png.height / 2);
+  const centerIdx = (cy * png.width + cx) * 4;
   const centerAlpha = png.data[centerIdx + 3];
 
   if (centerAlpha > 20) {
