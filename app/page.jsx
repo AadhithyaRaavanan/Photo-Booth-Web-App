@@ -445,9 +445,38 @@ export default function PhotoBoothApp() {
     a.click();
   };
 
+  // Synchronously convert base64 Data URL to a File object
+  // Crucial for iOS Safari & Android Chrome so user gesture activation is preserved for navigator.share()
+  const convertPhotoToFile = (photoUrl, filename = 'Dream_Salon_Diwali_Story.jpg') => {
+    if (!photoUrl) return null;
+    if (typeof photoUrl === 'string' && photoUrl.startsWith('data:')) {
+      try {
+        const arr = photoUrl.split(',');
+        const mime = arr[0].match(/:(.*?);/)?.[1] || 'image/jpeg';
+        const bstr = atob(arr[1]);
+        let n = bstr.length;
+        const u8arr = new Uint8Array(n);
+        while (n--) {
+          u8arr[n] = bstr.charCodeAt(n);
+        }
+        const blob = new Blob([u8arr], { type: mime });
+        return new File([blob], filename, { type: mime, lastModified: Date.now() });
+      } catch (err) {
+        console.error('Synchronous convertPhotoToFile error:', err);
+        return null;
+      }
+    }
+    return null;
+  };
+
   // Sharing Actions
   const handleShareInstagram = async () => {
     playChimeSound('click');
+
+    if (!brandedPhotoUrl) {
+      alert('Please capture or choose a photo first!');
+      return;
+    }
 
     const isMobile =
       typeof window !== 'undefined' &&
@@ -455,32 +484,43 @@ export default function PhotoBoothApp() {
         (navigator.maxTouchPoints > 1 && window.innerWidth <= 1024));
 
     if (isMobile) {
-      // 1. ON PHONE: Open Instagram with the picture
-      if (brandedPhotoUrl && navigator.canShare) {
+      // 1. ON MOBILE: Convert image to File object and invoke native Web Share API
+      const filename = `${shopConfig.shopName.replace(/\s+/g, '_')}_Diwali_Story.jpg`;
+
+      // Step 1 & 2: Convert image to binary blob and into a File object with defined name and MIME type
+      let file = convertPhotoToFile(brandedPhotoUrl, filename);
+
+      if (!file) {
         try {
           const response = await fetch(brandedPhotoUrl);
           const blob = await response.blob();
-          const file = new File(
-            [blob],
-            `${shopConfig.shopName.replace(/\s+/g, '_')}_Diwali_Story.jpg`,
-            { type: 'image/jpeg' }
-          );
-
-          if (navigator.canShare({ files: [file] })) {
-            await navigator.share({
-              title: `Diwali with ${shopConfig.shopName}`,
-              text: `Celebrating Diwali in style with ${shopConfig.shopName}! Tagging ${shopConfig.instagramTag} and ${shopConfig.partnerTag} to unlock an exclusive festive discount. 🪔✨`,
-              files: [file],
-            });
-            return;
-          }
-        } catch (err) {
-          if (err.name === 'AbortError') return;
-          console.warn('Native mobile share fallback:', err);
+          file = new File([blob], filename, { type: 'image/jpeg', lastModified: Date.now() });
+        } catch (fetchErr) {
+          console.warn('Asynchronous file conversion fallback failed:', fetchErr);
         }
       }
 
-      // Mobile Fallback: Save photo to gallery & deep-link directly to Instagram Camera
+      // Step 3: Verify support using navigator.canShare()
+      if (file && typeof navigator !== 'undefined' && navigator.canShare && navigator.canShare({ files: [file] })) {
+        try {
+          // Step 4: Trigger the native share sheet so user can select "Instagram Stories"
+          await navigator.share({
+            title: `Diwali with ${shopConfig.shopName}`,
+            text: `Celebrating Diwali in style with ${shopConfig.shopName}! Tagging ${shopConfig.instagramTag} and ${shopConfig.partnerTag} to unlock an exclusive festive discount. 🪔✨`,
+            files: [file],
+          });
+          return;
+        } catch (err) {
+          // If the user cancelled or dismissed the native share sheet, do not trigger error fallback
+          if (err.name === 'AbortError') {
+            return;
+          }
+          console.warn('Native mobile share sheet error:', err);
+        }
+      }
+
+      // Fallback for older mobile browsers without Web Share Files support:
+      // Download photo to camera roll & deep-link directly into Instagram
       handleDownloadPhoto();
       window.location.href = 'instagram://camera';
       setTimeout(() => {
@@ -946,13 +986,18 @@ export default function PhotoBoothApp() {
                         onClick={handleShareInstagram}
                         className="w-full py-4 px-5 rounded-2xl bg-gradient-to-r from-[#e1306c] via-[#fd1d1d] to-[#f77737] text-white font-bold text-xs sm:text-sm shadow-md flex items-center justify-between transition hover:opacity-95 active:scale-[0.98]"
                       >
-                        <div className="flex items-center gap-3">
-                          <div className="w-6 h-6 rounded-lg border-2 border-white flex items-center justify-center">
+                        <div className="flex items-center gap-3 text-left">
+                          <div className="w-6 h-6 rounded-lg border-2 border-white flex items-center justify-center shrink-0">
                             <div className="w-2.5 h-2.5 rounded-full border-2 border-white" />
                           </div>
-                          <span>SHARE ON INSTAGRAM STORY</span>
+                          <div>
+                            <span className="block font-bold">SHARE ON INSTAGRAM STORY</span>
+                            <span className="block text-[10px] text-white/80 font-normal">
+                              Opens native share sheet on mobile · Downloads & redirects on PC
+                            </span>
+                          </div>
                         </div>
-                        <ChevronRight className="w-5 h-5 text-white/90" />
+                        <ChevronRight className="w-5 h-5 text-white/90 shrink-0" />
                       </button>
 
                       <button
