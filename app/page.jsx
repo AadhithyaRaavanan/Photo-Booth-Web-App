@@ -18,6 +18,7 @@ import {
   ShieldCheck,
   Smartphone,
   AlertTriangle,
+  X,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ExactDiwaliLanding from '@/components/ExactDiwaliLanding';
@@ -59,6 +60,7 @@ export default function PhotoBoothApp() {
 
   // Photos & Frame state
   const [selectedFrameId, setSelectedFrameId] = useState('frame-1');
+  const [isFrameDrawerOpen, setIsFrameDrawerOpen] = useState(false);
   const [capturedRawPhoto, setCapturedRawPhoto] = useState(null);
   const [brandedPhotoUrl, setBrandedPhotoUrl] = useState(null);
   const [isComposing, setIsComposing] = useState(false);
@@ -682,7 +684,7 @@ export default function PhotoBoothApp() {
 
           {/* Main Photo Booth Stage */}
           <main className="w-full flex-1 flex flex-col items-center justify-center py-2 px-3 sm:px-6 relative z-20">
-            <div className="w-full max-w-md md:max-w-2xl lg:max-w-3xl mx-auto flex-1 flex flex-col items-center justify-center">
+            <div className="w-full max-w-md md:max-w-4xl lg:max-w-5xl mx-auto flex-1 flex flex-col items-center justify-center">
 
               {/* ---------------------------------------------------------------
                   STAGE 2A: CAMERA CAPTURE (Live stream with transparent frame)
@@ -701,122 +703,238 @@ export default function PhotoBoothApp() {
                     )}
                   </AnimatePresence>
 
-                  {/* Camera Frame Container: EXACT 3:4 Aspect Ratio */}
-                  <div className="w-full max-w-[340px] sm:max-w-[400px] h-[520px] sm:h-[580px] rounded-3xl overflow-hidden relative shadow-[0_16px_50px_rgba(0,0,0,0.85)] border-2 border-amber-400/70 bg-neutral-950 flex flex-col justify-between">
+                  {/* Mobile Quick Frame Switcher (Hidden on desktop) */}
+                  <div className="md:hidden flex items-center justify-between w-full max-w-[340px] sm:max-w-[400px] mb-2 px-1">
+                    <button
+                      onClick={() => {
+                        playChimeSound('click');
+                        const currIdx = ROYAL_FRAMES.findIndex((f) => f.id === selectedFrameId);
+                        const prevIdx = (currIdx - 1 + ROYAL_FRAMES.length) % ROYAL_FRAMES.length;
+                        setSelectedFrameId(ROYAL_FRAMES[prevIdx].id);
+                      }}
+                      className="py-1.5 px-3 rounded-full bg-black/60 border border-amber-400/40 text-amber-300 hover:bg-black/80 flex items-center gap-1 text-[11px] font-semibold transition shadow-md"
+                    >
+                      <ChevronLeft className="w-3.5 h-3.5" />
+                      <span>Prev Frame</span>
+                    </button>
 
-                    {/* Camera Feed & Transparent Royal Festive Frame */}
-                    <div className="relative w-full h-full flex-1 overflow-hidden bg-neutral-950">
-                      {/* 1. Live Video Element: ABSOLUTE INSET-0 to fill the frame completely */}
-                      <video
-                        ref={(el) => {
-                          videoRef.current = el;
-                          if (el && cameraStream && el.srcObject !== cameraStream) {
-                            el.srcObject = cameraStream;
-                            el.muted = true;
-                            el.playsInline = true;
-                            el.play().catch((err) => console.log('Callback ref play error:', err));
-                          }
-                        }}
-                        autoPlay
-                        playsInline
-                        muted
-                        onLoadedData={() => setHasVideoFrames(true)}
-                        onPlaying={() => setHasVideoFrames(true)}
-                        className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 z-0 ${
-                          facingMode === 'user' ? 'scale-x-[-1]' : ''
-                        } ${isCameraActive && hasVideoFrames ? 'opacity-100' : 'opacity-0'}`}
-                      />
+                    <button
+                      onClick={() => {
+                        playChimeSound('click');
+                        setIsFrameDrawerOpen(true);
+                      }}
+                      className="px-3.5 py-1.5 rounded-full bg-gradient-to-r from-amber-500/25 to-pink-500/25 border border-amber-400/60 shadow-md text-amber-200 hover:text-white flex items-center gap-1.5 text-xs font-bold transition"
+                    >
+                      <span>✨</span>
+                      <span className="truncate max-w-[130px]">
+                        {ROYAL_FRAMES.find((f) => f.id === selectedFrameId)?.name}
+                      </span>
+                      <span className="text-[10px] text-amber-400">
+                        ({ROYAL_FRAMES.findIndex((f) => f.id === selectedFrameId) + 1}/8)
+                      </span>
+                    </button>
 
-                      {/* 2. Loading State indicator */}
-                      {isInitializingCamera && (
-                        <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/85 z-20 space-y-3">
-                          <div className="w-12 h-12 rounded-full border-4 border-amber-400 border-t-transparent animate-spin" />
-                          <p className="text-xs text-amber-200 font-semibold tracking-wider uppercase">
-                            Starting Camera...
-                          </p>
+                    <button
+                      onClick={() => {
+                        playChimeSound('click');
+                        const currIdx = ROYAL_FRAMES.findIndex((f) => f.id === selectedFrameId);
+                        const nextIdx = (currIdx + 1) % ROYAL_FRAMES.length;
+                        setSelectedFrameId(ROYAL_FRAMES[nextIdx].id);
+                      }}
+                      className="py-1.5 px-3 rounded-full bg-black/60 border border-amber-400/40 text-amber-300 hover:bg-black/80 flex items-center gap-1 text-[11px] font-semibold transition shadow-md"
+                    >
+                      <span>Next Frame</span>
+                      <ChevronRight className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+
+                  {/* Main Studio Area: Camera Phone Card + Side Frames Panel */}
+                  <div className="w-full flex flex-col md:flex-row items-center md:items-start justify-center gap-6 lg:gap-8 relative select-none">
+                    {/* Left Column: The Spacious, Decongested Camera Card */}
+                    <div className="flex flex-col items-center">
+                      <div className="w-full max-w-[340px] sm:max-w-[400px] h-[520px] sm:h-[580px] rounded-3xl overflow-hidden relative shadow-[0_16px_50px_rgba(0,0,0,0.85)] border-2 border-amber-400/70 bg-neutral-950 flex flex-col justify-between">
+                        {/* Camera Feed & Transparent Royal Festive Frame */}
+                        <div className="relative w-full h-full flex-1 overflow-hidden bg-neutral-950">
+                          {/* 1. Live Video Element: ABSOLUTE INSET-0 to fill the frame completely */}
+                          <video
+                            ref={(el) => {
+                              videoRef.current = el;
+                              if (el && cameraStream && el.srcObject !== cameraStream) {
+                                el.srcObject = cameraStream;
+                                el.muted = true;
+                                el.playsInline = true;
+                                el.play().catch((err) => console.log('Callback ref play error:', err));
+                              }
+                            }}
+                            autoPlay
+                            playsInline
+                            muted
+                            onLoadedData={() => setHasVideoFrames(true)}
+                            onPlaying={() => setHasVideoFrames(true)}
+                            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 z-0 ${
+                              facingMode === 'user' ? 'scale-x-[-1]' : ''
+                            } ${isCameraActive && hasVideoFrames ? 'opacity-100' : 'opacity-0'}`}
+                          />
+
+                          {/* 2. Loading State indicator */}
+                          {isInitializingCamera && (
+                            <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/85 z-20 space-y-3">
+                              <div className="w-12 h-12 rounded-full border-4 border-amber-400 border-t-transparent animate-spin" />
+                              <p className="text-xs text-amber-200 font-semibold tracking-wider uppercase">
+                                Starting Camera...
+                              </p>
+                            </div>
+                          )}
+
+                          {/* 3. Camera Access Card (Shown if camera is blocked/denied/busy/no frames) */}
+                          {!isInitializingCamera && (!isCameraActive || !hasVideoFrames) && (
+                            <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center z-15 bg-[#250438]/90 backdrop-blur-sm">
+                              <div className="w-14 h-14 rounded-full bg-amber-400/20 border border-amber-400/50 flex items-center justify-center text-amber-300 mb-2 shadow-lg">
+                                <Camera className="w-7 h-7" />
+                              </div>
+                              <h3 className="font-serif text-base sm:text-lg font-bold text-white mb-1">
+                                Camera Preview
+                              </h3>
+                              <p className="text-[11px] text-violet-200/80 max-w-xs mb-3.5 leading-relaxed">
+                                {cameraError || 'Allow camera access in your browser, or tap an option below to take your photo:'}
+                              </p>
+
+                              <div className="flex flex-col gap-2 w-full max-w-[260px]">
+                                <button
+                                  onClick={() => nativeCameraInputRef.current?.click()}
+                                  className="w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-amber-400 to-yellow-300 text-black font-bold text-xs uppercase tracking-wider shadow-md hover:brightness-105 active:scale-98 transition flex items-center justify-center gap-2"
+                                >
+                                  <Camera className="w-4 h-4" />
+                                  <span>Take Photo With Camera</span>
+                                </button>
+
+                                <button
+                                  onClick={() => fileInputRef.current?.click()}
+                                  className="w-full py-2 px-3 rounded-xl bg-white/15 hover:bg-white/20 text-white font-semibold text-xs transition border border-white/20 flex items-center justify-center gap-2"
+                                >
+                                  <ImageIcon className="w-4 h-4 text-amber-300" />
+                                  <span>Choose From Gallery</span>
+                                </button>
+
+                                <button
+                                  onClick={handleUseDemoSelfie}
+                                  className="w-full py-1.5 px-3 rounded-xl bg-violet-800/60 hover:bg-violet-800 text-amber-200 font-medium text-[11px] transition border border-violet-400/30 flex items-center justify-center gap-1.5"
+                                >
+                                  <span>✨ Instant Demo Selfie</span>
+                                </button>
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Hidden Native Camera & Gallery file inputs */}
+                          <input
+                            ref={nativeCameraInputRef}
+                            type="file"
+                            accept="image/*"
+                            capture="user"
+                            onChange={handleFallbackPhotoSelect}
+                            className="hidden"
+                          />
+                          <input
+                            ref={fileInputRef}
+                            type="file"
+                            accept="image/*"
+                            onChange={handleFallbackPhotoSelect}
+                            className="hidden"
+                          />
+
+                          {/* The Authentic Transparent Royal Scalloped Frame Overlay (Zero Text Collision) */}
+                          <RoyalMasterFrame
+                            shopConfig={shopConfig}
+                            customerName={customerName}
+                            discount="FLAT 30% OFF"
+                            selectedFrameId={selectedFrameId}
+                          />
                         </div>
-                      )}
 
-                      {/* 3. Camera Access Card (Shown if camera is blocked/denied/busy/no frames) */}
-                      {!isInitializingCamera && (!isCameraActive || !hasVideoFrames) && (
-                        <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center z-15 bg-[#250438]/90 backdrop-blur-sm">
-                          <div className="w-14 h-14 rounded-full bg-amber-400/20 border border-amber-400/50 flex items-center justify-center text-amber-300 mb-2 shadow-lg">
-                            <Camera className="w-7 h-7" />
-                          </div>
-                          <h3 className="font-serif text-base sm:text-lg font-bold text-white mb-1">
-                            Camera Preview
-                          </h3>
-                          <p className="text-[11px] text-violet-200/80 max-w-xs mb-3.5 leading-relaxed">
-                            {cameraError || 'Allow camera access in your browser, or tap an option below to take your photo:'}
-                          </p>
+                        {/* Bottom Control Deck (Clean, Non-Overlapping) */}
+                        <div className="relative z-30 pt-3 pb-5 px-6 bg-gradient-to-t from-black via-black/90 to-transparent flex items-center justify-between">
+                          {/* Left: Gallery Picker */}
+                          <button
+                            onClick={() => fileInputRef.current?.click()}
+                            className="w-12 h-12 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 flex flex-col items-center justify-center text-champagne hover:bg-white/20 hover:text-white transition group"
+                            title="Upload from Photo Gallery"
+                          >
+                            <ImageIcon className="w-5 h-5 text-amber-400 group-hover:scale-110 transition" />
+                            <span className="text-[8px] font-semibold text-champagne/70 mt-0.5">Gallery</span>
+                          </button>
 
-                          <div className="flex flex-col gap-2 w-full max-w-[260px]">
-                            {/* Device Native Camera API */}
-                            <button
-                              onClick={() => nativeCameraInputRef.current?.click()}
-                              className="w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-amber-400 to-yellow-300 text-black font-bold text-xs uppercase tracking-wider shadow-md hover:brightness-105 active:scale-98 transition flex items-center justify-center gap-2"
-                            >
-                              <Camera className="w-4 h-4" />
-                              <span>Take Photo With Camera</span>
-                            </button>
+                          {/* Center: Gold Shutter Button */}
+                          <motion.button
+                            whileTap={{ scale: 0.92 }}
+                            onClick={handleCapturePhoto}
+                            disabled={isComposing}
+                            className="relative w-18 h-18 sm:w-20 sm:h-20 rounded-full bg-white p-1.5 flex items-center justify-center shadow-[0_0_30px_rgba(255,215,0,0.7)] focus:outline-none"
+                            aria-label="Capture photo"
+                          >
+                            <div className="w-full h-full rounded-full border-4 border-amber-400 flex items-center justify-center bg-white transition hover:bg-amber-50">
+                              <div className="w-13 h-13 sm:w-14 sm:h-14 rounded-full bg-gradient-to-tr from-amber-400 to-yellow-200 shadow-inner" />
+                            </div>
+                          </motion.button>
 
-                            <button
-                              onClick={() => fileInputRef.current?.click()}
-                              className="w-full py-2 px-3 rounded-xl bg-white/15 hover:bg-white/20 text-white font-semibold text-xs transition border border-white/20 flex items-center justify-center gap-2"
-                            >
-                              <ImageIcon className="w-4 h-4 text-amber-300" />
-                              <span>Choose From Gallery</span>
-                            </button>
-
-                            <button
-                              onClick={handleUseDemoSelfie}
-                              className="w-full py-1.5 px-3 rounded-xl bg-violet-800/60 hover:bg-violet-800 text-amber-200 font-medium text-[11px] transition border border-violet-400/30 flex items-center justify-center gap-1.5"
-                            >
-                              <span>✨ Instant Demo Selfie</span>
-                            </button>
-                          </div>
+                          {/* Right: Camera Flip */}
+                          <button
+                            onClick={handleToggleCamera}
+                            className="w-12 h-12 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 flex flex-col items-center justify-center text-champagne hover:bg-white/20 hover:text-white transition group"
+                            title="Flip Camera"
+                          >
+                            <RotateCcw className="w-5 h-5 text-amber-400 group-hover:rotate-180 transition duration-300" />
+                            <span className="text-[8px] font-semibold text-champagne/70 mt-0.5">Flip</span>
+                          </button>
                         </div>
-                      )}
+                      </div>
 
-                      {/* Hidden Native Camera & Gallery file inputs */}
-                      <input
-                        ref={nativeCameraInputRef}
-                        type="file"
-                        accept="image/*"
-                        capture="user"
-                        onChange={handleFallbackPhotoSelect}
-                        className="hidden"
-                      />
-                      <input
-                        ref={fileInputRef}
-                        type="file"
-                        accept="image/*"
-                        onChange={handleFallbackPhotoSelect}
-                        className="hidden"
-                      />
+                      {/* Fallback Action Bar Under the Card */}
+                      <div className="mt-3 flex items-center justify-center gap-2 max-w-sm flex-wrap text-center">
+                        <button
+                          onClick={() => nativeCameraInputRef.current?.click()}
+                          className="px-3 py-1.5 rounded-full bg-black/50 border border-amber-400/30 text-[11px] font-medium text-amber-200 hover:bg-black/70 flex items-center gap-1.5 transition"
+                        >
+                          <Camera className="w-3.5 h-3.5 text-amber-300" />
+                          <span>Device Camera</span>
+                        </button>
 
-                      {/* The Authentic Transparent Royal Scalloped Frame Overlay (Zero Text Collision) */}
-                      <RoyalMasterFrame
-                        shopConfig={shopConfig}
-                        customerName={customerName}
-                        discount="FLAT 30% OFF"
-                        selectedFrameId={selectedFrameId}
-                      />
+                        <button
+                          onClick={handleUseDemoSelfie}
+                          className="px-3 py-1.5 rounded-full bg-violet-900/60 border border-violet-400/40 text-[11px] font-medium text-violet-200 hover:bg-violet-800 flex items-center gap-1.5 transition"
+                        >
+                          <span>✨ Demo Selfie</span>
+                        </button>
+
+                        <button
+                          onClick={() => startCamera(facingMode)}
+                          className="px-3 py-1.5 rounded-full bg-black/50 border border-white/20 text-[11px] font-medium text-white/70 hover:text-white flex items-center gap-1.5 transition"
+                        >
+                          <RefreshCw className="w-3.5 h-3.5" />
+                          <span>Refresh Stream</span>
+                        </button>
+                      </div>
                     </div>
 
-                    {/* Horizontal Royal Frame Selector Carousel */}
-                    <div className="relative z-30 pt-2.5 pb-2 px-3 bg-gradient-to-t from-black via-black/95 to-black/80 border-t border-amber-400/20">
-                      <div className="flex items-center justify-between px-1 mb-1.5">
-                        <span className="text-[10px] font-serif font-bold text-amber-300 tracking-wider flex items-center gap-1">
-                          <span>✨</span>
-                          <span>CHOOSE FRAME ({ROYAL_FRAMES.findIndex(f => f.id === selectedFrameId) + 1} of {ROYAL_FRAMES.length})</span>
-                        </span>
-                        <span className="text-[9.5px] font-sans text-champagne/80 truncate max-w-[160px] font-medium">
-                          {ROYAL_FRAMES.find(f => f.id === selectedFrameId)?.name}
+                    {/* Right Column: Royal Frame Studio Side Panel (Desktop / Tablet) */}
+                    <div className="hidden md:flex flex-col w-72 lg:w-80 h-[520px] sm:h-[580px] rounded-3xl bg-[#1e0214]/90 backdrop-blur-xl border border-amber-400/50 shadow-2xl p-4 overflow-hidden">
+                      <div className="flex items-center justify-between pb-3 border-b border-amber-400/20 shrink-0">
+                        <div>
+                          <h3 className="font-serif text-sm sm:text-base font-bold text-amber-300 flex items-center gap-1.5">
+                            <span>✨</span>
+                            <span>ROYAL FRAME STUDIO</span>
+                          </h3>
+                          <p className="text-[10px] text-champagne/70 mt-0.5">
+                            Click any frame to preview live
+                          </p>
+                        </div>
+                        <span className="px-2 py-0.5 rounded-full bg-amber-400/20 border border-amber-400/40 text-[10px] font-bold text-amber-200">
+                          {ROYAL_FRAMES.findIndex((f) => f.id === selectedFrameId) + 1} / {ROYAL_FRAMES.length}
                         </span>
                       </div>
 
-                      <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none select-none">
+                      {/* Scrollable Frame Cards List */}
+                      <div className="flex-1 overflow-y-auto pr-1 py-3 space-y-2.5">
                         {ROYAL_FRAMES.map((f) => {
                           const isSelected = selectedFrameId === f.id;
                           return (
@@ -826,91 +944,119 @@ export default function PhotoBoothApp() {
                                 playChimeSound('click');
                                 setSelectedFrameId(f.id);
                               }}
-                              className={`relative shrink-0 w-13 h-18 sm:w-15 sm:h-20 rounded-xl overflow-hidden transition-all duration-200 flex flex-col items-center justify-between p-1 text-center ${
+                              className={`w-full flex items-center gap-3 p-2 rounded-2xl transition-all duration-200 text-left group ${
                                 isSelected
-                                  ? 'ring-2 ring-amber-400 bg-amber-500/25 scale-105 shadow-[0_0_12px_rgba(255,215,0,0.65)]'
-                                  : 'opacity-70 hover:opacity-100 bg-black/40 border border-white/20 hover:border-amber-400/50'
+                                  ? 'bg-gradient-to-r from-amber-500/30 to-amber-500/10 border-2 border-amber-400 shadow-[0_0_18px_rgba(255,215,0,0.35)] scale-[1.02]'
+                                  : 'bg-black/40 hover:bg-white/10 border border-white/15 hover:border-amber-400/40'
                               }`}
-                              title={f.name}
                             >
-                              <img
-                                src={f.thumb}
-                                alt={f.name}
-                                className="w-full h-11 sm:h-13 object-cover rounded-lg pointer-events-none"
-                              />
-                              <span className={`text-[7.5px] sm:text-[8px] font-bold truncate max-w-full block leading-none mt-1 ${
-                                isSelected ? 'text-amber-300' : 'text-champagne/70'
-                              }`}>
-                                {f.badge}
-                              </span>
+                              {/* Thumbnail */}
+                              <div className="relative w-12 h-16 rounded-xl overflow-hidden shrink-0 border border-amber-400/30 shadow-md">
+                                <img
+                                  src={f.thumb}
+                                  alt={f.name}
+                                  className="w-full h-full object-cover"
+                                />
+                                {isSelected && (
+                                  <div className="absolute inset-0 bg-amber-400/20 flex items-center justify-center">
+                                    <span className="w-5 h-5 rounded-full bg-amber-400 text-black flex items-center justify-center text-[10px] font-black shadow-md">
+                                      ✓
+                                    </span>
+                                  </div>
+                                )}
+                              </div>
+
+                              {/* Details */}
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center gap-1.5">
+                                  <span className="text-xs">{f.badge.split(' ')[0]}</span>
+                                  <h4
+                                    className={`text-xs font-bold truncate ${
+                                      isSelected ? 'text-amber-300' : 'text-white group-hover:text-amber-200'
+                                    }`}
+                                  >
+                                    {f.name}
+                                  </h4>
+                                </div>
+                                <p className="text-[10px] text-champagne/60 line-clamp-2 mt-0.5 leading-snug">
+                                  {f.description}
+                                </p>
+                              </div>
                             </button>
                           );
                         })}
                       </div>
                     </div>
-
-                    {/* Bottom Control Deck (Clean, Non-Overlapping) */}
-                    <div className="relative z-30 pt-3 pb-5 px-6 bg-gradient-to-t from-black via-black/90 to-transparent flex items-center justify-between">
-                      {/* Left: Gallery Picker */}
-                      <button
-                        onClick={() => fileInputRef.current?.click()}
-                        className="w-12 h-12 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 flex flex-col items-center justify-center text-champagne hover:bg-white/20 hover:text-white transition group"
-                        title="Upload from Photo Gallery"
-                      >
-                        <ImageIcon className="w-5 h-5 text-amber-400 group-hover:scale-110 transition" />
-                        <span className="text-[8px] font-semibold text-champagne/70 mt-0.5">Gallery</span>
-                      </button>
-
-                      {/* Center: Gold Shutter Button */}
-                      <motion.button
-                        whileTap={{ scale: 0.92 }}
-                        onClick={handleCapturePhoto}
-                        disabled={isComposing}
-                        className="relative w-18 h-18 sm:w-20 sm:h-20 rounded-full bg-white p-1.5 flex items-center justify-center shadow-[0_0_30px_rgba(255,215,0,0.7)] focus:outline-none"
-                        aria-label="Capture photo"
-                      >
-                        <div className="w-full h-full rounded-full border-4 border-amber-400 flex items-center justify-center bg-white transition hover:bg-amber-50">
-                          <div className="w-13 h-13 sm:w-14 sm:h-14 rounded-full bg-gradient-to-tr from-amber-400 to-yellow-200 shadow-inner" />
-                        </div>
-                      </motion.button>
-
-                      {/* Right: Camera Flip */}
-                      <button
-                        onClick={handleToggleCamera}
-                        className="w-12 h-12 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 flex flex-col items-center justify-center text-champagne hover:bg-white/20 hover:text-white transition group"
-                        title="Flip Camera"
-                      >
-                        <RotateCcw className="w-5 h-5 text-amber-400 group-hover:rotate-180 transition duration-300" />
-                        <span className="text-[8px] font-semibold text-champagne/70 mt-0.5">Flip</span>
-                      </button>
-                    </div>
                   </div>
 
-                  {/* Fallback Action Bar Under the Card */}
-                  <div className="mt-3 flex items-center justify-center gap-2 max-w-sm flex-wrap text-center">
-                    <button
-                      onClick={() => nativeCameraInputRef.current?.click()}
-                      className="px-3 py-1.5 rounded-full bg-black/50 border border-amber-400/30 text-[11px] font-medium text-amber-200 hover:bg-black/70 flex items-center gap-1.5 transition"
-                    >
-                      <Camera className="w-3.5 h-3.5 text-amber-300" />
-                      <span>Device Camera</span>
-                    </button>
+                  {/* Mobile Slide-Over Frame Drawer */}
+                  <AnimatePresence>
+                    {isFrameDrawerOpen && (
+                      <>
+                        <motion.div
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          exit={{ opacity: 0 }}
+                          onClick={() => setIsFrameDrawerOpen(false)}
+                          className="md:hidden fixed inset-0 bg-black/75 backdrop-blur-sm z-50"
+                        />
+                        <motion.div
+                          initial={{ x: '100%' }}
+                          animate={{ x: 0 }}
+                          exit={{ x: '100%' }}
+                          transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+                          className="md:hidden fixed inset-y-0 right-0 w-80 max-w-[85%] bg-[#1a0210] border-l-2 border-amber-400/60 shadow-2xl z-55 p-5 flex flex-col"
+                        >
+                          <div className="flex items-center justify-between pb-3 border-b border-amber-400/30">
+                            <div className="flex items-center gap-2">
+                              <span className="text-amber-300 text-lg">🪔</span>
+                              <div>
+                                <h3 className="font-serif text-sm font-bold text-white">Choose Frame</h3>
+                                <p className="text-[10px] text-champagne/70">8 Royal Festive Designs</p>
+                              </div>
+                            </div>
+                            <button
+                              onClick={() => setIsFrameDrawerOpen(false)}
+                              className="p-2 rounded-full bg-white/10 hover:bg-white/20 text-white"
+                            >
+                              <X className="w-5 h-5" />
+                            </button>
+                          </div>
 
-                    <button
-                      onClick={handleUseDemoSelfie}
-                      className="px-3 py-1.5 rounded-full bg-violet-900/60 border border-violet-400/40 text-[11px] font-medium text-violet-200 hover:bg-violet-800 flex items-center gap-1.5 transition"
-                    >
-                      <span>✨ Demo Selfie</span>
-                    </button>
-
-                    <button
-                      onClick={() => startCamera(facingMode)}
-                      className="px-3 py-1.5 rounded-full bg-black/50 border border-white/20 text-[11px] font-medium text-white/70 hover:text-white flex items-center gap-1.5 transition"
-                    >
-                      <RefreshCw className="w-3.5 h-3.5" />
-                      <span>Refresh Stream</span>
-                    </button>
-                  </div>
+                          <div className="flex-1 overflow-y-auto py-3 space-y-2.5">
+                            {ROYAL_FRAMES.map((f) => {
+                              const isSelected = selectedFrameId === f.id;
+                              return (
+                                <button
+                                  key={f.id}
+                                  onClick={() => {
+                                    playChimeSound('click');
+                                    setSelectedFrameId(f.id);
+                                    setIsFrameDrawerOpen(false);
+                                  }}
+                                  className={`w-full flex items-center gap-3 p-2.5 rounded-2xl text-left transition ${
+                                    isSelected
+                                      ? 'bg-amber-500/25 border-2 border-amber-400 shadow-lg'
+                                      : 'bg-black/50 border border-white/10'
+                                  }`}
+                                >
+                                  <div className="relative w-12 h-16 rounded-xl overflow-hidden shrink-0 border border-amber-400/40">
+                                    <img src={f.thumb} alt={f.name} className="w-full h-full object-cover" />
+                                  </div>
+                                  <div className="flex-1 min-w-0">
+                                    <span className="text-xs font-bold text-amber-200 block truncate">{f.name}</span>
+                                    <span className="text-[10px] text-champagne/60 block line-clamp-2 mt-0.5">
+                                      {f.description}
+                                    </span>
+                                  </div>
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </motion.div>
+                      </>
+                    )}
+                  </AnimatePresence>
                 </div>
               )}
 
