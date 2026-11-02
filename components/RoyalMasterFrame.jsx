@@ -116,10 +116,10 @@ function extractDiscountParts(discount) {
 }
 
 /**
- * Generates the 30% Offer Seal SVG string
+ * Generates the 30% Offer Seal SVG string (Enlarged Offer Typography)
  * 100% shared between DOM and Canvas for pixel-perfect identical rendering
  */
-export function getHighContrastDiwaliSealSvg({ discount = '30% OFF', size = 200 } = {}) {
+export function getHighContrastDiwaliSealSvg({ discount = '30% OFF', size = 220 } = {}) {
   const { pct, label, header } = extractDiscountParts(discount);
 
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="${size}" height="${size}">
@@ -158,20 +158,21 @@ export function getHighContrastDiwaliSealSvg({ discount = '30% OFF', size = 200 
       <path d="${JHAROKHA_SEAL_PATH}" transform="translate(100, 100) scale(0.92) translate(-100, -100)" fill="none" stroke="#ffd54f" stroke-width="1.2" opacity="0.8" />
       <path d="${JHAROKHA_SEAL_PATH}" transform="translate(100, 100) scale(0.85) translate(-100, -100)" fill="none" stroke="#ffd54f" stroke-width="3.2" stroke-linecap="round" stroke-dasharray="0.1 7.2" />
       <path d="${JHAROKHA_SEAL_PATH}" transform="translate(100, 100) scale(0.77) translate(-100, -100)" fill="none" stroke="#ffb300" stroke-width="0.8" opacity="0.6" />
-      <text x="100" y="58" text-anchor="middle" class="seal-header" font-size="11.5" fill="#ffe082">${header}</text>
-      <line x1="56" y1="65" x2="144" y2="65" stroke="#ffd54f" stroke-width="1.4" stroke-linecap="round" opacity="0.85" />
-      <polygon points="100,62 103,65 100,68 97,65" fill="#ffd54f" />
-      <text x="100" y="112" text-anchor="middle" class="seal-pct" font-size="44" fill="url(#goldHeroText)">${pct}</text>
-      <line x1="60" y1="123" x2="140" y2="123" stroke="#ffd54f" stroke-width="1.4" stroke-linecap="round" opacity="0.85" />
-      <polygon points="100,120 103,123 100,126 97,123" fill="#ffd54f" />
-      <text x="100" y="142" text-anchor="middle" class="seal-off" font-size="16" fill="#ffffff">${label}</text>
+      <text x="100" y="56" text-anchor="middle" class="seal-header" font-size="12.5" fill="#ffe082">${header}</text>
+      <line x1="52" y1="63" x2="148" y2="63" stroke="#ffd54f" stroke-width="1.5" stroke-linecap="round" opacity="0.85" />
+      <polygon points="100,60 103.5,63 100,66 96.5,63" fill="#ffd54f" />
+      <!-- Extra Large 30% Hero -->
+      <text x="100" y="114" text-anchor="middle" class="seal-pct" font-size="50" fill="url(#goldHeroText)">${pct}</text>
+      <line x1="56" y1="125" x2="144" y2="125" stroke="#ffd54f" stroke-width="1.5" stroke-linecap="round" opacity="0.85" />
+      <polygon points="100,122 103.5,125 100,128 96.5,125" fill="#ffd54f" />
+      <text x="100" y="145" text-anchor="middle" class="seal-off" font-size="18" fill="#ffffff">${label}</text>
     </g>
   </svg>`;
 }
 
 /**
- * Generates the Unified Diwali Brand Box SVG string
- * Features authentic vector Diya icons, luxury gold foil typography, and festive flourish.
+ * Generates the Unified Diwali Brand Box SVG string (Larger Text Profile)
+ * Features authentic vector Diya icons, enlarged gold foil typography, and festive flourish.
  * 100% shared between DOM and Canvas for pixel-perfect identical rendering.
  */
 export function getDiwaliBrandBoxSvg({
@@ -185,13 +186,13 @@ export function getDiwaliBrandBoxSvg({
   const cleanTagline = (shopTagline || 'BEAUTY · STYLE · CONFIDENCE').toUpperCase();
   const cleanCustomer = customerName ? customerName.trim() : '';
 
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 75" width="${width}" height="${height}" preserveAspectRatio="xMidYMid meet">
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 85" width="${width}" height="${height}" preserveAspectRatio="xMidYMid meet">
   <defs>
     <style>
       @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@900&amp;family=Playfair+Display:ital,wght@1,700&amp;family=Plus+Jakarta+Sans:wght@700&amp;display=swap');
-      .gold-text { font-family: 'Cinzel', 'Playfair Display', Georgia, serif; font-weight: 900; letter-spacing: 2.2px; }
-      .tagline-text { font-family: 'Plus Jakarta Sans', system-ui, sans-serif; font-weight: 700; letter-spacing: 2.8px; }
-      .greeting-text { font-family: 'Playfair Display', Georgia, serif; font-style: italic; font-weight: 700; }
+      .gold-title { font-family: 'Cinzel', 'Playfair Display', Georgia, serif; font-weight: 900; letter-spacing: 2.5px; }
+      .gold-tagline { font-family: 'Plus Jakarta Sans', system-ui, sans-serif; font-weight: 700; letter-spacing: 3.2px; }
+      .gold-greeting { font-family: 'Playfair Display', Georgia, serif; font-style: italic; font-weight: 700; }
     </style>
     <linearGradient id="brandBoxBg" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#240110" stop-opacity="0.98" />
@@ -226,39 +227,39 @@ export function getDiwaliBrandBoxSvg({
   </defs>
 
   <g filter="url(#boxShadow)">
-    <rect x="2" y="2" width="596" height="71" rx="14" ry="14" fill="url(#brandBoxBg)" stroke="url(#brandGoldBorder)" stroke-width="1.8" />
-    <line x1="28" y1="4.5" x2="572" y2="4.5" stroke="#ffd700" stroke-width="1.2" stroke-linecap="round" opacity="0.85" />
-    <line x1="28" y1="70.5" x2="572" y2="70.5" stroke="#ffd700" stroke-width="1.2" stroke-linecap="round" opacity="0.85" />
+    <rect x="2" y="2" width="596" height="81" rx="16" ry="16" fill="url(#brandBoxBg)" stroke="url(#brandGoldBorder)" stroke-width="2" />
+    <line x1="28" y1="5" x2="572" y2="5" stroke="#ffd700" stroke-width="1.3" stroke-linecap="round" opacity="0.85" />
+    <line x1="28" y1="80" x2="572" y2="80" stroke="#ffd700" stroke-width="1.3" stroke-linecap="round" opacity="0.85" />
 
-    <!-- Left Authentic Vector Diya Icon -->
-    <g transform="translate(18, 15) scale(0.95)">
+    <!-- Left Authentic Vector Diya Icon (Enlarged) -->
+    <g transform="translate(18, 17) scale(1.15)">
       <path d="M 4 24 Q 18 36 32 24 Q 28 32 18 34 Q 8 32 4 24 Z" fill="url(#bowlGrad)" stroke="#fef08a" stroke-width="0.8" />
       <ellipse cx="18" cy="24" rx="14" ry="3.5" fill="#f59e0b" stroke="#fde047" stroke-width="0.8" />
       <path d="M 18 22 C 14 18 13 11 18 2 C 23 11 22 18 18 22 Z" fill="url(#flameGrad)" />
       <ellipse cx="18" cy="16" rx="2" ry="4" fill="#ffffff" opacity="0.9" />
     </g>
 
-    <!-- Brand Name -->
-    <text x="64" y="30" class="gold-text" font-size="20" fill="url(#brandGoldText)">${cleanName}</text>
+    <!-- Brand Name (Enlarged to 26px) -->
+    <text x="72" y="33" class="gold-title" font-size="26" fill="url(#brandGoldText)">${cleanName}</text>
 
-    <!-- Tagline -->
-    <text x="66" y="45" class="tagline-text" font-size="8.5" fill="#fae7b4">${cleanTagline}</text>
+    <!-- Tagline (Enlarged to 11px) -->
+    <text x="74" y="50" class="gold-tagline" font-size="11" fill="#fae7b4">${cleanTagline}</text>
 
-    <!-- Personalized Greeting -->
+    <!-- Personalized Greeting (Enlarged to 14.5px) -->
     ${cleanCustomer ? `
-      <text x="66" y="61" class="greeting-text" font-size="11" fill="#ffd54f">
+      <text x="74" y="69" class="gold-greeting" font-size="14.5" fill="#ffd54f">
         ✨ Happy Diwali, <tspan fill="#ffffff" font-weight="900">${cleanCustomer}</tspan>!
       </text>
     ` : ''}
 
-    <!-- Right Authentic Vector Diya Icon + Diwali Flourish -->
-    <g transform="translate(545, 15) scale(0.9)">
+    <!-- Right Authentic Vector Diya Icon + Diwali Flourish (Enlarged) -->
+    <g transform="translate(535, 17) scale(1.1)">
       <path d="M 4 24 Q 18 36 32 24 Q 28 32 18 34 Q 8 32 4 24 Z" fill="url(#bowlGrad)" stroke="#fef08a" stroke-width="0.8" />
       <ellipse cx="18" cy="24" rx="14" ry="3.5" fill="#f59e0b" stroke="#fde047" stroke-width="0.8" />
       <path d="M 18 22 C 14 18 13 11 18 2 C 23 11 22 18 18 22 Z" fill="url(#flameGrad)" />
       <ellipse cx="18" cy="16" rx="2" ry="4" fill="#ffffff" opacity="0.9" />
     </g>
-    <text x="561" y="58" text-anchor="middle" class="greeting-text" font-size="8.5" letter-spacing="1.5" fill="#ffd700">Diwali</text>
+    <text x="554" y="66" text-anchor="middle" class="gold-greeting" font-size="11" letter-spacing="1.5" fill="#ffd700">Diwali</text>
   </g>
 </svg>`;
 }
@@ -294,7 +295,7 @@ export function DiwaliBrandBox({ shopName, shopTagline, customerName, className 
 /**
  * Royal Authentic Indian Festive Frame Component
  * Displays selected festive frame overlay with transparent opening,
- * unified top-right 30% seal, and bottom brand box.
+ * unified top-right enlarged 30% seal, and bottom enlarged-text brand box.
  * 100% VISUALLY IDENTICAL to the captured Canvas photo!
  */
 export default function RoyalMasterFrame({
@@ -312,7 +313,7 @@ export default function RoyalMasterFrame({
       {/* 1. THE AUTHENTIC USER FESTIVE FRAME OVERLAY (Transparent Center Opening) */}
       <img
         key={currentFrame.id}
-        src={`${currentFrame.image}?v=9`}
+        src={`${currentFrame.image}?v=10`}
         alt={currentFrame.name}
         onError={(e) => {
           if (!e.currentTarget.dataset.retried) {
@@ -323,17 +324,16 @@ export default function RoyalMasterFrame({
         className="absolute inset-0 w-full h-full object-fill pointer-events-none z-10 transition-opacity duration-300"
       />
 
-      {/* 2. TOP RIGHT CORNER: Offer Seal ONLY (Positioned at top 1.8%, right 2.5%) */}
-      <div className="absolute top-[1.8%] right-[2.5%] w-[20%] max-w-[96px] z-30 pointer-events-auto">
+      {/* 2. TOP RIGHT CORNER: Enlarged Offer Seal (Positioned at top 1.5%, right 2%, width 25% max 125px) */}
+      <div className="absolute top-[1.5%] right-[2%] w-[25%] max-w-[125px] z-30 pointer-events-auto">
         <DiwaliOfferSeal
           discount={discount}
           className="w-full h-auto hover:scale-105 transition-transform duration-200"
         />
       </div>
 
-      {/* 3. BOTTOM BRAND BOX: Placed at the VERY BOTTOM of the frame (left 3%, right 3%, bottom 1.8%) */}
-      {/* Completely below the camera opening and matching the Canvas output 100% */}
-      <div className="absolute left-[3%] right-[3%] bottom-[1.8%] z-30 pointer-events-auto">
+      {/* 3. BOTTOM BRAND BOX: Placed at the VERY BOTTOM of the frame with enlarged typography */}
+      <div className="absolute left-[2.5%] right-[2.5%] bottom-[1.8%] z-30 pointer-events-auto">
         <DiwaliBrandBox
           shopName={shopName}
           shopTagline={shopTagline}
@@ -346,7 +346,7 @@ export default function RoyalMasterFrame({
 
 /**
  * 1:1 High-Resolution Canvas Photo Composition (1080x1440 Portrait)
- * Combines Customer Photo + Frame Overlay PNG + Identical 30% Seal SVG + Identical Brand Box SVG
+ * Combines Customer Photo + Frame Overlay PNG + Identical Enlarged 30% Seal SVG + Identical Enlarged Brand Box SVG
  * 100% VISUALLY IDENTICAL to the live preview!
  */
 export async function composeRoyalMasterPhoto({
@@ -408,14 +408,14 @@ export async function composeRoyalMasterPhoto({
       console.warn('Could not load frame overlay image:', currentFrame.image);
       resolve();
     };
-    frameImg.src = `${currentFrame.image}?v=9`;
+    frameImg.src = `${currentFrame.image}?v=10`;
   });
 
-  // 3. Draw Identical Top-Right 30% Offer Seal SVG (proportional to DOM: top 1.8%, right 2.5%, width 20%)
-  const sealWidth = Math.round(width * 0.20); // 216px
+  // 3. Draw Identical Enlarged Top-Right 30% Offer Seal SVG (proportional to DOM: top 1.5%, right 2%, width 25%)
+  const sealWidth = Math.round(width * 0.25); // 270px (enlarged!)
   const sealHeight = sealWidth;
-  const sealX = Math.round(width * 0.975 - sealWidth); // 837px
-  const sealY = Math.round(height * 0.018); // 26px
+  const sealX = Math.round(width * 0.98 - sealWidth); // 788px
+  const sealY = Math.round(height * 0.015); // 22px
 
   const sealSvgDataUri = `data:image/svg+xml;utf8,${encodeURIComponent(
     getHighContrastDiwaliSealSvg({ discount, size: sealWidth })
@@ -426,7 +426,7 @@ export async function composeRoyalMasterPhoto({
     sealImg.onload = () => {
       ctx.save();
       ctx.shadowColor = 'rgba(0, 0, 0, 0.7)';
-      ctx.shadowBlur = 16;
+      ctx.shadowBlur = 18;
       ctx.drawImage(sealImg, sealX, sealY, sealWidth, sealHeight);
       ctx.restore();
       resolve();
@@ -438,14 +438,14 @@ export async function composeRoyalMasterPhoto({
     sealImg.src = sealSvgDataUri;
   });
 
-  // 4. Draw Identical Bottom Brand Box SVG (proportional to DOM: left 3%, width 94%, bottom 1.8%)
+  // 4. Draw Identical Enlarged Bottom Brand Box SVG (proportional to DOM: left 2.5%, width 95%, bottom 1.8%)
   const shopName = shopConfig.shopName || 'Dream Salon';
   const shopTagline = shopConfig.shopTagline || 'BEAUTY · STYLE · CONFIDENCE';
 
-  const boxWidth = Math.round(width * 0.94); // 1015px
-  const boxHeight = Math.round(boxWidth * (75 / 600)); // 127px
-  const boxX = Math.round(width * 0.03); // 32px
-  const boxY = Math.round(height * (1 - 0.018) - boxHeight); // 1287px
+  const boxWidth = Math.round(width * 0.95); // 1026px
+  const boxHeight = Math.round(boxWidth * (85 / 600)); // 145px
+  const boxX = Math.round(width * 0.025); // 27px
+  const boxY = Math.round(height * (1 - 0.018) - boxHeight); // 1269px
 
   const brandBoxSvgDataUri = `data:image/svg+xml;utf8,${encodeURIComponent(
     getDiwaliBrandBoxSvg({
