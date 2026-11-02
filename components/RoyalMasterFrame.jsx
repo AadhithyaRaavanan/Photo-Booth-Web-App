@@ -296,9 +296,9 @@ export default function RoyalMasterFrame({
         </div>
       </div>
 
-      {/* 3. BOTTOM BRAND BOX: Dream Salon + tagline + greeting, placed in the circled bottom area */}
-      <div className="relative z-30 w-full pointer-events-none" style={{ paddingBottom: '5.5rem' }}>
-        {/* Outer glowing border wrap */}
+      {/* 3. BOTTOM BRAND BOX: Sits in decorative bottom border zone — BELOW camera area */}
+      <div className="absolute bottom-0 left-0 right-0 z-30 pointer-events-none" style={{ paddingBottom: '5.5rem' }}>
+        {/* Outer glowing border wrap — sits flush inside the frame's decorative bottom art */}
         <div className="mx-2 sm:mx-3 rounded-2xl overflow-hidden shadow-[0_6px_32px_rgba(0,0,0,0.9),0_0_20px_rgba(212,175,55,0.25)] border border-amber-400/70">
           {/* Top golden accent line */}
           <div className="h-[2px] w-full bg-gradient-to-r from-transparent via-amber-400 to-transparent" />
@@ -428,11 +428,12 @@ export async function composeRoyalMasterPhoto({
   }
 
   ctx.save();
-  // Bottom brand block positioned just above the control buttons area
-  // Canvas is 1080x1440; bottom controls take ~190px; brand block sits above them
-  const boxH = 170;
+  // Bottom brand block: anchor to very bottom of canvas, inside decorative frame border art
+  // Canvas 1080x1440 — frame's decorative bottom art occupies roughly the bottom 220px
+  // Place brand box from y=1210 to y=1370 (160px tall, 35px from bottom edge)
+  const boxH = 160;
   const boxMargin = 28;
-  const boxY = height - 190 - boxH - 10; // sits just above watermark zone
+  const boxY = height - 35 - boxH; // anchored to very bottom, 35px clearance
 
   // Rounded rectangle with deep palace velvet gradient
   const boxGrad = ctx.createLinearGradient(0, boxY, 0, boxY + boxH);
