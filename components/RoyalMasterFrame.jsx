@@ -2,35 +2,110 @@
 
 import React from 'react';
 
+export const ROYAL_FRAMES = [
+  {
+    id: 'frame-1',
+    name: 'Royal Temple Arch',
+    image: '/frames/frame_1_royal_temple.png',
+    thumb: '/frames/thumb_frame_1.png',
+    theme: 'royal-purple',
+    badge: '👑 Royal',
+    description: 'Royal purple temple mandapam with elephant, peacock, bells, and burning diyas',
+  },
+  {
+    id: 'frame-2',
+    name: 'Peacock & Jharokha Palace',
+    image: '/frames/frame_2_peacock_palace.png',
+    thumb: '/frames/thumb_frame_2.png',
+    theme: 'emerald-teal',
+    badge: '🦚 Peacock',
+    description: 'Emerald and teal palace jharokha arch with cascading peacock plumage',
+  },
+  {
+    id: 'frame-3',
+    name: 'Traditional Marigold & Diya',
+    image: '/frames/frame_3_traditional_marigold.png',
+    thumb: '/frames/thumb_frame_3.png',
+    theme: 'saffron-orange',
+    badge: '🌼 Marigold',
+    description: 'Vibrant saffron and yellow marigolds, mango leaf toran, and hanging brass lamps',
+  },
+  {
+    id: 'frame-4',
+    name: 'Imperial Lotus & Urli Pond',
+    image: '/frames/frame_4_imperial_lotus.png',
+    thumb: '/frames/thumb_frame_4.png',
+    theme: 'magenta-lotus',
+    badge: '🪷 Lotus',
+    description: 'Imperial magenta velvet, blooming lotus blossoms, and antique urli water bowls',
+  },
+  {
+    id: 'frame-5',
+    name: 'Midnight Sky & Fireworks',
+    image: '/frames/frame_5_midnight_fireworks.png',
+    thumb: '/frames/thumb_frame_5.png',
+    theme: 'midnight-sapphire',
+    badge: '🎆 Fireworks',
+    description: 'Midnight sapphire starry sky with dazzling Diwali fireworks and lanterns',
+  },
+  {
+    id: 'frame-6',
+    name: 'Sacred Deepavali Rangoli',
+    image: '/frames/frame_6_sacred_diya.png',
+    thumb: '/frames/thumb_frame_6.png',
+    theme: 'crimson-ruby',
+    badge: '🪔 Rangoli',
+    description: 'Crimson ruby with sacred Kalash, glowing clay deepams, and kolam rangoli',
+  },
+  {
+    id: 'frame-7',
+    name: 'Shubh Toran & Golden Bells',
+    image: '/frames/frame_7_shubh_toran.png',
+    thumb: '/frames/thumb_frame_7.png',
+    theme: 'vermilion-toran',
+    badge: '🔔 Toran',
+    description: 'Vermilion red entrance toran with mango leaves, marigolds, and ringing temple bells',
+  },
+  {
+    id: 'frame-8',
+    name: 'Royal Mughal Darbar',
+    image: '/frames/frame_8_mughal_darbar.png',
+    thumb: '/frames/thumb_frame_8.png',
+    theme: 'imperial-darbar',
+    badge: '🏛️ Darbar',
+    description: 'Opulent 24K fluted golden palace pillars, cusped Mughal arch, and burgundy velvet drapes',
+  },
+];
+
 /**
  * Royal Authentic Indian Festive Frame
- * Uses the exact royal artwork frame with transparent center arch opening
+ * Supports 8 authentic royal festive frame designs with transparent center arch opening
  * for live camera preview and high-resolution Canvas composition.
- * 
- * Brand Name and FLAT 30% OFF Medallion are styled extra bold and prominent
- * to immediately command attention as the primary focal points.
  */
 export default function RoyalMasterFrame({
   shopConfig = {},
   customerName = "",
   discount = "FLAT 30% OFF",
+  selectedFrameId = "frame-1",
 }) {
   const shopName = shopConfig.shopName || "Dream Salon";
   const shopTagline = shopConfig.shopTagline || "BEAUTY · STYLE · CONFIDENCE";
+  const currentFrame = ROYAL_FRAMES.find((f) => f.id === selectedFrameId) || ROYAL_FRAMES[0];
 
   return (
     <div className="absolute inset-0 pointer-events-none z-20 flex flex-col justify-between overflow-hidden select-none">
       {/* 1. THE USER'S AUTHENTIC ROYAL FRAME IMAGE OVERLAY (Transparent Center) */}
       <img
-        src="/frames/royal_festive_frame.png?v=3"
-        alt="Festive Royal Frame"
+        key={currentFrame.id}
+        src={`${currentFrame.image}?v=5`}
+        alt={currentFrame.name}
         onError={(e) => {
           if (!e.currentTarget.dataset.retried) {
             e.currentTarget.dataset.retried = 'true';
-            e.currentTarget.src = `/frames/royal_festive_frame.png?t=${Date.now()}`;
+            e.currentTarget.src = `${currentFrame.image}?t=${Date.now()}`;
           }
         }}
-        className="absolute inset-0 w-full h-full object-fill pointer-events-none z-10"
+        className="absolute inset-0 w-full h-full object-fill pointer-events-none z-10 transition-opacity duration-300"
       />
 
       {/* 2. TOP BRAND HEADER: Prominent, Grand Store Branding Pill */}
@@ -124,7 +199,9 @@ export async function composeRoyalMasterPhoto({
   customerName = "Guest",
   shopConfig = {},
   discount = "FLAT 30% OFF",
+  selectedFrameId = "frame-1",
 }) {
+  const currentFrame = ROYAL_FRAMES.find((f) => f.id === selectedFrameId) || ROYAL_FRAMES[0];
   const canvas = document.createElement("canvas");
   const width = 1080;
   const height = 1440; // 3:4 portrait aspect ratio
@@ -165,7 +242,7 @@ export async function composeRoyalMasterPhoto({
     ctx.fillRect(0, 0, width, height);
   }
 
-  // 2. Load and overlay the transparent royal frame PNG
+  // 2. Load and overlay the transparent royal frame PNG corresponding to selected frame
   await new Promise((resolve) => {
     const frameImg = new Image();
     frameImg.onload = () => {
@@ -173,10 +250,10 @@ export async function composeRoyalMasterPhoto({
       resolve();
     };
     frameImg.onerror = () => {
-      console.warn("Could not load frame overlay image, skipping overlay");
+      console.warn("Could not load frame overlay image:", currentFrame.image);
       resolve();
     };
-    frameImg.src = "/frames/royal_festive_frame.png?v=3";
+    frameImg.src = `${currentFrame.image}?v=5`;
   });
 
   // 3. Draw Store Branding Banner at Top Center (Large & Prominent)

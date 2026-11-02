@@ -23,7 +23,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import ExactDiwaliLanding from '@/components/ExactDiwaliLanding';
 import FestiveParticles from '@/components/FestiveParticles';
 import DiyaGraphic from '@/components/DiyaGraphic';
-import RoyalMasterFrame, { composeRoyalMasterPhoto } from '@/components/RoyalMasterFrame';
+import RoyalMasterFrame, { composeRoyalMasterPhoto, ROYAL_FRAMES } from '@/components/RoyalMasterFrame';
 import CouponModal from '@/components/CouponModal';
 import { playChimeSound } from '@/components/AudioChime';
 
@@ -57,7 +57,8 @@ export default function PhotoBoothApp() {
   const [isShutterActive, setIsShutterActive] = useState(false);
   const [hasVideoFrames, setHasVideoFrames] = useState(false);
 
-  // Photos state
+  // Photos & Frame state
+  const [selectedFrameId, setSelectedFrameId] = useState('frame-1');
   const [capturedRawPhoto, setCapturedRawPhoto] = useState(null);
   const [brandedPhotoUrl, setBrandedPhotoUrl] = useState(null);
   const [isComposing, setIsComposing] = useState(false);
@@ -283,6 +284,7 @@ export default function PhotoBoothApp() {
         customerName: customerName || 'Valued Guest',
         shopConfig: shopConfig,
         discount: 'FLAT 30% OFF',
+        selectedFrameId: selectedFrameId,
       });
 
       setBrandedPhotoUrl(finalComposedUrl);
@@ -310,6 +312,7 @@ export default function PhotoBoothApp() {
           customerName: customerName || 'Valued Guest',
           shopConfig: shopConfig,
           discount: 'FLAT 30% OFF',
+          selectedFrameId: selectedFrameId,
         });
 
         setCapturedRawPhoto(event.target.result);
@@ -426,6 +429,7 @@ export default function PhotoBoothApp() {
       customerName: customerName || 'Valued Guest',
       shopConfig: shopConfig,
       discount: 'FLAT 30% OFF',
+      selectedFrameId: selectedFrameId,
     });
 
     setCapturedRawPhoto(sampleDataUrl);
@@ -572,7 +576,7 @@ export default function PhotoBoothApp() {
         body: JSON.stringify({
           customerName: customerName || 'Valued Guest',
           phone: phoneInput || '',
-          frameId: 'royal-master',
+          frameId: selectedFrameId,
           discount: 'FLAT 30% OFF',
         }),
       });
@@ -796,7 +800,53 @@ export default function PhotoBoothApp() {
                         shopConfig={shopConfig}
                         customerName={customerName}
                         discount="FLAT 30% OFF"
+                        selectedFrameId={selectedFrameId}
                       />
+                    </div>
+
+                    {/* Horizontal Royal Frame Selector Carousel */}
+                    <div className="relative z-30 pt-2.5 pb-2 px-3 bg-gradient-to-t from-black via-black/95 to-black/80 border-t border-amber-400/20">
+                      <div className="flex items-center justify-between px-1 mb-1.5">
+                        <span className="text-[10px] font-serif font-bold text-amber-300 tracking-wider flex items-center gap-1">
+                          <span>✨</span>
+                          <span>CHOOSE FRAME ({ROYAL_FRAMES.findIndex(f => f.id === selectedFrameId) + 1} of {ROYAL_FRAMES.length})</span>
+                        </span>
+                        <span className="text-[9.5px] font-sans text-champagne/80 truncate max-w-[160px] font-medium">
+                          {ROYAL_FRAMES.find(f => f.id === selectedFrameId)?.name}
+                        </span>
+                      </div>
+
+                      <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none select-none">
+                        {ROYAL_FRAMES.map((f) => {
+                          const isSelected = selectedFrameId === f.id;
+                          return (
+                            <button
+                              key={f.id}
+                              onClick={() => {
+                                playChimeSound('click');
+                                setSelectedFrameId(f.id);
+                              }}
+                              className={`relative shrink-0 w-13 h-18 sm:w-15 sm:h-20 rounded-xl overflow-hidden transition-all duration-200 flex flex-col items-center justify-between p-1 text-center ${
+                                isSelected
+                                  ? 'ring-2 ring-amber-400 bg-amber-500/25 scale-105 shadow-[0_0_12px_rgba(255,215,0,0.65)]'
+                                  : 'opacity-70 hover:opacity-100 bg-black/40 border border-white/20 hover:border-amber-400/50'
+                              }`}
+                              title={f.name}
+                            >
+                              <img
+                                src={f.thumb}
+                                alt={f.name}
+                                className="w-full h-11 sm:h-13 object-cover rounded-lg pointer-events-none"
+                              />
+                              <span className={`text-[7.5px] sm:text-[8px] font-bold truncate max-w-full block leading-none mt-1 ${
+                                isSelected ? 'text-amber-300' : 'text-champagne/70'
+                              }`}>
+                                {f.badge}
+                              </span>
+                            </button>
+                          );
+                        })}
+                      </div>
                     </div>
 
                     {/* Bottom Control Deck (Clean, Non-Overlapping) */}
