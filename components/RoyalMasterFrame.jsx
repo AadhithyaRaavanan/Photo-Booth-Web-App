@@ -83,45 +83,44 @@ export const ROYAL_FRAMES = [
 
 // Reusable SVG path for the Indian Cusped Jharokha Cartouche (200x200 viewBox)
 const JHAROKHA_SEAL_PATH = `
-  M 100 14
-  C 108 24, 118 28, 128 28
-  C 146 28, 162 44, 162 62
-  C 162 72, 172 82, 186 100
-  C 172 118, 162 128, 162 138
-  C 162 156, 146 172, 128 172
-  C 118 172, 108 176, 100 186
-  C 92 176, 82 172, 72 172
-  C 54 172, 38 156, 38 138
-  C 38 128, 28 118, 14 100
-  C 28 82, 38 72, 38 62
-  C 38 44, 54 28, 72 28
-  C 82 28, 92 24, 100 14
+  M 100 12
+  C 110 23, 120 27, 130 27
+  C 148 27, 164 43, 164 61
+  C 164 71, 174 81, 188 100
+  C 174 119, 164 129, 164 139
+  C 164 157, 148 173, 130 173
+  C 120 173, 110 177, 100 188
+  C 90 177, 80 173, 70 173
+  C 52 173, 36 157, 36 139
+  C 36 129, 26 119, 12 100
+  C 26 81, 36 71, 36 61
+  C 36 43, 52 27, 70 27
+  C 80 27, 90 23, 100 12
   Z
 `.replace(/\s+/g, ' ').trim();
 
 /**
- * Format discount string cleanly for the seal top line
+ * Format discount string cleanly for the seal
  */
-function formatDiscountLabel(discount) {
-  if (!discount) return '30% OFF';
+function extractDiscountParts(discount) {
+  if (!discount) return { pct: '30%', label: 'OFF', header: 'DIWALI OFFER' };
   let str = String(discount).toUpperCase().trim();
-  if (str.includes('FLAT')) {
-    str = str.replace('FLAT', '').trim();
-  }
-  if (!str.includes('OFF') && !str.includes('%')) {
-    str = `${str}% OFF`;
-  } else if (!str.includes('OFF')) {
-    str = `${str} OFF`;
-  }
-  return str;
+  let match = str.match(/(\d+%?)/);
+  let pct = match ? match[1] : '30%';
+  if (!pct.includes('%')) pct += '%';
+  return {
+    pct,
+    label: 'OFF',
+    header: 'DIWALI OFFER',
+  };
 }
 
 /**
- * Indian Jharokha Seal Component
- * Based precisely on user-provided design reference (media_1793643951931_27d54928.jpg)
+ * High-Contrast, Large Indian Jharokha 30% Icon Component
+ * Designed with Deep Royal Ruby Velvet + 24K Gold Bezel so it NEVER blends with yellow or any frame!
  */
 export function DiwaliOfferSeal({ discount = '30% OFF', className = '' }) {
-  const discountText = formatDiscountLabel(discount);
+  const { pct, label, header } = extractDiscountParts(discount);
 
   return (
     <div className={`relative flex items-center justify-center filter drop-shadow-[0_4px_14px_rgba(0,0,0,0.85)] ${className}`}>
@@ -134,117 +133,121 @@ export function DiwaliOfferSeal({ discount = '30% OFF', className = '' }) {
 
       <svg viewBox="0 0 200 200" className="w-full h-full select-none">
         <defs>
-          {/* Festive Saffron Gold Surface */}
-          <linearGradient id="sealGoldSurface" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#fff275" />
-            <stop offset="30%" stopColor="#ffca28" />
-            <stop offset="70%" stopColor="#ffb300" />
-            <stop offset="100%" stopColor="#ffa000" />
+          {/* Deep Royal Ruby / Crimson Velvet Gradient (High contrast against Yellow, Ivory & Teal) */}
+          <radialGradient id="rubyVelvetGrad" cx="50%" cy="45%" r="65%">
+            <stop offset="0%" stopColor="#a80d3d" />
+            <stop offset="45%" stopColor="#7a0528" />
+            <stop offset="85%" stopColor="#420214" />
+            <stop offset="100%" stopColor="#22010a" />
+          </radialGradient>
+
+          {/* 24-Karat Gleaming Polished Gold Bezel */}
+          <linearGradient id="goldBezelBorder" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#fffde7" />
+            <stop offset="25%" stopColor="#ffd54f" />
+            <stop offset="60%" stopColor="#ffb300" />
+            <stop offset="85%" stopColor="#ff8f00" />
+            <stop offset="100%" stopColor="#ffd54f" />
           </linearGradient>
 
-          {/* Polished Gold Rim */}
-          <linearGradient id="sealGoldBorder" x1="0%" y1="0%" x2="100%" y2="100%">
+          {/* Golden Typography Gradient */}
+          <linearGradient id="goldHeroText" x1="0%" y1="0%" x2="0%" y2="100%">
             <stop offset="0%" stopColor="#ffffff" />
-            <stop offset="35%" stopColor="#ffd54f" />
-            <stop offset="70%" stopColor="#ff8f00" />
-            <stop offset="100%" stopColor="#a86200" />
+            <stop offset="35%" stopColor="#fff176" />
+            <stop offset="75%" stopColor="#ffd54f" />
+            <stop offset="100%" stopColor="#ffb300" />
           </linearGradient>
         </defs>
 
-        {/* 1. Outer Cartouche Body */}
+        {/* 1. Deep Royal Ruby Cartouche Body */}
         <path
           d={JHAROKHA_SEAL_PATH}
-          fill="url(#sealGoldSurface)"
-          stroke="url(#sealGoldBorder)"
-          strokeWidth="4"
+          fill="url(#rubyVelvetGrad)"
+          stroke="url(#goldBezelBorder)"
+          strokeWidth="4.5"
           strokeLinejoin="round"
         />
 
-        {/* 2. Concentric Inner Border Line */}
+        {/* 2. Concentric Gold Inset Line */}
         <path
           d={JHAROKHA_SEAL_PATH}
           transform="translate(100, 100) scale(0.92) translate(-100, -100)"
           fill="none"
-          stroke="#330419"
+          stroke="#ffd54f"
           strokeWidth="1.2"
-          opacity="0.65"
+          opacity="0.8"
         />
 
-        {/* 3. Traditional Auspicious Dotted Beaded Chain */}
+        {/* 3. Auspicious 24K Golden Beaded Chain Ring */}
         <path
           d={JHAROKHA_SEAL_PATH}
           transform="translate(100, 100) scale(0.85) translate(-100, -100)"
           fill="none"
-          stroke="#330419"
-          strokeWidth="3"
+          stroke="#ffd54f"
+          strokeWidth="3.2"
           strokeLinecap="round"
-          strokeDasharray="0.1 7"
+          strokeDasharray="0.1 7.2"
         />
 
-        {/* 4. Fine Inner Golden Trim */}
+        {/* 4. Fine Golden Inner Border */}
         <path
           d={JHAROKHA_SEAL_PATH}
-          transform="translate(100, 100) scale(0.78) translate(-100, -100)"
+          transform="translate(100, 100) scale(0.77) translate(-100, -100)"
           fill="none"
-          stroke="#fff9c4"
-          strokeWidth="1"
-          opacity="0.8"
+          stroke="#ffb300"
+          strokeWidth="0.8"
+          opacity="0.6"
         />
 
-        {/* 5. Typography Matching User Reference */}
-        {/* Top: 30% OFF */}
+        {/* 5. High-Impact Typography (Large 30% Icon Hero) */}
+        {/* Top: DIWALI OFFER */}
         <text
           x="100"
-          y="68"
+          y="58"
           textAnchor="middle"
           fontFamily="'Plus Jakarta Sans', system-ui, sans-serif"
           fontWeight="900"
-          fontSize="15"
-          letterSpacing="1.5"
-          fill="#260212"
+          fontSize="11.5"
+          letterSpacing="2"
+          fill="#ffe082"
         >
-          {discountText}
+          {header}
         </text>
 
-        {/* Divider 1 with center diamond */}
-        <line x1="56" y1="76" x2="144" y2="76" stroke="#260212" strokeWidth="1.8" strokeLinecap="round" />
-        <polygon points="100,72.5 103.5,76 100,79.5 96.5,76" fill="#260212" />
+        {/* Divider with Diamond */}
+        <line x1="56" y1="65" x2="144" y2="65" stroke="#ffd54f" strokeWidth="1.4" strokeLinecap="round" opacity="0.85" />
+        <polygon points="100,62 103,65 100,68 97,65" fill="#ffd54f" />
 
-        {/* Center: DIWALI */}
-        <g>
-          <text
-            x="100"
-            y="112"
-            textAnchor="middle"
-            fontFamily="'Cinzel', 'Playfair Display', serif"
-            fontWeight="900"
-            fontSize="32"
-            letterSpacing="2.5"
-            fill="#260212"
-          >
-            DIWALI
-          </text>
-          {/* Flame swirl ornament above the A */}
-          <circle cx="98" cy="91" r="2.2" fill="#260212" />
-          <path d="M 98 90 Q 102 85 100 82 Q 95 86 98 90 Z" fill="#260212" />
-        </g>
-
-        {/* Divider 2 with center diamond */}
-        <line x1="56" y1="122" x2="144" y2="122" stroke="#260212" strokeWidth="1.8" strokeLinecap="round" />
-        <polygon points="100,118.5 103.5,122 100,125.5 96.5,122" fill="#260212" />
-
-        {/* Bottom: OFFER */}
+        {/* Center: BIG 30% HERO */}
         <text
           x="100"
-          y="141"
+          y="112"
+          textAnchor="middle"
+          fontFamily="'Cinzel', 'Playfair Display', serif"
+          fontWeight="900"
+          fontSize="44"
+          letterSpacing="1"
+          fill="url(#goldHeroText)"
+        >
+          {pct}
+        </text>
+
+        {/* Divider with Diamond */}
+        <line x1="60" y1="123" x2="140" y2="123" stroke="#ffd54f" strokeWidth="1.4" strokeLinecap="round" opacity="0.85" />
+        <polygon points="100,120 103,123 100,126 97,123" fill="#ffd54f" />
+
+        {/* Bottom: OFF */}
+        <text
+          x="100"
+          y="142"
           textAnchor="middle"
           fontFamily="'Plus Jakarta Sans', system-ui, sans-serif"
           fontWeight="900"
-          fontSize="14.5"
-          letterSpacing="3.5"
-          fill="#260212"
+          fontSize="16"
+          letterSpacing="4"
+          fill="#ffffff"
         >
-          OFFER
+          {label}
         </text>
       </svg>
     </div>
@@ -254,8 +257,8 @@ export function DiwaliOfferSeal({ discount = '30% OFF', className = '' }) {
 /**
  * Royal Authentic Indian Festive Frame Component
  * Displays selected festive frame overlay with transparent opening,
- * floating luxury typography for Dream Salon & personalized greeting,
- * and the traditional jharokha Diwali offer seal at the top corner.
+ * unified top background holder block fitting the whole frame (100% text visibility),
+ * and the large high-contrast 30% jharokha seal at the top corner.
  */
 export default function RoyalMasterFrame({
   shopConfig = {},
@@ -272,7 +275,7 @@ export default function RoyalMasterFrame({
       {/* 1. THE AUTHENTIC USER FESTIVE FRAME OVERLAY (Transparent Center Opening) */}
       <img
         key={currentFrame.id}
-        src={`${currentFrame.image}?v=6`}
+        src={`${currentFrame.image}?v=7`}
         alt={currentFrame.name}
         onError={(e) => {
           if (!e.currentTarget.dataset.retried) {
@@ -283,28 +286,31 @@ export default function RoyalMasterFrame({
         className="absolute inset-0 w-full h-full object-fill pointer-events-none z-10 transition-opacity duration-300"
       />
 
-      {/* 2. TOP FLOATING BRAND & CORNER JHAROKHA SEAL (NO CLUNKY BOX!) */}
-      <div className="relative z-30 w-full pt-2.5 sm:pt-4 px-3 sm:px-4 flex items-start justify-between gap-2 pointer-events-none">
-        {/* Left: Refined Floating Brand Typography & Greeting */}
+      {/* 2. TOP UNIFIED HOLDER BLOCK: Fits the whole frame width cleanly, 100% visible text */}
+      <div className="relative z-30 w-full bg-gradient-to-r from-[#17010c]/98 via-[#2a0416]/95 to-[#17010c]/98 backdrop-blur-md border-b-2 border-amber-400/80 shadow-[0_4px_25px_rgba(0,0,0,0.9)] px-3 sm:px-4 pt-2.5 sm:pt-3 pb-2 sm:pb-2.5 flex items-center justify-between gap-2 select-none">
+        {/* Auspicious golden accent trim at bottom edge */}
+        <div className="absolute bottom-0 left-0 right-0 h-[1.5px] bg-gradient-to-r from-transparent via-amber-300 to-transparent pointer-events-none" />
+
+        {/* Left Column: Brand Identity & Greeting (High Contrast, 100% Legible) */}
         <div className="flex-1 flex flex-col items-start min-w-0 pr-1 pointer-events-auto">
           {/* Brand Name */}
           <div className="flex items-center gap-1.5 sm:gap-2 max-w-full">
-            <span className="text-amber-300 text-sm sm:text-lg shrink-0 filter drop-shadow-[0_2px_6px_rgba(255,180,0,0.8)]">
+            <span className="text-amber-300 text-base sm:text-xl shrink-0 filter drop-shadow-[0_2px_4px_rgba(255,180,0,0.8)]">
               🪔
             </span>
-            <h2 className="font-serif text-base sm:text-xl md:text-2xl font-black gold-gradient-text tracking-[0.14em] uppercase truncate drop-shadow-[0_2px_8px_rgba(0,0,0,0.95)]">
+            <h2 className="font-serif text-base sm:text-xl md:text-2xl font-black gold-gradient-text tracking-[0.14em] uppercase truncate drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
               {shopName}
             </h2>
           </div>
 
           {/* Subtitle / Tagline */}
-          <span className="text-[7.5px] sm:text-[9.5px] font-sans tracking-[0.22em] text-[#fae7b4] uppercase font-bold mt-0.5 truncate max-w-full drop-shadow-[0_2px_4px_rgba(0,0,0,0.95)]">
+          <span className="text-[8px] sm:text-[10px] font-sans tracking-[0.22em] text-[#fae7b4] uppercase font-bold mt-0.5 truncate max-w-full">
             {shopTagline}
           </span>
 
           {/* Customer Greeting */}
           {customerName && (
-            <div className="mt-1 flex items-center gap-1 text-[9.5px] sm:text-xs text-amber-200 font-serif italic font-semibold truncate max-w-full drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)]">
+            <div className="mt-1 flex items-center gap-1 text-[10px] sm:text-xs text-amber-200 font-serif italic font-semibold truncate max-w-full">
               <span className="text-amber-400 text-xs shrink-0">✨</span>
               <span className="truncate">
                 Happy Diwali,{' '}
@@ -317,18 +323,18 @@ export default function RoyalMasterFrame({
           )}
         </div>
 
-        {/* Right: Traditional Jharokha Diwali Offer Seal in Corner */}
-        <div className="shrink-0 pointer-events-auto transition-transform hover:scale-105">
+        {/* Right Column: Large High-Contrast 30% Icon (Deep Ruby Velvet + 24K Gold) */}
+        <div className="shrink-0 pointer-events-auto flex items-center justify-center pl-1">
           <DiwaliOfferSeal
             discount={discount}
-            className="w-18 h-18 sm:w-22 sm:h-22 md:w-24 md:h-24"
+            className="w-20 h-20 sm:w-24 sm:h-24 md:w-26 md:h-26 hover:scale-105 transition-transform duration-200"
           />
         </div>
       </div>
 
       {/* 3. BOTTOM WATERMARK PILL */}
       <div className="relative pb-24 text-center z-30 pointer-events-none">
-        <div className="inline-block px-3.5 py-1 rounded-full bg-black/55 backdrop-blur-sm border border-amber-400/40 shadow-sm">
+        <div className="inline-block px-3.5 py-1 rounded-full bg-black/60 backdrop-blur-sm border border-amber-400/40 shadow-sm">
           <span className="text-[9px] sm:text-[10px] font-serif font-bold text-amber-200 tracking-wider uppercase drop-shadow">
             Diwali Moments • {shopName}
           </span>
@@ -340,7 +346,7 @@ export default function RoyalMasterFrame({
 
 /**
  * 1:1 High-Resolution Canvas Photo Composition (1080x1440 Portrait)
- * Combines Customer Photo + Frame Overlay PNG + Corner Jharokha Seal + Floating Luxury Typography
+ * Combines Customer Photo + Frame Overlay PNG + Full-Width Top Holder Block + Large High-Contrast 30% Seal
  */
 export async function composeRoyalMasterPhoto({
   imageElement,
@@ -401,10 +407,10 @@ export async function composeRoyalMasterPhoto({
       console.warn('Could not load frame overlay image:', currentFrame.image);
       resolve();
     };
-    frameImg.src = `${currentFrame.image}?v=6`;
+    frameImg.src = `${currentFrame.image}?v=7`;
   });
 
-  // 3. Draw Floating Luxury Brand Typography (Top Left, No Box!)
+  // 3. Draw Full-Width Top Holder Block (Fitting whole frame width, 100% visible text)
   const shopName = shopConfig.shopName || 'Dream Salon';
   const shopTagline = shopConfig.shopTagline || 'BEAUTY · STYLE · CONFIDENCE';
 
@@ -417,71 +423,99 @@ export async function composeRoyalMasterPhoto({
   }
 
   ctx.save();
-  ctx.textAlign = 'left';
+  const blockHeight = 185;
+  const headerGrad = ctx.createLinearGradient(0, 0, width, 0);
+  headerGrad.addColorStop(0, 'rgba(23, 1, 12, 0.98)');
+  headerGrad.addColorStop(0.5, 'rgba(42, 4, 22, 0.96)');
+  headerGrad.addColorStop(1, 'rgba(23, 1, 12, 0.98)');
+  ctx.fillStyle = headerGrad;
+  ctx.fillRect(0, 0, width, blockHeight);
 
-  // Gold gradient for brand title
-  const goldGrad = ctx.createLinearGradient(60, 50, 60, 95);
+  // Bottom gold decorative border
+  ctx.beginPath();
+  ctx.moveTo(0, blockHeight);
+  ctx.lineTo(width, blockHeight);
+  ctx.lineWidth = 3.5;
+  ctx.strokeStyle = '#d4af37';
+  ctx.stroke();
+
+  // Auspicious glowing accent line
+  ctx.beginPath();
+  ctx.moveTo(width * 0.15, blockHeight - 1);
+  ctx.lineTo(width * 0.85, blockHeight - 1);
+  ctx.lineWidth = 1.5;
+  ctx.strokeStyle = '#ffd700';
+  ctx.stroke();
+
+  // Left Column Brand Identity
+  ctx.textAlign = 'left';
+  const goldGrad = ctx.createLinearGradient(50, 40, 50, 90);
   goldGrad.addColorStop(0, '#fffbe6');
   goldGrad.addColorStop(0.3, '#ffd700');
   goldGrad.addColorStop(0.7, '#ffb300');
   goldGrad.addColorStop(1, '#c59a1f');
 
   ctx.shadowColor = 'rgba(0, 0, 0, 0.95)';
-  ctx.shadowBlur = 14;
+  ctx.shadowBlur = 12;
   ctx.fillStyle = goldGrad;
-  ctx.font = "900 46px 'Cinzel', 'Playfair Display', serif";
-  ctx.fillText(`🪔 ${shopName}`, 60, 84);
+  ctx.font = "900 48px 'Cinzel', 'Playfair Display', serif";
+  ctx.fillText(`🪔 ${shopName}`, 50, 78);
 
   // Brand tagline
-  ctx.font = "bold 16px 'Plus Jakarta Sans', sans-serif";
+  ctx.font = "bold 17px 'Plus Jakarta Sans', sans-serif";
   ctx.fillStyle = '#fae7b4';
-  ctx.shadowBlur = 10;
-  ctx.fillText(shopTagline, 70, 116);
+  ctx.shadowBlur = 8;
+  ctx.fillText(shopTagline, 55, 114);
 
   // Personalized Greeting
   if (customerName) {
-    ctx.font = "italic bold 22px 'Playfair Display', serif";
+    ctx.font = "italic bold 23px 'Playfair Display', serif";
     ctx.fillStyle = '#ffd54f';
-    ctx.shadowBlur = 12;
-    ctx.fillText(`✨ Happy Diwali, ${customerName}!`, 70, 150);
+    ctx.shadowBlur = 10;
+    ctx.fillText(`✨ Happy Diwali, ${customerName}!`, 55, 150);
   }
   ctx.restore();
 
-  // 4. Draw Traditional Indian Jharokha Seal in Top Right Corner
-  const discountLabel = formatDiscountLabel(discount);
+  // 4. Draw Large High-Contrast 30% Icon in Top Right
+  const { pct } = extractDiscountParts(discount);
   const sealSvgDataUri = `data:image/svg+xml;utf8,${encodeURIComponent(`
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="220" height="220">
       <defs>
-        <linearGradient id="sealGoldSurface" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stop-color="#fff275" />
-          <stop offset="30%" stop-color="#ffca28" />
-          <stop offset="70%" stop-color="#ffb300" />
-          <stop offset="100%" stop-color="#ffa000" />
+        <radialGradient id="rubyVelvetGrad" cx="50%" cy="45%" r="65%">
+          <stop offset="0%" stop-color="#a80d3d" />
+          <stop offset="45%" stop-color="#7a0528" />
+          <stop offset="85%" stop-color="#420214" />
+          <stop offset="100%" stop-color="#22010a" />
+        </radialGradient>
+        <linearGradient id="goldBezelBorder" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#fffde7" />
+          <stop offset="25%" stop-color="#ffd54f" />
+          <stop offset="60%" stop-color="#ffb300" />
+          <stop offset="85%" stop-color="#ff8f00" />
+          <stop offset="100%" stop-color="#ffd54f" />
         </linearGradient>
-        <linearGradient id="sealGoldBorder" x1="0%" y1="0%" x2="100%" y2="100%">
+        <linearGradient id="goldHeroText" x1="0%" y1="0%" x2="0%" y2="100%">
           <stop offset="0%" stop-color="#ffffff" />
-          <stop offset="35%" stop-color="#ffd54f" />
-          <stop offset="70%" stop-color="#ff8f00" />
-          <stop offset="100%" stop-color="#a86200" />
+          <stop offset="35%" stop-color="#fff176" />
+          <stop offset="75%" stop-color="#ffd54f" />
+          <stop offset="100%" stop-color="#ffb300" />
         </linearGradient>
         <filter id="sealShadow">
           <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#000000" flood-opacity="0.8" />
         </filter>
       </defs>
       <g filter="url(#sealShadow)">
-        <path d="${JHAROKHA_SEAL_PATH}" fill="url(#sealGoldSurface)" stroke="url(#sealGoldBorder)" stroke-width="4" stroke-linejoin="round" />
-        <path d="${JHAROKHA_SEAL_PATH}" transform="translate(100, 100) scale(0.92) translate(-100, -100)" fill="none" stroke="#330419" stroke-width="1.2" opacity="0.65" />
-        <path d="${JHAROKHA_SEAL_PATH}" transform="translate(100, 100) scale(0.85) translate(-100, -100)" fill="none" stroke="#330419" stroke-width="3" stroke-linecap="round" stroke-dasharray="0.1 7" />
-        <path d="${JHAROKHA_SEAL_PATH}" transform="translate(100, 100) scale(0.78) translate(-100, -100)" fill="none" stroke="#fff9c4" stroke-width="1" opacity="0.8" />
-        <text x="100" y="68" text-anchor="middle" font-family="'Plus Jakarta Sans', sans-serif" font-weight="900" font-size="15" letter-spacing="1.5" fill="#260212">${discountLabel}</text>
-        <line x1="56" y1="76" x2="144" y2="76" stroke="#260212" stroke-width="1.8" stroke-linecap="round" />
-        <polygon points="100,72.5 103.5,76 100,79.5 96.5,76" fill="#260212" />
-        <text x="100" y="112" text-anchor="middle" font-family="'Cinzel', 'Playfair Display', serif" font-weight="900" font-size="32" letter-spacing="2.5" fill="#260212">DIWALI</text>
-        <circle cx="98" cy="91" r="2.2" fill="#260212" />
-        <path d="M 98 90 Q 102 85 100 82 Q 95 86 98 90 Z" fill="#260212" />
-        <line x1="56" y1="122" x2="144" y2="122" stroke="#260212" stroke-width="1.8" stroke-linecap="round" />
-        <polygon points="100,118.5 103.5,122 100,125.5 96.5,122" fill="#260212" />
-        <text x="100" y="141" text-anchor="middle" font-family="'Plus Jakarta Sans', sans-serif" font-weight="900" font-size="14.5" letter-spacing="3.5" fill="#260212">OFFER</text>
+        <path d="${JHAROKHA_SEAL_PATH}" fill="url(#rubyVelvetGrad)" stroke="url(#goldBezelBorder)" stroke-width="4.5" stroke-linejoin="round" />
+        <path d="${JHAROKHA_SEAL_PATH}" transform="translate(100, 100) scale(0.92) translate(-100, -100)" fill="none" stroke="#ffd54f" stroke-width="1.2" opacity="0.8" />
+        <path d="${JHAROKHA_SEAL_PATH}" transform="translate(100, 100) scale(0.85) translate(-100, -100)" fill="none" stroke="#ffd54f" stroke-width="3.2" stroke-linecap="round" stroke-dasharray="0.1 7.2" />
+        <path d="${JHAROKHA_SEAL_PATH}" transform="translate(100, 100) scale(0.77) translate(-100, -100)" fill="none" stroke="#ffb300" stroke-width="0.8" opacity="0.6" />
+        <text x="100" y="58" text-anchor="middle" font-family="'Plus Jakarta Sans', sans-serif" font-weight="900" font-size="11.5" letter-spacing="2" fill="#ffe082">DIWALI OFFER</text>
+        <line x1="56" y1="65" x2="144" y2="65" stroke="#ffd54f" stroke-width="1.4" stroke-linecap="round" opacity="0.85" />
+        <polygon points="100,62 103,65 100,68 97,65" fill="#ffd54f" />
+        <text x="100" y="112" text-anchor="middle" font-family="'Cinzel', 'Playfair Display', serif" font-weight="900" font-size="44" letter-spacing="1" fill="url(#goldHeroText)">${pct}</text>
+        <line x1="60" y1="123" x2="140" y2="123" stroke="#ffd54f" stroke-width="1.4" stroke-linecap="round" opacity="0.85" />
+        <polygon points="100,120 103,123 100,126 97,123" fill="#ffd54f" />
+        <text x="100" y="142" text-anchor="middle" font-family="'Plus Jakarta Sans', sans-serif" font-weight="900" font-size="16" letter-spacing="4" fill="#ffffff">OFF</text>
       </g>
     </svg>
   `)}`;
@@ -492,7 +526,7 @@ export async function composeRoyalMasterPhoto({
       ctx.save();
       ctx.shadowColor = 'rgba(0, 0, 0, 0.7)';
       ctx.shadowBlur = 16;
-      ctx.drawImage(sealImg, width - 235, 32, 195, 195);
+      ctx.drawImage(sealImg, width - 235, 10, 215, 215);
       ctx.restore();
       resolve();
     };
