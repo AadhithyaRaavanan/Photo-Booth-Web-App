@@ -27,8 +27,10 @@ export default function RootLayout({ children }) {
           href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@500;600;700;800;900&family=Marcellus&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600;1,700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Rozha+One&display=swap"
           rel="stylesheet"
         />
+        {/* Preload the primary high-priority frame in WebP for instantaneous display */}
+        <link rel="preload" as="image" href="/frames/frame_1_peacocks.webp" type="image/webp" />
       </head>
-      <body className="bg-[#030208] text-champagne min-h-screen selection:bg-cyan-400 selection:text-black relative">
+      <body className="bg-black text-champagne min-h-screen selection:bg-cyan-400 selection:text-black relative">
         {children}
       </body>
     </html>

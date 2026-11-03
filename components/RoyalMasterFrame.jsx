@@ -10,8 +10,10 @@ export const ROYAL_FRAMES = [
   {
     id: 'frame-1',
     name: 'Twin Royal Peacocks',
-    image: '/frames/frame_1_peacocks.png',
-    thumb: '/frames/thumb_frame_1.png',
+    image: '/frames/frame_1_peacocks.webp',
+    pngFallback: '/frames/frame_1_peacocks.png',
+    thumb: '/frames/thumb_frame_1.webp',
+    thumbPng: '/frames/thumb_frame_1.png',
     theme: 'teal-cyan',
     badge: '🦚 Peacocks',
     description: 'Teal backdrop with twin royal peacocks, lotus blossoms, and central glowing diya',
@@ -19,8 +21,10 @@ export const ROYAL_FRAMES = [
   {
     id: 'frame-2',
     name: 'Festive Marigold & Lanterns',
-    image: '/frames/frame_2_lanterns.png',
-    thumb: '/frames/thumb_frame_2.png',
+    image: '/frames/frame_2_lanterns.webp',
+    pngFallback: '/frames/frame_2_lanterns.png',
+    thumb: '/frames/thumb_frame_2.webp',
+    thumbPng: '/frames/thumb_frame_2.png',
     theme: 'magenta-pink',
     badge: '🏮 Lanterns',
     description: 'Vibrant magenta with hanging Diwali lanterns, fresh marigolds, and blooming lotus',
@@ -28,8 +32,10 @@ export const ROYAL_FRAMES = [
   {
     id: 'frame-3',
     name: 'Emerald Diya & Garlands',
-    image: '/frames/frame_3_emerald_diyas.png',
-    thumb: '/frames/thumb_frame_3.png',
+    image: '/frames/frame_3_emerald_diyas.webp',
+    pngFallback: '/frames/frame_3_emerald_diyas.png',
+    thumb: '/frames/thumb_frame_3.webp',
+    thumbPng: '/frames/thumb_frame_3.png',
     theme: 'emerald-teal',
     badge: '🪔 Diyas',
     description: 'Emerald arch with hanging brass diyas, rich marigold garlands, and delicate lotus vines',
@@ -37,8 +43,10 @@ export const ROYAL_FRAMES = [
   {
     id: 'frame-4',
     name: 'Golden Temple Lotus',
-    image: '/frames/frame_4_golden_lotus.png',
-    thumb: '/frames/thumb_frame_4.png',
+    image: '/frames/frame_4_golden_lotus.webp',
+    pngFallback: '/frames/frame_4_golden_lotus.png',
+    thumb: '/frames/thumb_frame_4.webp',
+    thumbPng: '/frames/thumb_frame_4.png',
     theme: 'golden-yellow',
     badge: '🪷 Lotus',
     description: 'Sunburst golden yellow temple arch with marigold clusters, side creepers, and central pink lotus',
@@ -46,8 +54,10 @@ export const ROYAL_FRAMES = [
   {
     id: 'frame-5',
     name: 'Sparkling Fireworks & Diyas',
-    image: '/frames/frame_5_fireworks_diyas.png',
-    thumb: '/frames/thumb_frame_5.png',
+    image: '/frames/frame_5_fireworks_diyas.webp',
+    pngFallback: '/frames/frame_5_fireworks_diyas.png',
+    thumb: '/frames/thumb_frame_5.webp',
+    thumbPng: '/frames/thumb_frame_5.png',
     theme: 'royal-magenta',
     badge: '🎆 Fireworks',
     description: 'Deep royal magenta sky with radiant Diwali sparklers, hanging kandils, and five burning clay deepams',
@@ -55,8 +65,10 @@ export const ROYAL_FRAMES = [
   {
     id: 'frame-6',
     name: 'Palace Lotus & Peacocks',
-    image: '/frames/frame_6_palace_peacocks.png',
-    thumb: '/frames/thumb_frame_6.png',
+    image: '/frames/frame_6_palace_peacocks.webp',
+    pngFallback: '/frames/frame_6_palace_peacocks.png',
+    thumb: '/frames/thumb_frame_6.webp',
+    thumbPng: '/frames/thumb_frame_6.png',
     theme: 'deep-teal',
     badge: '🦚 Palace',
     description: 'Deep teal sanctuary with ornate lotus arch, marigold columns, and twin regal peacocks at base',
@@ -64,8 +76,10 @@ export const ROYAL_FRAMES = [
   {
     id: 'frame-7',
     name: 'Ivory Mughal Bells',
-    image: '/frames/frame_7_ivory_bells.png',
-    thumb: '/frames/thumb_frame_7.png',
+    image: '/frames/frame_7_ivory_bells.webp',
+    pngFallback: '/frames/frame_7_ivory_bells.png',
+    thumb: '/frames/thumb_frame_7.webp',
+    thumbPng: '/frames/thumb_frame_7.png',
     theme: 'ivory-gold',
     badge: '🔔 Bells',
     description: 'Opulent ivory and gold Mughal arch with auspicious temple bells, floral vines, and lotus diya',
@@ -73,8 +87,10 @@ export const ROYAL_FRAMES = [
   {
     id: 'frame-8',
     name: 'Shubh Diwali Ribbon',
-    image: '/frames/frame_8_shubh_ribbon.png',
-    thumb: '/frames/thumb_frame_8.png',
+    image: '/frames/frame_8_shubh_ribbon.webp',
+    pngFallback: '/frames/frame_8_shubh_ribbon.png',
+    thumb: '/frames/thumb_frame_8.webp',
+    thumbPng: '/frames/thumb_frame_8.png',
     theme: 'radiant-gold',
     badge: '🎀 Ribbon',
     description: 'Golden yellow palace entrance with hanging lamps, lush floral creepers, and royal celebratory ribbon',
@@ -298,8 +314,9 @@ export function DiwaliBrandBox({ shopName, shopTagline, customerName, className 
  * Displays selected festive frame overlay with transparent opening,
  * unified top-right enlarged 30% seal, and bottom enlarged-text brand box.
  * 100% VISUALLY IDENTICAL to the captured Canvas photo!
+ * Memoized for high performance to prevent unnecessary re-renders.
  */
-export default function RoyalMasterFrame({
+function RoyalMasterFrame({
   shopConfig = {},
   customerName = '',
   discount = 'FLAT 30% OFF',
@@ -311,19 +328,25 @@ export default function RoyalMasterFrame({
 
   return (
     <div className="absolute inset-0 pointer-events-none z-20 overflow-hidden select-none">
-      {/* 1. THE AUTHENTIC USER FESTIVE FRAME OVERLAY (Transparent Center Opening) */}
-      <img
-        key={currentFrame.id}
-        src={`${currentFrame.image}?v=12`}
-        alt={currentFrame.name}
-        onError={(e) => {
-          if (!e.currentTarget.dataset.retried) {
-            e.currentTarget.dataset.retried = 'true';
-            e.currentTarget.src = `${currentFrame.image}?t=${Date.now()}`;
-          }
-        }}
-        className="absolute inset-0 w-full h-full object-fill pointer-events-none z-10 transition-opacity duration-300"
-      />
+      {/* 1. HIGH-EFFICIENCY WEBP FESTIVE FRAME OVERLAY (Transparent Center Opening, PNG Fallback) */}
+      <picture className="absolute inset-0 w-full h-full pointer-events-none z-10">
+        <source srcSet={currentFrame.image} type="image/webp" />
+        <img
+          key={currentFrame.id}
+          src={currentFrame.pngFallback || currentFrame.image}
+          alt={currentFrame.name}
+          loading="eager"
+          fetchpriority="high"
+          decoding="async"
+          onError={(e) => {
+            if (!e.currentTarget.dataset.retried && currentFrame.pngFallback) {
+              e.currentTarget.dataset.retried = 'true';
+              e.currentTarget.src = currentFrame.pngFallback;
+            }
+          }}
+          className="w-full h-full object-fill pointer-events-none z-10 transition-opacity duration-200"
+        />
+      </picture>
 
       {/* 2. TOP RIGHT CORNER: Enlarged Offer Seal (Positioned at top 1.5%, right 2%, width 25% max 125px) */}
       <div className="absolute top-[1.5%] right-[2%] w-[25%] max-w-[125px] z-30 pointer-events-auto">
@@ -344,6 +367,8 @@ export default function RoyalMasterFrame({
     </div>
   );
 }
+
+export default React.memo(RoyalMasterFrame);
 
 /**
  * 1:1 High-Resolution Canvas Photo Composition (1080x1440 Portrait)
@@ -449,7 +474,7 @@ export async function composeRoyalMasterPhoto({
     ctx.fillRect(portraitX, portraitY, portraitW, portraitH);
   }
 
-  // 3. Load and draw the transparent festive frame PNG overlay
+  // 3. Load and draw the transparent festive frame WebP overlay (PNG fallback)
   await new Promise((resolve) => {
     const frameImg = new Image();
     frameImg.crossOrigin = 'anonymous';
@@ -458,13 +483,18 @@ export async function composeRoyalMasterPhoto({
       resolve();
     };
     frameImg.onerror = () => {
-      console.warn('Could not load frame overlay image:', currentFrame.image);
-      resolve();
+      if (currentFrame.pngFallback && frameImg.src !== currentFrame.pngFallback) {
+        frameImg.src = currentFrame.pngFallback;
+      } else {
+        console.warn('Could not load frame overlay image:', currentFrame.image);
+        resolve();
+      }
     };
-    frameImg.src = `${currentFrame.image}?v=12`;
+    frameImg.src = currentFrame.image;
   });
 
   // 4. Draw Identical Enlarged Top-Right 30% Offer Seal SVG
+  // Drop shadows are rendered natively by SVG vector filter with zero CPU blur overhead
   const sealWidth = Math.round(portraitW * 0.25);
   const sealHeight = sealWidth;
   const sealX = portraitX + Math.round(portraitW * 0.98 - sealWidth);
@@ -477,11 +507,7 @@ export async function composeRoyalMasterPhoto({
   await new Promise((resolve) => {
     const sealImg = new Image();
     sealImg.onload = () => {
-      ctx.save();
-      ctx.shadowColor = 'rgba(0, 0, 0, 0.7)';
-      ctx.shadowBlur = 18;
       ctx.drawImage(sealImg, sealX, sealY, sealWidth, sealHeight);
-      ctx.restore();
       resolve();
     };
     sealImg.onerror = (err) => {
@@ -492,6 +518,7 @@ export async function composeRoyalMasterPhoto({
   });
 
   // 5. Draw Identical Enlarged Bottom Brand Box SVG
+  // Drop shadows are rendered natively by SVG vector filter with zero CPU blur overhead
   const shopName = shopConfig.shopName || 'Dream Salon';
   const shopTagline = shopConfig.shopTagline || 'BEAUTY · STYLE · CONFIDENCE';
 
@@ -513,11 +540,7 @@ export async function composeRoyalMasterPhoto({
   await new Promise((resolve) => {
     const boxImg = new Image();
     boxImg.onload = () => {
-      ctx.save();
-      ctx.shadowColor = 'rgba(0, 0, 0, 0.85)';
-      ctx.shadowBlur = 18;
       ctx.drawImage(boxImg, boxX, boxY, boxWidth, boxHeight);
-      ctx.restore();
       resolve();
     };
     boxImg.onerror = (err) => {
@@ -527,6 +550,6 @@ export async function composeRoyalMasterPhoto({
     boxImg.src = brandBoxSvgDataUri;
   });
 
-  // 6. Finalize canvas
-  return canvas.toDataURL('image/jpeg', 0.95);
+  // 6. Finalize canvas (High quality 0.92 JPEG for fast export without artifacts)
+  return canvas.toDataURL('image/jpeg', 0.92);
 }

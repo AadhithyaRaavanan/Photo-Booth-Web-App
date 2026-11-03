@@ -22,7 +22,7 @@ import { playChimeSound } from './AudioChime';
  * - High-contrast text & glassmorphism cards that let the evening sky & fireworks shine through
  * - Bottom stepper progress indicator: 01 ──── 03
  */
-export default function ExactDiwaliLanding({
+function ExactDiwaliLanding({
   shopName = 'Dream Salon',
   customerName = '',
   onEnterPhotoBooth = () => {},
@@ -50,7 +50,7 @@ export default function ExactDiwaliLanding({
         </div>
 
         {/* Right: Quick Festive Pass Badge */}
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#0a0319]/80 backdrop-blur-md border border-cyan-400/35 text-xs text-cyan-200 shadow-[0_0_15px_rgba(6,182,212,0.25)]">
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#0a0319]/95 border border-cyan-400/35 text-xs text-cyan-200 shadow-[0_0_15px_rgba(6,182,212,0.25)]">
           <Sparkles className="w-3.5 h-3.5 text-cyan-300" />
           <span className="font-bold text-amber-300">FLAT 30% OFF PASS</span>
         </div>
@@ -82,7 +82,7 @@ export default function ExactDiwaliLanding({
           >
             {/* Top Festive Pill */}
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyan-950/75 border border-cyan-400/40 text-cyan-200 text-xs font-bold tracking-wider uppercase shadow-[0_0_20px_rgba(6,182,212,0.3)]">
-              <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping" />
+              <span className="w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_8px_#22d3ee]" />
               <span>Diwali Festive Edition</span>
               <span className="text-amber-400 font-extrabold">✦</span>
               <span className="text-amber-300 font-black">EXCLUSIVE GIFT PASS</span>
@@ -129,14 +129,14 @@ export default function ExactDiwaliLanding({
             </div>
           </motion.div>
 
-          {/* RIGHT COLUMN: SLEEK GLASSMORPHISM SHOWCASE CARD */}
+          {/* RIGHT COLUMN: HIGH-PERFORMANCE SHOWCASE CARD */}
           <motion.div
             initial={{ opacity: 0, scale: 0.94 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.7, delay: 0.15 }}
             className="lg:col-span-5 flex justify-center"
           >
-            <div className="w-full max-w-md rounded-3xl p-6 sm:p-7 bg-[#090317]/80 backdrop-blur-xl border border-cyan-400/35 shadow-[0_0_50px_rgba(0,0,0,0.75)] relative overflow-hidden space-y-5">
+            <div className="w-full max-w-md rounded-3xl p-6 sm:p-7 bg-[#090317]/95 border border-cyan-400/35 shadow-[0_0_50px_rgba(0,0,0,0.75)] relative overflow-hidden space-y-5">
               {/* Ambient Glow Blobs */}
               <div className="absolute -top-16 -right-16 w-36 h-36 bg-cyan-500/20 rounded-full blur-2xl pointer-events-none" />
               <div className="absolute -bottom-16 -left-16 w-36 h-36 bg-pink-500/20 rounded-full blur-2xl pointer-events-none" />
@@ -157,7 +157,7 @@ export default function ExactDiwaliLanding({
                   </div>
                 </div>
 
-                <span className="px-3 py-1 rounded-full bg-gradient-to-r from-[#e91e63] to-[#ff5722] text-white font-black text-xs tracking-wider uppercase shadow-md animate-pulse">
+                <span className="px-3 py-1 rounded-full bg-gradient-to-r from-[#e91e63] to-[#ff5722] text-white font-black text-xs tracking-wider uppercase shadow-md">
                   30% OFF
                 </span>
               </div>
@@ -251,3 +251,5 @@ export default function ExactDiwaliLanding({
     </div>
   );
 }
+
+export default React.memo(ExactDiwaliLanding);

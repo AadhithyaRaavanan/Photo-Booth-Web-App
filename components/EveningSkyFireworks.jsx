@@ -17,7 +17,7 @@ import React, { useEffect, useRef } from 'react';
  *    - Fixed at z-0 with `pointer-events-none`. Never interferes with clicks, buttons, or inputs.
  *    - Pauses when the browser tab is hidden to conserve battery and CPU.
  */
-export default function EveningSkyFireworks() {
+function EveningSkyFireworks() {
   const canvasRef = useRef(null);
 
   useEffect(() => {
@@ -31,6 +31,7 @@ export default function EveningSkyFireworks() {
     let width = 0;
     let height = 0;
     let isVisible = true;
+    let lastFrameTime = 0;
 
     // Fast resize without layout thrashing
     const resize = () => {
@@ -202,10 +203,14 @@ export default function EveningSkyFireworks() {
     // -------------------------------------------------------------
     // 3. FAST ANIMATION LOOP (Solid Black & High-FPS)
     // -------------------------------------------------------------
-    const render = () => {
+    const render = (currentTime) => {
       animationFrameId = requestAnimationFrame(render);
 
       if (!isVisible) return;
+
+      // 60 FPS cap to prevent battery drain on 90Hz/120Hz mobile devices
+      if (currentTime - lastFrameTime < 15) return;
+      lastFrameTime = currentTime;
 
       const now = Date.now();
 
@@ -298,3 +303,5 @@ export default function EveningSkyFireworks() {
     />
   );
 }
+
+export default React.memo(EveningSkyFireworks);

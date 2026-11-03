@@ -21,15 +21,17 @@ import {
   X,
   Layers,
 } from 'lucide-react';
+import dynamic from 'next/dynamic';
 import { motion, AnimatePresence } from 'framer-motion';
 import ExactDiwaliLanding from '@/components/ExactDiwaliLanding';
 import EveningSkyFireworks from '@/components/EveningSkyFireworks';
-import FestiveParticles from '@/components/FestiveParticles';
 import DiyaGraphic from '@/components/DiyaGraphic';
 import RoyalMasterFrame, { composeRoyalMasterPhoto, ROYAL_FRAMES } from '@/components/RoyalMasterFrame';
-import CouponModal from '@/components/CouponModal';
-import OtherMediaModal from '@/components/OtherMediaModal';
 import { playChimeSound } from '@/components/AudioChime';
+
+// Code-splitting & Lazy Loading for heavy share/reward modals
+const CouponModal = dynamic(() => import('@/components/CouponModal'), { ssr: false });
+const OtherMediaModal = dynamic(() => import('@/components/OtherMediaModal'), { ssr: false });
 
 export default function PhotoBoothApp() {
   // App navigation: 'landing' (Page 1) or 'camera' | 'preview' | 'share' | 'verification' (Page 2: Photo Booth)
@@ -127,13 +129,14 @@ export default function PhotoBoothApp() {
 
       let stream = null;
 
-      // 1. Try standard ideal resolution
+      // 1. Optimized 720p 30fps camera preview for zero thermal lag on mobile devices
       try {
         stream = await navigator.mediaDevices.getUserMedia({
           video: {
             facingMode: mode ? { ideal: mode } : 'user',
-            width: { ideal: 1280 },
-            height: { ideal: 720 },
+            width: { ideal: 1280, max: 1280 },
+            height: { ideal: 720, max: 720 },
+            frameRate: { ideal: 30, max: 30 },
           },
           audio: false,
         });
@@ -270,8 +273,8 @@ export default function PhotoBoothApp() {
     setIsComposing(true);
     try {
       const capCanvas = document.createElement('canvas');
-      capCanvas.width = video.videoWidth || 1080;
-      capCanvas.height = video.videoHeight || 1440;
+      capCanvas.width = video.videoWidth || 1280;
+      capCanvas.height = video.videoHeight || 720;
       const ctx = capCanvas.getContext('2d');
 
       if (facingMode === 'user') {
@@ -279,9 +282,10 @@ export default function PhotoBoothApp() {
         ctx.scale(-1, 1);
       }
       ctx.drawImage(video, 0, 0, capCanvas.width, capCanvas.height);
-      const rawData = capCanvas.toDataURL('image/jpeg', 0.95);
+      const rawData = capCanvas.toDataURL('image/jpeg', 0.92);
       setCapturedRawPhoto(rawData);
 
+      // Compose primary festive photo portrait
       const finalComposedUrl = await composeRoyalMasterPhoto({
         imageElement: capCanvas,
         customerName: customerName || 'Valued Guest',
@@ -292,20 +296,9 @@ export default function PhotoBoothApp() {
         targetHeight: 1440,
       });
 
-      // Pre-compose exact 9:16 Story format (1080 x 1920 px) matching master guide
-      const storyUrl = await composeRoyalMasterPhoto({
-        imageElement: capCanvas,
-        customerName: customerName || 'Valued Guest',
-        shopConfig: shopConfig,
-        discount: 'FLAT 30% OFF',
-        selectedFrameId: selectedFrameId,
-        targetWidth: 1080,
-        targetHeight: 1920,
-        formatId: 'instagram-story',
-      });
-
+      // Story format (1080x1920) is lazily composed on-demand when user shares
       setBrandedPhotoUrl(finalComposedUrl);
-      setStoryPhotoUrl(storyUrl);
+      setStoryPhotoUrl(null);
       stopCameraStream();
       setStep('preview');
     } catch (e) {
@@ -335,20 +328,9 @@ export default function PhotoBoothApp() {
           targetHeight: 1440,
         });
 
-        const storyUrl = await composeRoyalMasterPhoto({
-          imageElement: img,
-          customerName: customerName || 'Valued Guest',
-          shopConfig: shopConfig,
-          discount: 'FLAT 30% OFF',
-          selectedFrameId: selectedFrameId,
-          targetWidth: 1080,
-          targetHeight: 1920,
-          formatId: 'instagram-story',
-        });
-
         setCapturedRawPhoto(event.target.result);
         setBrandedPhotoUrl(finalUrl);
-        setStoryPhotoUrl(storyUrl);
+        setStoryPhotoUrl(null);
         stopCameraStream();
         setIsComposing(false);
         setStep('preview');
@@ -1062,7 +1044,7 @@ export default function PhotoBoothApp() {
                     </div>
 
                     {/* Right Column: Royal Frame Studio Side Panel (Desktop / Tablet) */}
-                    <div className="hidden md:flex flex-col w-72 lg:w-80 h-[520px] sm:h-[580px] rounded-3xl bg-[#1e0214]/90 backdrop-blur-xl border border-amber-400/50 shadow-2xl p-4 overflow-hidden">
+                    <div className="hidden md:flex flex-col w-72 lg:w-80 h-[520px] sm:h-[580px] rounded-3xl bg-[#1a0210] border border-amber-400/50 shadow-2xl p-4 overflow-hidden">
                       <div className="flex items-center justify-between pb-3 border-b border-amber-400/20 shrink-0">
                         <div>
                           <h3 className="font-serif text-sm sm:text-base font-bold text-amber-300 flex items-center gap-1.5">
@@ -1095,13 +1077,18 @@ export default function PhotoBoothApp() {
                                   : 'bg-black/40 hover:bg-white/10 border border-white/15 hover:border-amber-400/40'
                               }`}
                             >
-                              {/* Thumbnail */}
+                              {/* Lightweight WebP Thumbnail */}
                               <div className="relative w-12 h-16 rounded-xl overflow-hidden shrink-0 border border-amber-400/30 shadow-md">
-                                <img
-                                  src={f.thumb}
-                                  alt={f.name}
-                                  className="w-full h-full object-cover"
-                                />
+                                <picture className="w-full h-full">
+                                  <source srcSet={f.thumb} type="image/webp" />
+                                  <img
+                                    src={f.thumbPng || f.thumb}
+                                    alt={f.name}
+                                    loading="lazy"
+                                    decoding="async"
+                                    className="w-full h-full object-cover"
+                                  />
+                                </picture>
                                 {isSelected && (
                                   <div className="absolute inset-0 bg-amber-400/20 flex items-center justify-center">
                                     <span className="w-5 h-5 rounded-full bg-amber-400 text-black flex items-center justify-center text-[10px] font-black shadow-md">
@@ -1143,7 +1130,7 @@ export default function PhotoBoothApp() {
                           animate={{ opacity: 1 }}
                           exit={{ opacity: 0 }}
                           onClick={() => setIsFrameDrawerOpen(false)}
-                          className="md:hidden fixed inset-0 bg-black/75 backdrop-blur-sm z-50"
+                          className="md:hidden fixed inset-0 bg-black/85 z-50"
                         />
                         <motion.div
                           initial={{ x: '100%' }}
@@ -1186,7 +1173,16 @@ export default function PhotoBoothApp() {
                                   }`}
                                 >
                                   <div className="relative w-12 h-16 rounded-xl overflow-hidden shrink-0 border border-amber-400/40">
-                                    <img src={f.thumb} alt={f.name} className="w-full h-full object-cover" />
+                                    <picture className="w-full h-full">
+                                      <source srcSet={f.thumb} type="image/webp" />
+                                      <img
+                                        src={f.thumbPng || f.thumb}
+                                        alt={f.name}
+                                        loading="lazy"
+                                        decoding="async"
+                                        className="w-full h-full object-cover"
+                                      />
+                                    </picture>
                                   </div>
                                   <div className="flex-1 min-w-0">
                                     <span className="text-xs font-bold text-amber-200 block truncate">{f.name}</span>
@@ -1578,12 +1574,12 @@ export default function PhotoBoothApp() {
          ========================================================================= */}
       <AnimatePresence>
         {showNameModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-xl">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85">
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="w-full max-w-sm p-6 sm:p-8 rounded-3xl bg-[#090317]/95 backdrop-blur-2xl border-2 border-cyan-400/50 text-center shadow-[0_0_60px_rgba(6,182,212,0.45)] relative overflow-hidden"
+              className="w-full max-w-sm p-6 sm:p-8 rounded-3xl bg-[#090317] border-2 border-cyan-400/50 text-center shadow-[0_0_60px_rgba(6,182,212,0.45)] relative overflow-hidden"
             >
               {/* Ambient Glows */}
               <div className="absolute -top-12 -right-12 w-32 h-32 bg-cyan-500/20 rounded-full blur-2xl pointer-events-none" />

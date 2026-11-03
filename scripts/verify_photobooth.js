@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { PNG } from 'pngjs';
+import sharp from 'sharp';
 
 /**
  * Automated Quality & Regression Checker for Diwali Photo Booth
@@ -84,6 +85,50 @@ for (const frame of ROYAL_FRAMES) {
     allPassed = false;
   } else {
     console.log(`   ✓ ${frame.name} (${frame.label}): ${png.width}x${png.height}, Center transparent (alpha=${centerAlpha}), Size: ${(stat.size / 1024).toFixed(0)}KB`);
+  }
+}
+
+// 1B. HIGH-EFFICIENCY WEBP FRAME & THUMBNAIL INTEGRITY
+console.log('\n1B. Checking 8 High-Efficiency WebP Frame Assets (< 250KB each):');
+for (const frame of ROYAL_FRAMES) {
+  const webpFile = frame.file.replace('.png', '.webp');
+  const webpThumb = frame.thumb.replace('.png', '.webp');
+  const webpPath = path.join('public', 'frames', webpFile);
+  const webpThumbPath = path.join('public', 'frames', webpThumb);
+
+  if (!fs.existsSync(webpPath)) {
+    console.error(`   ❌ FAIL: WebP frame missing: ${webpPath}`);
+    allPassed = false;
+    continue;
+  }
+  if (!fs.existsSync(webpThumbPath)) {
+    console.error(`   ❌ FAIL: WebP thumbnail missing: ${webpThumbPath}`);
+    allPassed = false;
+    continue;
+  }
+
+  const stat = fs.statSync(webpPath);
+  const thumbStat = fs.statSync(webpThumbPath);
+
+  // Verify size is highly optimized (< 300KB for 1080x1440 HD frame, < 25KB for thumbnail)
+  if (stat.size > 300000) {
+    console.error(`   ❌ FAIL: WebP file larger than 300KB (${(stat.size / 1024).toFixed(0)}KB): ${webpPath}`);
+    allPassed = false;
+    continue;
+  }
+
+  const meta = await sharp(webpPath).metadata();
+  const rawPixels = await sharp(webpPath).raw().toBuffer();
+  const cx = Math.floor(meta.width / 2);
+  const cy = Math.floor(meta.height / 2);
+  const centerIdx = (cy * meta.width + cx) * meta.channels;
+  const centerAlpha = rawPixels[centerIdx + (meta.channels - 1)];
+
+  if (centerAlpha > 20) {
+    console.error(`   ❌ FAIL: WebP frame ${frame.id} center is not transparent (alpha=${centerAlpha})`);
+    allPassed = false;
+  } else {
+    console.log(`   ✓ ${frame.name} [WebP]: ${meta.width}x${meta.height}, Center alpha=${centerAlpha}, Frame: ${(stat.size / 1024).toFixed(0)}KB, Thumb: ${(thumbStat.size / 1024).toFixed(0)}KB`);
   }
 }
 
