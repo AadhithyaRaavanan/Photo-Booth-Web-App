@@ -787,7 +787,7 @@ export default function PhotoBoothApp() {
            PAGE 2: ROYAL FESTIVE PHOTO BOOTH & REWARDS FLOW (NO NAV BAR)
            Clean, focused camera & sharing experience with back-to-home navigation
            ========================================================================= */
-        <div className="min-h-screen w-full bg-black/25 backdrop-blur-[2px] text-champagne flex flex-col items-center justify-start relative overflow-x-hidden selection:bg-cyan-400 selection:text-black">
+        <div className="min-h-screen w-full bg-transparent text-champagne flex flex-col items-center justify-start relative overflow-x-hidden selection:bg-cyan-400 selection:text-black">
           {/* Clean Top Header (No Navbar) with Simple Back to Home */}
           <header className="w-full max-w-4xl mx-auto pt-4 sm:pt-6 pb-2 px-4 flex items-center justify-between relative z-30">
             <button
