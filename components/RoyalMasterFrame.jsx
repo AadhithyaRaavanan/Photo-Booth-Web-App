@@ -369,136 +369,92 @@ export async function composeRoyalMasterPhoto({
   const ctx = canvas.getContext('2d');
 
   const isLandscape = width > height * 1.15;
+  const isStory = Math.abs(height / width - 16 / 9) < 0.08 || formatId === 'instagram-story' || formatId === 'whatsapp-status';
+
+  let portraitW, portraitH, portraitX, portraitY;
 
   if (isLandscape) {
-    // -----------------------------------------------------------------
-    // LANDSCAPE COMPOSITION (1.91:1, e.g. 1200 x 630 Facebook / Web)
-    // -----------------------------------------------------------------
-    const bgGrad = ctx.createLinearGradient(0, 0, width, height);
+    portraitH = Math.round(height * 0.94);
+    portraitW = Math.round(portraitH * 0.75);
+    portraitX = Math.round((width - portraitW) / 2);
+    portraitY = Math.round((height - portraitH) / 2);
+  } else if (isStory) {
+    portraitW = width;
+    portraitH = Math.round(width * (4 / 3)); // 1440 for width=1080
+    portraitX = 0;
+    portraitY = Math.round((height - portraitH) / 2); // 240 for height=1920
+  } else {
+    portraitW = width;
+    portraitH = height;
+    portraitX = 0;
+    portraitY = 0;
+  }
+
+  // 1. Draw Background (Velvet gradient for Story and Landscape compositions)
+  if (isLandscape || isStory) {
+    const bgGrad = ctx.createLinearGradient(0, 0, 0, height);
     bgGrad.addColorStop(0, '#260214');
-    bgGrad.addColorStop(0.5, '#16010c');
+    bgGrad.addColorStop(0.3, '#16010c');
+    bgGrad.addColorStop(0.7, '#16010c');
     bgGrad.addColorStop(1, '#080004');
     ctx.fillStyle = bgGrad;
     ctx.fillRect(0, 0, width, height);
 
-    const portraitH = Math.round(height * 0.94);
-    const portraitW = Math.round(portraitH * 0.75);
-    const portraitX = Math.round((width - portraitW) / 2);
-    const portraitY = Math.round((height - portraitH) / 2);
-
-    if (imageElement) {
-      const imgW = imageElement.videoWidth || imageElement.width || 1080;
-      const imgH = imageElement.videoHeight || imageElement.height || 1440;
-      const imgRatio = imgW / imgH;
-      const portRatio = portraitW / portraitH;
-      let sx = 0, sy = 0, sw = imgW, sh = imgH;
-      if (imgRatio > portRatio) {
-        sw = imgH * portRatio;
-        sx = (imgW - sw) / 2;
-      } else {
-        sh = imgW / portRatio;
-        sy = (imgH - sh) / 2;
-      }
-      ctx.drawImage(imageElement, sx, sy, sw, sh, portraitX, portraitY, portraitW, portraitH);
+    if (isStory) {
+      // Subtle elegant festive sparkles in top & bottom safe zones
+      const sparkles = [
+        { x: 180, y: 110, r: 4, a: 0.6 },
+        { x: 380, y: 140, r: 3, a: 0.4 },
+        { x: 540, y: 80, r: 5, a: 0.7 },
+        { x: 720, y: 130, r: 3, a: 0.4 },
+        { x: 900, y: 100, r: 4, a: 0.6 },
+        { x: 160, y: 1810, r: 3, a: 0.5 },
+        { x: 340, y: 1840, r: 4, a: 0.6 },
+        { x: 540, y: 1860, r: 5, a: 0.7 },
+        { x: 740, y: 1830, r: 3, a: 0.5 },
+        { x: 920, y: 1820, r: 4, a: 0.6 },
+      ];
+      sparkles.forEach((s) => {
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255, 215, 0, ${s.a})`;
+        ctx.fill();
+      });
     }
-
-    await new Promise((resolve) => {
-      const frameImg = new Image();
-      frameImg.crossOrigin = 'anonymous';
-      frameImg.onload = () => {
-        ctx.drawImage(frameImg, portraitX, portraitY, portraitW, portraitH);
-        resolve();
-      };
-      frameImg.onerror = resolve;
-      frameImg.src = `${currentFrame.image}?v=12`;
-    });
-
-    const sealWidth = Math.round(portraitW * 0.28);
-    const sealX = portraitX + portraitW - sealWidth - 8;
-    const sealY = portraitY + 8;
-    const sealSvgDataUri = `data:image/svg+xml;utf8,${encodeURIComponent(
-      getHighContrastDiwaliSealSvg({ discount, size: sealWidth })
-    )}`;
-
-    await new Promise((resolve) => {
-      const sImg = new Image();
-      sImg.onload = () => {
-        ctx.save();
-        ctx.shadowColor = 'rgba(0, 0, 0, 0.7)';
-        ctx.shadowBlur = 14;
-        ctx.drawImage(sImg, sealX, sealY, sealWidth, sealWidth);
-        ctx.restore();
-        resolve();
-      };
-      sImg.onerror = resolve;
-      sImg.src = sealSvgDataUri;
-    });
-
-    const boxW = Math.round(portraitW * 0.95);
-    const boxH = Math.round(boxW * (85 / 600));
-    const boxX = portraitX + Math.round((portraitW - boxW) / 2);
-    const boxY = portraitY + portraitH - boxH - 10;
-
-    const brandSvgDataUri = `data:image/svg+xml;utf8,${encodeURIComponent(
-      getDiwaliBrandBoxSvg({
-        shopName: shopConfig.shopName || 'Dream Salon',
-        shopTagline: shopConfig.shopTagline || 'BEAUTY · STYLE · CONFIDENCE',
-        customerName,
-        width: boxW,
-        height: boxH,
-      })
-    )}`;
-
-    await new Promise((resolve) => {
-      const bImg = new Image();
-      bImg.onload = () => {
-        ctx.save();
-        ctx.shadowColor = 'rgba(0, 0, 0, 0.85)';
-        ctx.shadowBlur = 16;
-        ctx.drawImage(bImg, boxX, boxY, boxW, boxH);
-        ctx.restore();
-        resolve();
-      };
-      bImg.onerror = resolve;
-      bImg.src = brandSvgDataUri;
-    });
-
-    return canvas.toDataURL('image/jpeg', 0.95);
   }
 
-  // -----------------------------------------------------------------
-  // PORTRAIT & SQUARE COMPOSITION (1080x1440, 1080x1920 Story, 1080x1350, 1080x1080 Square, etc.)
-  // -----------------------------------------------------------------
+  // 2. Draw Customer Photo fitted inside the portrait bounds
   if (imageElement) {
     const imgW = imageElement.videoWidth || imageElement.width || 1080;
     const imgH = imageElement.videoHeight || imageElement.height || 1440;
     const imgRatio = imgW / imgH;
-    const canvasRatio = width / height;
+    const portRatio = portraitW / portraitH;
 
     let sx = 0, sy = 0, sw = imgW, sh = imgH;
-    if (imgRatio > canvasRatio) {
-      sw = imgH * canvasRatio;
+    if (imgRatio > portRatio) {
+      sw = imgH * portRatio;
       sx = (imgW - sw) / 2;
     } else {
-      sh = imgW / canvasRatio;
+      sh = imgW / portRatio;
       sy = (imgH - sh) / 2;
     }
 
-    ctx.drawImage(imageElement, sx, sy, sw, sh, 0, 0, width, height);
+    ctx.drawImage(imageElement, sx, sy, sw, sh, portraitX, portraitY, portraitW, portraitH);
   } else {
-    const grad = ctx.createLinearGradient(0, 0, 0, height);
+    const grad = ctx.createLinearGradient(portraitX, portraitY, portraitX, portraitY + portraitH);
     grad.addColorStop(0, '#2e0417');
     grad.addColorStop(0.5, '#1e0210');
     grad.addColorStop(1, '#0e0108');
     ctx.fillStyle = grad;
-    ctx.fillRect(0, 0, width, height);
+    ctx.fillRect(portraitX, portraitY, portraitW, portraitH);
   }
 
-  // 2. Load and draw the transparent festive frame PNG overlay
+  // 3. Load and draw the transparent festive frame PNG overlay
   await new Promise((resolve) => {
     const frameImg = new Image();
+    frameImg.crossOrigin = 'anonymous';
     frameImg.onload = () => {
-      ctx.drawImage(frameImg, 0, 0, width, height);
+      ctx.drawImage(frameImg, portraitX, portraitY, portraitW, portraitH);
       resolve();
     };
     frameImg.onerror = () => {
@@ -508,11 +464,11 @@ export async function composeRoyalMasterPhoto({
     frameImg.src = `${currentFrame.image}?v=12`;
   });
 
-  // 3. Draw Identical Enlarged Top-Right 30% Offer Seal SVG (proportional to DOM: top 1.5%, right 2%, width 25%)
-  const sealWidth = Math.round(width * 0.25); // 270px (enlarged!)
+  // 4. Draw Identical Enlarged Top-Right 30% Offer Seal SVG
+  const sealWidth = Math.round(portraitW * 0.25);
   const sealHeight = sealWidth;
-  const sealX = Math.round(width * 0.98 - sealWidth); // 788px
-  const sealY = Math.round(height * 0.015); // 22px
+  const sealX = portraitX + Math.round(portraitW * 0.98 - sealWidth);
+  const sealY = portraitY + Math.round(portraitH * 0.015);
 
   const sealSvgDataUri = `data:image/svg+xml;utf8,${encodeURIComponent(
     getHighContrastDiwaliSealSvg({ discount, size: sealWidth })
@@ -535,14 +491,14 @@ export async function composeRoyalMasterPhoto({
     sealImg.src = sealSvgDataUri;
   });
 
-  // 4. Draw Identical Enlarged Bottom Brand Box SVG (proportional to DOM: left 2.5%, width 95%, bottom 1.8%)
+  // 5. Draw Identical Enlarged Bottom Brand Box SVG
   const shopName = shopConfig.shopName || 'Dream Salon';
   const shopTagline = shopConfig.shopTagline || 'BEAUTY · STYLE · CONFIDENCE';
 
-  const boxWidth = Math.round(width * 0.95); // 1026px
-  const boxHeight = Math.round(boxWidth * (85 / 600)); // 145px
-  const boxX = Math.round(width * 0.025); // 27px
-  const boxY = Math.round(height * (1 - 0.018) - boxHeight); // 1269px
+  const boxWidth = Math.round(portraitW * 0.95);
+  const boxHeight = Math.round(boxWidth * (85 / 600));
+  const boxX = portraitX + Math.round((portraitW - boxWidth) / 2);
+  const boxY = portraitY + Math.round(portraitH * (1 - 0.018) - boxHeight);
 
   const brandBoxSvgDataUri = `data:image/svg+xml;utf8,${encodeURIComponent(
     getDiwaliBrandBoxSvg({
@@ -571,6 +527,6 @@ export async function composeRoyalMasterPhoto({
     boxImg.src = brandBoxSvgDataUri;
   });
 
-  // 5. Finalize canvas
+  // 6. Finalize canvas
   return canvas.toDataURL('image/jpeg', 0.95);
 }

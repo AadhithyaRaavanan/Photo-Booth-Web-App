@@ -66,6 +66,7 @@ export default function PhotoBoothApp() {
   const [isFrameDrawerOpen, setIsFrameDrawerOpen] = useState(false);
   const [capturedRawPhoto, setCapturedRawPhoto] = useState(null);
   const [brandedPhotoUrl, setBrandedPhotoUrl] = useState(null);
+  const [storyPhotoUrl, setStoryPhotoUrl] = useState(null);
   const [isComposing, setIsComposing] = useState(false);
 
   // Verification & Submission state
@@ -290,9 +291,24 @@ export default function PhotoBoothApp() {
         shopConfig: shopConfig,
         discount: 'FLAT 30% OFF',
         selectedFrameId: selectedFrameId,
+        targetWidth: 1080,
+        targetHeight: 1440,
+      });
+
+      // Pre-compose exact 9:16 Story format (1080 x 1920 px) matching master guide
+      const storyUrl = await composeRoyalMasterPhoto({
+        imageElement: capCanvas,
+        customerName: customerName || 'Valued Guest',
+        shopConfig: shopConfig,
+        discount: 'FLAT 30% OFF',
+        selectedFrameId: selectedFrameId,
+        targetWidth: 1080,
+        targetHeight: 1920,
+        formatId: 'instagram-story',
       });
 
       setBrandedPhotoUrl(finalComposedUrl);
+      setStoryPhotoUrl(storyUrl);
       stopCameraStream();
       setStep('preview');
     } catch (e) {
@@ -318,10 +334,24 @@ export default function PhotoBoothApp() {
           shopConfig: shopConfig,
           discount: 'FLAT 30% OFF',
           selectedFrameId: selectedFrameId,
+          targetWidth: 1080,
+          targetHeight: 1440,
+        });
+
+        const storyUrl = await composeRoyalMasterPhoto({
+          imageElement: img,
+          customerName: customerName || 'Valued Guest',
+          shopConfig: shopConfig,
+          discount: 'FLAT 30% OFF',
+          selectedFrameId: selectedFrameId,
+          targetWidth: 1080,
+          targetHeight: 1920,
+          formatId: 'instagram-story',
         });
 
         setCapturedRawPhoto(event.target.result);
         setBrandedPhotoUrl(finalUrl);
+        setStoryPhotoUrl(storyUrl);
         stopCameraStream();
         setIsComposing(false);
         setStep('preview');
@@ -435,23 +465,90 @@ export default function PhotoBoothApp() {
       shopConfig: shopConfig,
       discount: 'FLAT 30% OFF',
       selectedFrameId: selectedFrameId,
+      targetWidth: 1080,
+      targetHeight: 1440,
+    });
+
+    const storyUrl = await composeRoyalMasterPhoto({
+      imageElement: canvas,
+      customerName: customerName || 'Valued Guest',
+      shopConfig: shopConfig,
+      discount: 'FLAT 30% OFF',
+      selectedFrameId: selectedFrameId,
+      targetWidth: 1080,
+      targetHeight: 1920,
+      formatId: 'instagram-story',
     });
 
     setCapturedRawPhoto(sampleDataUrl);
     setBrandedPhotoUrl(finalUrl);
+    setStoryPhotoUrl(storyUrl);
     stopCameraStream();
     setIsComposing(false);
     setStep('preview');
   };
 
-  // Download composed photo
+  // Download composed photo in standard portrait format (1080x1440)
   const handleDownloadPhoto = () => {
     if (!brandedPhotoUrl) return;
     playChimeSound('click');
+    const cleanShop = (shopConfig.shopName || 'Dream_Salon').replace(/\s+/g, '_');
+    const cleanCustomer = (customerName || 'Diwali').replace(/\s+/g, '_');
     const a = document.createElement('a');
     a.href = brandedPhotoUrl;
-    a.download = `${shopConfig.shopName.replace(/\s+/g, '_')}_Festive_Photo_${customerName || 'Diwali'}.jpg`;
+    a.download = `${cleanShop}_Festive_Photo_${cleanCustomer}.jpg`;
+    document.body.appendChild(a);
     a.click();
+    document.body.removeChild(a);
+  };
+
+  // Ensure Story Photo URL (1080x1920) exists or generate on demand
+  const getOrGenerateStoryPhoto = async () => {
+    if (storyPhotoUrl) return storyPhotoUrl;
+    if (capturedRawPhoto) {
+      try {
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        await new Promise((resolve) => {
+          img.onload = resolve;
+          img.onerror = resolve;
+          img.src = capturedRawPhoto;
+        });
+        const url = await composeRoyalMasterPhoto({
+          imageElement: img,
+          customerName: customerName || 'Valued Guest',
+          shopConfig: shopConfig,
+          discount: 'FLAT 30% OFF',
+          selectedFrameId: selectedFrameId,
+          targetWidth: 1080,
+          targetHeight: 1920,
+          formatId: 'instagram-story',
+        });
+        setStoryPhotoUrl(url);
+        return url;
+      } catch (e) {
+        console.warn('Failed to generate story photo on demand:', e);
+      }
+    }
+    return brandedPhotoUrl;
+  };
+
+  // Download exact 1080x1920 Story format matching the master guide
+  const handleDownloadStoryFormat = async (platformLabel = 'Instagram_Story') => {
+    const url = await getOrGenerateStoryPhoto();
+    if (!url) return null;
+    const cleanShop = (shopConfig.shopName || 'Dream_Salon').replace(/\s+/g, '_');
+    const cleanCustomer = (customerName || 'Diwali').replace(/\s+/g, '_');
+    const filename = `${cleanShop}_${platformLabel}_1080x1920_${cleanCustomer}.jpg`;
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+
+    return { url, filename };
   };
 
   // Synchronously convert base64 Data URL to a File object
@@ -478,14 +575,19 @@ export default function PhotoBoothApp() {
     return null;
   };
 
-  // Sharing Actions
+  // Sharing Actions - Instagram (Exact 1080x1920 9:16 Story format)
   const handleShareInstagram = async () => {
     playChimeSound('click');
 
-    if (!brandedPhotoUrl) {
+    if (!brandedPhotoUrl && !capturedRawPhoto) {
       alert('Please capture or choose a photo first!');
       return;
     }
+
+    // 1. Download the exact 1080x1920 Story format file to device
+    const downloadResult = await handleDownloadStoryFormat('Instagram_Story');
+    const storyUrlToShare = downloadResult?.url || storyPhotoUrl || brandedPhotoUrl;
+    const storyFilename = downloadResult?.filename || `${(shopConfig.shopName || 'Dream_Salon').replace(/\s+/g, '_')}_Instagram_Story_1080x1920.jpg`;
 
     const isMobile =
       typeof window !== 'undefined' &&
@@ -493,26 +595,22 @@ export default function PhotoBoothApp() {
         (navigator.maxTouchPoints > 1 && window.innerWidth <= 1024));
 
     if (isMobile) {
-      // 1. ON MOBILE: Convert image to File object and invoke native Web Share API
-      const filename = `${shopConfig.shopName.replace(/\s+/g, '_')}_Diwali_Story.jpg`;
+      // 1. ON MOBILE: Convert 1080x1920 image to File object and invoke native Web Share API
+      let file = convertPhotoToFile(storyUrlToShare, storyFilename);
 
-      // Step 1 & 2: Convert image to binary blob and into a File object with defined name and MIME type
-      let file = convertPhotoToFile(brandedPhotoUrl, filename);
-
-      if (!file) {
+      if (!file && storyUrlToShare) {
         try {
-          const response = await fetch(brandedPhotoUrl);
+          const response = await fetch(storyUrlToShare);
           const blob = await response.blob();
-          file = new File([blob], filename, { type: 'image/jpeg', lastModified: Date.now() });
+          file = new File([blob], storyFilename, { type: 'image/jpeg', lastModified: Date.now() });
         } catch (fetchErr) {
-          console.warn('Asynchronous file conversion fallback failed:', fetchErr);
+          console.warn('File conversion fallback failed:', fetchErr);
         }
       }
 
-      // Step 3: Verify support using navigator.canShare()
+      // Verify support using navigator.canShare()
       if (file && typeof navigator !== 'undefined' && navigator.canShare && navigator.canShare({ files: [file] })) {
         try {
-          // Step 4: Trigger the native share sheet so user can select "Instagram Stories"
           await navigator.share({
             title: `Diwali with ${shopConfig.shopName}`,
             text: `Celebrating Diwali in style with ${shopConfig.shopName}! Tagging ${shopConfig.instagramTag} and ${shopConfig.partnerTag} to unlock an exclusive festive discount. 🪔✨`,
@@ -520,35 +618,79 @@ export default function PhotoBoothApp() {
           });
           return;
         } catch (err) {
-          // If the user cancelled or dismissed the native share sheet, do not trigger error fallback
-          if (err.name === 'AbortError') {
-            return;
-          }
+          if (err.name === 'AbortError') return;
           console.warn('Native mobile share sheet error:', err);
         }
       }
 
       // Fallback for older mobile browsers without Web Share Files support:
-      // Download photo to camera roll & deep-link directly into Instagram
-      handleDownloadPhoto();
       window.location.href = 'instagram://camera';
       setTimeout(() => {
         window.location.href = 'instagram://app';
       }, 1200);
     } else {
-      // 2. ON PC: Save photo to computer and redirect to instagram.com
-      handleDownloadPhoto();
+      // 2. ON PC: 1080x1920 Story format downloaded, redirect to instagram.com
       window.open('https://www.instagram.com', '_blank');
     }
   };
 
+  // Sharing Actions - WhatsApp (Exact 1080x1920 9:16 Status format)
   const handleShareWhatsApp = async () => {
     playChimeSound('click');
-    handleDownloadPhoto();
-    const text = encodeURIComponent(
-      `Celebrating Diwali in style with ${shopConfig.shopName}! Check out my festive portrait. 🪔✨`
-    );
-    window.open(`https://api.whatsapp.com/send?text=${text}`, '_blank');
+
+    if (!brandedPhotoUrl && !capturedRawPhoto) {
+      alert('Please capture or choose a photo first!');
+      return;
+    }
+
+    // 1. Download the exact 1080x1920 Status format file to device
+    const downloadResult = await handleDownloadStoryFormat('WhatsApp_Status');
+    const statusUrlToShare = downloadResult?.url || storyPhotoUrl || brandedPhotoUrl;
+    const statusFilename = downloadResult?.filename || `${(shopConfig.shopName || 'Dream_Salon').replace(/\s+/g, '_')}_WhatsApp_Status_1080x1920.jpg`;
+
+    const isMobile =
+      typeof window !== 'undefined' &&
+      (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+        (navigator.maxTouchPoints > 1 && window.innerWidth <= 1024));
+
+    const shareCaption = `Celebrating Diwali in style with ${shopConfig.shopName}! Tagging ${shopConfig.instagramTag} and ${shopConfig.partnerTag} to unlock an exclusive festive discount. 🪔✨`;
+    const text = encodeURIComponent(shareCaption);
+
+    if (isMobile) {
+      let file = convertPhotoToFile(statusUrlToShare, statusFilename);
+
+      if (!file && statusUrlToShare) {
+        try {
+          const response = await fetch(statusUrlToShare);
+          const blob = await response.blob();
+          file = new File([blob], statusFilename, { type: 'image/jpeg', lastModified: Date.now() });
+        } catch (fetchErr) {
+          console.warn('File conversion fallback failed:', fetchErr);
+        }
+      }
+
+      if (file && typeof navigator !== 'undefined' && navigator.canShare && navigator.canShare({ files: [file] })) {
+        try {
+          await navigator.share({
+            title: `Diwali with ${shopConfig.shopName}`,
+            text: shareCaption,
+            files: [file],
+          });
+          return;
+        } catch (err) {
+          if (err.name === 'AbortError') return;
+          console.warn('Native mobile share sheet error:', err);
+        }
+      }
+
+      // WhatsApp deep link fallback
+      window.location.href = `whatsapp://send?text=${text}`;
+      setTimeout(() => {
+        window.open(`https://api.whatsapp.com/send?text=${text}`, '_blank');
+      }, 1000);
+    } else {
+      window.open(`https://api.whatsapp.com/send?text=${text}`, '_blank');
+    }
   };
 
   // Screenshot Selection & Upload
@@ -1192,7 +1334,7 @@ export default function PhotoBoothApp() {
                           <div>
                             <span className="block font-bold">SHARE ON INSTAGRAM STORY</span>
                             <span className="block text-[10px] text-white/80 font-normal">
-                              Opens native share sheet on mobile · Downloads & redirects on PC
+                              Downloads 1080×1920 (9:16) Story · Opens Instagram
                             </span>
                           </div>
                         </div>
@@ -1203,11 +1345,16 @@ export default function PhotoBoothApp() {
                         onClick={handleShareWhatsApp}
                         className="w-full py-3.5 px-5 rounded-2xl bg-[#25d366] text-black font-bold text-xs sm:text-sm flex items-center justify-between transition hover:brightness-105 active:scale-[0.98]"
                       >
-                        <div className="flex items-center gap-2.5">
-                          <Share2 className="w-4 h-4" />
-                          <span>POST TO WHATSAPP STATUS</span>
+                        <div className="flex items-center gap-2.5 text-left">
+                          <Share2 className="w-4 h-4 shrink-0" />
+                          <div>
+                            <span className="block font-bold">POST TO WHATSAPP STATUS</span>
+                            <span className="block text-[10px] text-black/75 font-normal">
+                              Downloads 1080×1920 (9:16) Status · Opens WhatsApp
+                            </span>
+                          </div>
                         </div>
-                        <ChevronRight className="w-5 h-5" />
+                        <ChevronRight className="w-5 h-5 shrink-0" />
                       </button>
 
                       {/* OTHER MEDIA FORMATS BUTTON */}
