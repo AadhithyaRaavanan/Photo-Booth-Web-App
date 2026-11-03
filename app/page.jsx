@@ -1130,18 +1130,6 @@ export default function PhotoBoothApp() {
                         </button>
                       </div>
 
-                      {/* OTHER MEDIA FORMATS BUTTON */}
-                      <button
-                        onClick={() => {
-                          playChimeSound('click');
-                          setShowOtherMediaModal(true);
-                        }}
-                        className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-amber-500/20 via-pink-500/25 to-amber-500/20 hover:from-amber-500/30 hover:to-pink-500/35 text-amber-200 font-bold text-xs flex items-center justify-center gap-2 border border-amber-400/50 shadow-md transition active:scale-[0.98]"
-                      >
-                        <Layers className="w-4 h-4 text-amber-400" />
-                        <span>OTHER MEDIA SIZES (STORY, SQUARE, REELS...)</span>
-                      </button>
-
                       <button
                         onClick={() => {
                           playChimeSound('click');

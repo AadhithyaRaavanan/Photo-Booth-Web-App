@@ -158,7 +158,7 @@ export function getHighContrastDiwaliSealSvg({ discount = '30% OFF', size = 220 
       <path d="${JHAROKHA_SEAL_PATH}" transform="translate(100, 100) scale(0.92) translate(-100, -100)" fill="none" stroke="#ffd54f" stroke-width="1.2" opacity="0.8" />
       <path d="${JHAROKHA_SEAL_PATH}" transform="translate(100, 100) scale(0.85) translate(-100, -100)" fill="none" stroke="#ffd54f" stroke-width="3.2" stroke-linecap="round" stroke-dasharray="0.1 7.2" />
       <path d="${JHAROKHA_SEAL_PATH}" transform="translate(100, 100) scale(0.77) translate(-100, -100)" fill="none" stroke="#ffb300" stroke-width="0.8" opacity="0.6" />
-      <text x="100" y="56" text-anchor="middle" class="seal-header" font-size="12.5" fill="#ffe082">SHARE &amp; GET</text>
+      <text x="100" y="56" text-anchor="middle" class="seal-header" font-size="12.5" fill="#ffe082">${header}</text>
       <line x1="52" y1="63" x2="148" y2="63" stroke="#ffd54f" stroke-width="1.5" stroke-linecap="round" opacity="0.85" />
       <polygon points="100,60 103.5,63 100,66 96.5,63" fill="#ffd54f" />
       <!-- Extra Large 30% Hero -->
@@ -259,8 +259,7 @@ export function getDiwaliBrandBoxSvg({
     <g transform="translate(370, 16)">
       <rect x="0" y="0" width="216" height="52" rx="26" ry="26" fill="url(#ctaBtnGrad)" stroke="#ffd700" stroke-width="2" />
       <rect x="3" y="3" width="210" height="46" rx="23" ry="23" fill="none" stroke="#fff3cd" stroke-width="1" stroke-dasharray="3 3" opacity="0.8" />
-      <text x="108" y="24" text-anchor="middle" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-weight="900" font-size="12" letter-spacing="1.2" fill="#ffffff">✨ SHARE &amp; GET OFFER ✨</text>
-      <text x="108" y="41" text-anchor="middle" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-weight="800" font-size="9.5" letter-spacing="1" fill="#fffbeb">CLAIM 30% OFF PASS</text>
+      <text x="108" y="32" text-anchor="middle" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-weight="900" font-size="13.5" letter-spacing="1.5" fill="#ffffff">SHARE &amp; GET OFFER</text>
     </g>
   </g>
 </svg>`;
@@ -315,7 +314,7 @@ export default function RoyalMasterFrame({
       {/* 1. THE AUTHENTIC USER FESTIVE FRAME OVERLAY (Transparent Center Opening) */}
       <img
         key={currentFrame.id}
-        src={`${currentFrame.image}?v=11`}
+        src={`${currentFrame.image}?v=12`}
         alt={currentFrame.name}
         onError={(e) => {
           if (!e.currentTarget.dataset.retried) {
@@ -411,7 +410,7 @@ export async function composeRoyalMasterPhoto({
         resolve();
       };
       frameImg.onerror = resolve;
-      frameImg.src = `${currentFrame.image}?v=11`;
+      frameImg.src = `${currentFrame.image}?v=12`;
     });
 
     const sealWidth = Math.round(portraitW * 0.28);
@@ -506,7 +505,7 @@ export async function composeRoyalMasterPhoto({
       console.warn('Could not load frame overlay image:', currentFrame.image);
       resolve();
     };
-    frameImg.src = `${currentFrame.image}?v=11`;
+    frameImg.src = `${currentFrame.image}?v=12`;
   });
 
   // 3. Draw Identical Enlarged Top-Right 30% Offer Seal SVG (proportional to DOM: top 1.5%, right 2%, width 25%)
