@@ -23,6 +23,7 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ExactDiwaliLanding from '@/components/ExactDiwaliLanding';
+import EveningSkyFireworks from '@/components/EveningSkyFireworks';
 import FestiveParticles from '@/components/FestiveParticles';
 import DiyaGraphic from '@/components/DiyaGraphic';
 import RoyalMasterFrame, { composeRoyalMasterPhoto, ROYAL_FRAMES } from '@/components/RoyalMasterFrame';
@@ -766,7 +767,13 @@ export default function PhotoBoothApp() {
   return (
     <>
       {/* =========================================================================
-          PAGE 1: VIBRANT VIOLET DIWALI LANDING PAGE (NO NAV BAR)
+          GLOBAL EVENING SKY WITH BLINKING STARS & BURSTING FIREWORKS ANIMATION
+          Applies seamlessly across the landing page and all photo booth stages
+         ========================================================================= */}
+      <EveningSkyFireworks />
+
+      {/* =========================================================================
+          PAGE 1: MODERN FESTIVE EVENING SKY LANDING PAGE
           Inspired directly by the user's reference illustration
          ========================================================================= */}
       {step === 'landing' ? (
@@ -784,10 +791,7 @@ export default function PhotoBoothApp() {
            PAGE 2: ROYAL FESTIVE PHOTO BOOTH & REWARDS FLOW (NO NAV BAR)
            Clean, focused camera & sharing experience with back-to-home navigation
            ========================================================================= */
-        <div className="min-h-screen w-full bg-[#1e032e] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#410959] via-[#240438] to-[#140120] text-champagne flex flex-col items-center justify-start relative overflow-x-hidden selection:bg-amber-400 selection:text-black">
-          {/* Subtle Ambient Particles */}
-          <FestiveParticles density={20} />
-
+        <div className="min-h-screen w-full bg-black/25 backdrop-blur-[2px] text-champagne flex flex-col items-center justify-start relative overflow-x-hidden selection:bg-cyan-400 selection:text-black">
           {/* Clean Top Header (No Navbar) with Simple Back to Home */}
           <header className="w-full max-w-4xl mx-auto pt-4 sm:pt-6 pb-2 px-4 flex items-center justify-between relative z-30">
             <button
@@ -795,7 +799,7 @@ export default function PhotoBoothApp() {
                 stopCameraStream();
                 setStep('landing');
               }}
-              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-black/60 border border-violet-400/40 text-xs font-semibold text-amber-200 hover:bg-black/80 hover:text-white transition shadow-sm"
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#0a0418]/80 backdrop-blur-md border border-cyan-400/40 text-xs font-semibold text-cyan-200 hover:bg-[#12082b] hover:text-white transition shadow-sm"
             >
               <ChevronLeft className="w-4 h-4" />
               <span>Back to Home</span>
@@ -803,7 +807,7 @@ export default function PhotoBoothApp() {
 
             <div className="flex items-center gap-2">
               <span className="text-base">🪔</span>
-              <span className="font-serif text-sm sm:text-base font-bold text-amber-200 tracking-wide">
+              <span className="font-serif text-sm sm:text-base font-bold text-cyan-200 tracking-wide drop-shadow">
                 {shopConfig.shopName} Photo Booth
               </span>
             </div>
@@ -1241,8 +1245,8 @@ export default function PhotoBoothApp() {
                     </div>
 
                     <div className="w-full md:max-w-xs flex flex-col space-y-3">
-                      <div className="p-5 rounded-2xl bg-[#37074e]/80 border border-amber-400/30 text-xs text-champagne/80 space-y-2">
-                        <span className="font-serif font-bold text-amber-300 text-sm block">
+                      <div className="p-5 rounded-2xl bg-[#0b041c]/80 backdrop-blur-md border border-cyan-400/35 text-xs text-cyan-100/90 space-y-2 shadow-[0_0_25px_rgba(0,0,0,0.5)]">
+                        <span className="font-serif font-bold text-cyan-300 text-sm block">
                           ✨ Ready to Unlock 30% OFF
                         </span>
                         <p>
@@ -1265,7 +1269,7 @@ export default function PhotoBoothApp() {
 
                         <button
                           onClick={handleDownloadPhoto}
-                          className="py-3 px-4 rounded-xl bg-[#520970] hover:bg-[#680b8e] text-amber-200 font-semibold text-xs flex items-center justify-center gap-2 border border-amber-400/40 transition"
+                          className="py-3 px-4 rounded-xl bg-cyan-950/70 hover:bg-cyan-900/80 text-cyan-200 font-semibold text-xs flex items-center justify-center gap-2 border border-cyan-400/40 transition shadow-sm"
                         >
                           <Download className="w-4 h-4" />
                           <span>SAVE PHOTO</span>
@@ -1277,7 +1281,7 @@ export default function PhotoBoothApp() {
                           playChimeSound('click');
                           setStep('share');
                         }}
-                        className="w-full py-4 px-6 rounded-xl bg-gradient-to-r from-[#e60067] via-[#ff3b30] to-[#ff9500] text-white font-sans font-bold text-sm tracking-wide shadow-lg flex items-center justify-center gap-2 transition hover:brightness-110 active:scale-[0.98]"
+                        className="w-full py-4 px-6 rounded-xl bg-gradient-to-r from-cyan-500 via-blue-600 to-indigo-600 hover:from-cyan-400 hover:to-blue-500 text-white font-sans font-bold text-sm tracking-wide shadow-[0_0_25px_rgba(6,182,212,0.5)] flex items-center justify-center gap-2 transition active:scale-[0.98]"
                       >
                         <span>CONTINUE TO SHARE & REWARDS</span>
                         <ArrowRight className="w-4 h-4 stroke-[3]" />
@@ -1293,14 +1297,14 @@ export default function PhotoBoothApp() {
               {step === 'share' && (
                 <div className="w-full flex-1 flex flex-col justify-center py-2 sm:py-4">
                   <div className="text-center pb-4">
-                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-400/20 border border-amber-400/40 text-amber-300 text-xs font-semibold mb-2">
-                      <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-500/20 border border-cyan-400/40 text-cyan-300 text-xs font-semibold mb-2 shadow-[0_0_15px_rgba(6,182,212,0.3)]">
+                      <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
                       <span>Step 2 of 3</span>
                     </div>
                     <h2 className="font-serif text-2xl sm:text-3xl font-bold text-white tracking-wide">
                       Share & Unlock Offer
                     </h2>
-                    <p className="text-xs sm:text-sm text-champagne/75 max-w-md mx-auto mt-1">
+                    <p className="text-xs sm:text-sm text-cyan-100/80 max-w-md mx-auto mt-1">
                       Share it on Instagram Story or WhatsApp Status and unlock your exclusive 30% OFF festive pass.
                     </p>
                   </div>
@@ -1308,12 +1312,12 @@ export default function PhotoBoothApp() {
                   <div className="w-full flex flex-col md:flex-row items-center justify-center gap-6 my-auto">
                     <div className="max-w-[200px] md:max-w-xs w-full">
                       {brandedPhotoUrl && (
-                        <div className="rounded-2xl overflow-hidden border-2 border-amber-400/60 shadow-lg relative group">
+                        <div className="rounded-2xl overflow-hidden border-2 border-cyan-400/60 shadow-[0_0_30px_rgba(6,182,212,0.3)] relative group">
                           <img src={brandedPhotoUrl} alt="Thumbnail" className="w-full h-auto object-cover" />
                           <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition">
                             <button
                               onClick={handleDownloadPhoto}
-                              className="p-2.5 rounded-full bg-amber-400 text-black shadow-lg"
+                              className="p-2.5 rounded-full bg-cyan-400 text-slate-950 shadow-lg hover:scale-110 transition"
                             >
                               <Download className="w-5 h-5" />
                             </button>
@@ -1363,18 +1367,18 @@ export default function PhotoBoothApp() {
                           playChimeSound('click');
                           setShowOtherMediaModal(true);
                         }}
-                        className="w-full py-3.5 px-5 rounded-2xl bg-white/10 hover:bg-white/15 text-amber-200 font-bold text-xs sm:text-sm flex items-center justify-between border border-amber-400/35 transition hover:border-amber-400/60 active:scale-[0.98]"
+                        className="w-full py-3.5 px-5 rounded-2xl bg-white/10 hover:bg-white/15 text-cyan-200 font-bold text-xs sm:text-sm flex items-center justify-between border border-cyan-400/35 transition hover:border-cyan-400/60 active:scale-[0.98]"
                       >
                         <div className="flex items-center gap-2.5">
-                          <Layers className="w-4 h-4 text-amber-400" />
+                          <Layers className="w-4 h-4 text-cyan-400" />
                           <span>OTHER MEDIA SIZES (FACEBOOK, SQUARE, REELS...)</span>
                         </div>
-                        <ChevronRight className="w-5 h-5 text-amber-400/80" />
+                        <ChevronRight className="w-5 h-5 text-cyan-400/80" />
                       </button>
 
-                      <div className="p-3.5 rounded-xl bg-[#390856]/85 border border-violet-400/30 text-xs text-champagne/80 text-center">
-                        Tag <strong className="text-amber-300">{shopConfig.instagramTag}</strong>{' '}
-                        and <strong className="text-amber-300">{shopConfig.partnerTag}</strong> in your story!
+                      <div className="p-3.5 rounded-xl bg-[#0b041c]/85 border border-cyan-400/30 text-xs text-cyan-100/90 text-center shadow-sm">
+                        Tag <strong className="text-cyan-300">{shopConfig.instagramTag}</strong>{' '}
+                        and <strong className="text-cyan-300">{shopConfig.partnerTag}</strong> in your story!
                       </div>
 
                       <button
@@ -1382,7 +1386,7 @@ export default function PhotoBoothApp() {
                           playChimeSound('click');
                           setStep('verification');
                         }}
-                        className="w-full py-4 px-5 rounded-2xl bg-gradient-to-r from-[#e60067] to-[#ff9500] text-white font-bold text-xs sm:text-sm shadow-lg flex items-center justify-between transition hover:brightness-105 active:scale-[0.98]"
+                        className="w-full py-4 px-5 rounded-2xl bg-gradient-to-r from-cyan-500 via-blue-600 to-indigo-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold text-xs sm:text-sm shadow-[0_0_25px_rgba(6,182,212,0.5)] flex items-center justify-between transition active:scale-[0.98]"
                       >
                         <div className="flex items-center gap-2.5">
                           <UploadCloud className="w-5 h-5 text-white" />
@@ -1426,8 +1430,8 @@ export default function PhotoBoothApp() {
                           onClick={() => screenshotInputRef.current?.click()}
                           className={`w-full p-6 sm:p-8 rounded-3xl border-2 border-dashed flex flex-col items-center justify-center text-center cursor-pointer transition ${
                             screenshotPreview
-                              ? 'border-amber-400 bg-[#420a61]/60'
-                              : 'border-violet-400/50 hover:border-amber-300 bg-black/40'
+                              ? 'border-cyan-400 bg-[#0b041c]/85 shadow-[0_0_25px_rgba(6,182,212,0.3)]'
+                              : 'border-cyan-400/35 hover:border-cyan-300 bg-[#070314]/75 backdrop-blur-md'
                           }`}
                         >
                           <input
@@ -1440,37 +1444,37 @@ export default function PhotoBoothApp() {
 
                           {screenshotPreview ? (
                             <div className="space-y-3">
-                              <div className="w-36 h-48 mx-auto rounded-xl overflow-hidden border border-amber-400/60 shadow-md">
+                              <div className="w-36 h-48 mx-auto rounded-xl overflow-hidden border border-cyan-400/60 shadow-md">
                                 <img
                                   src={screenshotPreview}
                                   alt="Screenshot preview"
                                   className="w-full h-full object-cover"
                                 />
                               </div>
-                              <div className="text-xs text-amber-300 font-semibold flex items-center justify-center gap-1.5">
+                              <div className="text-xs text-cyan-300 font-semibold flex items-center justify-center gap-1.5">
                                 <CheckCircle2 className="w-4 h-4 text-emerald-400" />
                                 <span>Screenshot Selected</span>
                               </div>
-                              <span className="text-[10px] text-champagne/60 underline">
+                              <span className="text-[10px] text-cyan-200/70 underline">
                                 Tap to change screenshot
                               </span>
                             </div>
                           ) : (
                             <div className="space-y-3">
-                              <div className="w-16 h-16 mx-auto rounded-full bg-amber-400/20 border border-amber-400/40 flex items-center justify-center text-amber-300">
+                              <div className="w-16 h-16 mx-auto rounded-full bg-cyan-500/20 border border-cyan-400/40 flex items-center justify-center text-cyan-300">
                                 <UploadCloud className="w-8 h-8" />
                               </div>
                               <div>
                                 <p className="text-sm font-bold text-white mb-0.5">
                                   Upload screenshot of your Story
                                 </p>
-                                <p className="text-xs text-champagne/60">
+                                <p className="text-xs text-slate-300/80">
                                   Tap here or select from photo gallery
                                 </p>
                               </div>
                               <button
                                 type="button"
-                                className="py-2.5 px-6 rounded-xl bg-amber-400 text-black font-bold text-xs uppercase"
+                                className="py-2.5 px-6 rounded-xl bg-cyan-400 hover:bg-cyan-300 text-slate-950 font-black text-xs uppercase shadow-[0_0_15px_rgba(6,182,212,0.4)]"
                               >
                                 CHOOSE PHOTO
                               </button>
@@ -1479,7 +1483,7 @@ export default function PhotoBoothApp() {
                         </div>
 
                         <div className="mt-4">
-                          <label className="block text-xs font-semibold text-champagne/80 mb-1">
+                          <label className="block text-xs font-semibold text-cyan-100/90 mb-1">
                             Phone Number (Optional - for SMS Coupon backup)
                           </label>
                           <input
@@ -1487,7 +1491,7 @@ export default function PhotoBoothApp() {
                             placeholder="+91 98765 43210"
                             value={phoneInput}
                             onChange={(e) => setPhoneInput(e.target.value)}
-                            className="w-full py-3 px-4 rounded-xl bg-black/40 border border-violet-400/30 text-white placeholder:text-white/30 text-xs focus:outline-none focus:border-amber-400"
+                            className="w-full py-3 px-4 rounded-xl bg-[#0b041c]/80 border border-cyan-400/30 text-white placeholder:text-white/30 text-xs focus:outline-none focus:border-cyan-400"
                           />
                         </div>
                       </div>
@@ -1496,7 +1500,7 @@ export default function PhotoBoothApp() {
                         <button
                           onClick={handleSubmitVerification}
                           disabled={!screenshotPreview || isSubmitting}
-                          className="w-full py-4 px-6 rounded-xl bg-gradient-to-r from-[#e60067] via-[#ff3b30] to-[#ff9500] text-white font-sans font-black text-sm tracking-wide disabled:opacity-50 shadow-lg flex items-center justify-center gap-2 transition"
+                          className="w-full py-4 px-6 rounded-xl bg-gradient-to-r from-cyan-500 via-blue-600 to-indigo-600 hover:from-cyan-400 hover:to-blue-500 text-white font-sans font-black text-sm tracking-wide disabled:opacity-50 shadow-[0_0_25px_rgba(6,182,212,0.5)] flex items-center justify-center gap-2 transition"
                         >
                           <ShieldCheck className="w-4 h-4 stroke-[2.5]" />
                           <span>{isSubmitting ? 'SUBMITTING...' : 'SUBMIT FOR VERIFICATION'}</span>
