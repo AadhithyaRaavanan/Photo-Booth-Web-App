@@ -5,14 +5,17 @@ import React, { useEffect, useRef } from 'react';
 /**
  * EveningSkyFireworks Component
  *
- * Implements a high-performance, non-intrusive full-screen background:
- * 1. Deep dusk/evening sky gradient with warm festive horizon glow.
- * 2. Subtle distant festival/city skyline silhouette at the horizon.
- * 3. 90+ naturally twinkling/blinking stars across the upper sky.
- * 4. Realistic bursting fireworks with rising rockets, spherical spark explosions,
- *    trailing ember physics, gravity, and vibrant celebratory colors (Cyan, Gold, Rose, Amber, Emerald).
- * 5. Uses requestAnimationFrame with tab visibility pausing to conserve CPU and battery.
- * 6. Completely non-intrusive: pointer-events-none, fixed inset-0, -z-10.
+ * Spectacular, eye-catching, professional evening sky with:
+ * - Rich dusk/evening sky gradient with warm festive horizon glow.
+ * - 120 twinkling/blinking stars with smooth twinkle phases & 4-point diffraction rays.
+ * - Fireworks particle physics engine:
+ *   * Rocket launches with sparkling ascent trails.
+ *   * Flash bloom illuminating the dusk sky upon detonation.
+ *   * 5 Firework types: Chrysanthemum, Golden Willow, Cyan Ring, Ruby Bloom, Crackle Strobe.
+ *   * 60-90 glowing sparks per burst with drag, gravity, and luminous color decay.
+ *   * Interactive: Tapping/clicking anywhere in empty sky launches a firework!
+ * - z-0 with pointer-events-none: never interferes with buttons, inputs, or text.
+ * - Tab visibility listener to pause loop when inactive and conserve CPU.
  */
 export default function EveningSkyFireworks() {
   const canvasRef = useRef(null);
@@ -27,149 +30,211 @@ export default function EveningSkyFireworks() {
     let animationFrameId;
     let width = 0;
     let height = 0;
-    let dpr = 1;
     let isVisible = true;
 
-    // Responsive canvas resize with devicePixelRatio support
+    // Responsive canvas resize
     const resize = () => {
       if (!canvas) return;
-      dpr = Math.min(window.devicePixelRatio || 1, 2);
       width = window.innerWidth;
       height = window.innerHeight;
-      canvas.width = Math.floor(width * dpr);
-      canvas.height = Math.floor(height * dpr);
-      canvas.style.width = `${width}px`;
-      canvas.style.height = `${height}px`;
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      canvas.width = width;
+      canvas.height = height;
     };
 
     resize();
     window.addEventListener('resize', resize);
 
-    // Pause animation when tab is not active to conserve battery & CPU
+    // Pause animation when tab is inactive to preserve battery & CPU
     const handleVisibilityChange = () => {
       isVisible = !document.hidden;
     };
     document.addEventListener('visibilitychange', handleVisibilityChange);
 
     // -------------------------------------------------------------
-    // 1. BLINKING / TWINKLING STARS
+    // 1. BLINKING / TWINKLING STARS (Normalized coordinates)
     // -------------------------------------------------------------
-    const starCount = 95;
+    const starCount = 135;
     const stars = [];
-    const starColors = ['#ffffff', '#e0f2fe', '#fef08a', '#e9d5ff', '#38bdf8'];
+    const starColors = [
+      '#ffffff',
+      '#e0f2fe',
+      '#fef08a',
+      '#38bdf8',
+      '#fbcfe8',
+      '#fef9c3',
+      '#a5f3fc',
+    ];
 
     for (let i = 0; i < starCount; i++) {
       stars.push({
-        x: Math.random() * width,
-        y: Math.random() * (height * 0.75), // concentrated in upper 75% of sky
-        radius: Math.random() * 1.6 + 0.6,
+        xRatio: Math.random(),
+        yRatio: Math.random() * 0.78, // upper 78% of sky
+        radius: Math.random() * 1.8 + 0.6,
         color: starColors[Math.floor(Math.random() * starColors.length)],
-        baseAlpha: Math.random() * 0.5 + 0.3,
-        twinkleSpeed: Math.random() * 0.035 + 0.015,
+        baseAlpha: Math.random() * 0.45 + 0.25,
+        twinkleSpeed: Math.random() * 0.04 + 0.015,
         phase: Math.random() * Math.PI * 2,
-        hasRay: Math.random() > 0.85,
+        hasCross: Math.random() > 0.78,
       });
     }
 
     // -------------------------------------------------------------
-    // 2. FIREWORKS PARTICLES & ROCKETS
+    // 2. FIREWORKS ENGINE
     // -------------------------------------------------------------
     const rockets = [];
     const particles = [];
+    const flashes = [];
 
+    // Color Palettes
     const PALETTES = [
-      // Cyan / Electric Blue (matches user reference image)
-      ['#00f0ff', '#38bdf8', '#7dd3fc', '#ffffff', '#0284c7'],
-      // Royal 24K Gold & Champagne
-      ['#ffd700', '#ffe082', '#ffb300', '#fff8e1', '#ffffff'],
-      // Radiant Ruby / Magenta Party
-      ['#ff1493', '#f43f5e', '#fb7185', '#fda4af', '#ffffff'],
-      // Festive Emerald & Mint
-      ['#10b981', '#34d399', '#6ee7b7', '#a7f3d0', '#ffffff'],
-      // Golden Amber & Sunset Coral
-      ['#ff7a00', '#fbbf24', '#f59e0b', '#fed7aa', '#ffffff'],
-      // Amethyst Violet & Electric Pink
-      ['#c084fc', '#e879f9', '#f472b6', '#ffffff'],
+      // 1. Electric Cyan & Aqua (Matching modern UI)
+      {
+        name: 'cyan',
+        colors: ['#00f5ff', '#00c8ff', '#38bdf8', '#7dd3fc', '#ffffff'],
+        glow: '#00f5ff',
+      },
+      // 2. 24K Royal Gold & Champagne
+      {
+        name: 'gold',
+        colors: ['#ffe066', '#ffd700', '#ffb700', '#fff3b0', '#ffffff'],
+        glow: '#ffd700',
+      },
+      // 3. Radiant Magenta & Ruby Rose
+      {
+        name: 'ruby',
+        colors: ['#ff007f', '#ff1493', '#ff4d94', '#fda4af', '#ffffff'],
+        glow: '#ff1493',
+      },
+      // 4. Sunset Coral & Amber Gold
+      {
+        name: 'amber',
+        colors: ['#ff5722', '#ff9100', '#ffab40', '#ffe082', '#ffffff'],
+        glow: '#ff9100',
+      },
+      // 5. Emerald Green & Mint
+      {
+        name: 'emerald',
+        colors: ['#00e676', '#69f0ae', '#b9f6ca', '#ffffff'],
+        glow: '#00e676',
+      },
+      // 6. Amethyst Purple & Neon Cyan Duo
+      {
+        name: 'duo',
+        colors: ['#c084fc', '#e879f9', '#00f5ff', '#38bdf8', '#ffffff'],
+        glow: '#c084fc',
+      },
     ];
 
+    // Rocket Class
     class Rocket {
-      constructor() {
-        this.x = width * 0.15 + Math.random() * (width * 0.7);
+      constructor(targetX = null, targetY = null) {
+        this.x = targetX !== null ? targetX : width * 0.15 + Math.random() * (width * 0.7);
         this.y = height + 10;
-        // Apex height: burst in upper 18% to 50% of screen
-        this.targetY = height * (0.15 + Math.random() * 0.35);
-        this.speed = 10 + Math.random() * 5;
-        this.angle = -Math.PI / 2 + (Math.random() - 0.5) * 0.25;
-        this.vx = Math.cos(this.angle) * this.speed;
-        this.vy = Math.sin(this.angle) * this.speed;
+        this.targetY = targetY !== null ? targetY : height * (0.12 + Math.random() * 0.38);
+        const distance = this.y - this.targetY;
+        this.speed = Math.sqrt(distance * 0.55) + Math.random() * 2;
+        const drift = (Math.random() - 0.5) * 1.5;
+        this.vx = drift;
+        this.vy = -this.speed;
         this.palette = PALETTES[Math.floor(Math.random() * PALETTES.length)];
+        this.type = Math.floor(Math.random() * 5); // 0: Peony, 1: Willow, 2: Ring, 3: Duo, 4: Strobe
         this.trail = [];
         this.dead = false;
       }
 
       update() {
-        this.trail.push({ x: this.x, y: this.y, alpha: 0.8 });
-        if (this.trail.length > 6) this.trail.shift();
+        this.trail.push({ x: this.x, y: this.y, alpha: 1 });
+        if (this.trail.length > 8) this.trail.shift();
 
         this.x += this.vx;
         this.y += this.vy;
-        this.vy += 0.08; // slight gravity deceleration
+        this.vy += 0.22; // smooth gravity deceleration
 
-        if (this.y <= this.targetY || this.vy >= -1) {
+        if (this.vy >= -1 || this.y <= this.targetY) {
           this.explode();
           this.dead = true;
         }
       }
 
       explode() {
-        const count = 48 + Math.floor(Math.random() * 28);
-        const burstSpeed = 3.5 + Math.random() * 3.5;
-        for (let i = 0; i < count; i++) {
-          particles.push(new Particle(this.x, this.y, this.palette, burstSpeed));
+        // Flash in the sky
+        flashes.push({
+          x: this.x,
+          y: this.y,
+          radius: 90 + Math.random() * 60,
+          color: this.palette.glow,
+          alpha: 0.35,
+        });
+
+        const sparkCount = this.type === 1 ? 75 : 60 + Math.floor(Math.random() * 25);
+
+        for (let i = 0; i < sparkCount; i++) {
+          particles.push(new Spark(this.x, this.y, this.palette, this.type, i, sparkCount));
         }
       }
 
       draw() {
         ctx.save();
         ctx.strokeStyle = '#fff7ed';
-        ctx.lineWidth = 2;
+        ctx.lineWidth = 2.5;
         ctx.beginPath();
         for (let i = 0; i < this.trail.length; i++) {
-          const t = this.trail[i];
-          ctx.globalAlpha = (i / this.trail.length) * 0.8;
-          if (i === 0) ctx.moveTo(t.x, t.y);
-          else ctx.lineTo(t.x, t.y);
+          const pt = this.trail[i];
+          ctx.globalAlpha = (i / this.trail.length) * 0.9;
+          if (i === 0) ctx.moveTo(pt.x, pt.y);
+          else ctx.lineTo(pt.x, pt.y);
         }
         ctx.stroke();
 
-        // Rocket head glow
+        // Glowing rocket head
+        ctx.globalAlpha = 1;
         ctx.fillStyle = '#ffffff';
+        ctx.shadowColor = this.palette.glow;
+        ctx.shadowBlur = 10;
         ctx.beginPath();
-        ctx.arc(this.x, this.y, 2, 0, Math.PI * 2);
+        ctx.arc(this.x, this.y, 2.5, 0, Math.PI * 2);
         ctx.fill();
         ctx.restore();
       }
     }
 
-    class Particle {
-      constructor(x, y, palette, maxSpeed) {
+    // Spark Particle Class
+    class Spark {
+      constructor(x, y, palette, type, index, total) {
         this.x = x;
         this.y = y;
-        this.color = palette[Math.floor(Math.random() * palette.length)];
-        const angle = Math.random() * Math.PI * 2;
-        const speed = Math.random() * maxSpeed + 0.6;
+        this.palette = palette;
+        this.type = type;
+        this.color = palette.colors[Math.floor(Math.random() * palette.colors.length)];
+
+        // Angle and speed distribution
+        let angle, speed;
+        if (type === 2) {
+          // Ring burst: uniform circle
+          angle = (index / total) * Math.PI * 2;
+          speed = 4.2 + (Math.random() - 0.5) * 0.6;
+        } else {
+          angle = Math.random() * Math.PI * 2;
+          speed = Math.random() * 5.2 + 1.2;
+        }
+
         this.vx = Math.cos(angle) * speed;
         this.vy = Math.sin(angle) * speed;
-        this.friction = 0.96;
-        this.gravity = 0.07;
+
+        // Willow has low friction & higher gravity; Strobe has high flicker
+        this.friction = type === 1 ? 0.98 : 0.955;
+        this.gravity = type === 1 ? 0.08 : 0.055;
+        this.decay = type === 1 ? 0.01 : Math.random() * 0.016 + 0.012;
         this.alpha = 1;
-        this.decay = Math.random() * 0.016 + 0.012;
-        this.radius = Math.random() * 2.2 + 1.2;
-        this.flicker = Math.random() > 0.5;
+        this.radius = type === 1 ? Math.random() * 2.5 + 1.2 : Math.random() * 2.2 + 1.0;
+        this.isStrobe = type === 4 || Math.random() > 0.6;
+        this.history = [];
       }
 
       update() {
+        this.history.push({ x: this.x, y: this.y });
+        if (this.history.length > 4) this.history.shift();
+
         this.vx *= this.friction;
         this.vy *= this.friction;
         this.vy += this.gravity;
@@ -180,12 +245,29 @@ export default function EveningSkyFireworks() {
 
       draw() {
         if (this.alpha <= 0) return;
+
         ctx.save();
         ctx.globalCompositeOperation = 'lighter';
+
         let a = this.alpha;
-        if (this.flicker) {
-          a *= 0.65 + Math.random() * 0.35;
+        if (this.isStrobe) {
+          a *= 0.5 + Math.random() * 0.5;
         }
+
+        // Draw spark trail
+        if (this.history.length > 1) {
+          ctx.beginPath();
+          ctx.moveTo(this.history[0].x, this.history[0].y);
+          for (let i = 1; i < this.history.length; i++) {
+            ctx.lineTo(this.history[i].x, this.history[i].y);
+          }
+          ctx.strokeStyle = this.color;
+          ctx.lineWidth = this.radius * 0.7;
+          ctx.globalAlpha = Math.max(0, a * 0.5);
+          ctx.stroke();
+        }
+
+        // Draw spark head with glow
         ctx.globalAlpha = Math.max(0, Math.min(1, a));
         ctx.fillStyle = this.color;
         ctx.shadowColor = this.color;
@@ -197,87 +279,135 @@ export default function EveningSkyFireworks() {
       }
     }
 
-    // Launch interval controller
-    let lastLaunch = Date.now();
-    let nextInterval = 800; // start quickly
+    // Launch scheduling
+    let lastLaunchTime = Date.now();
+    let nextLaunchDelay = 600;
+
+    // Launch initial opening burst sequence
+    if (isVisible) {
+      rockets.push(new Rocket(width * 0.35 || 400, height * 0.28 || 220));
+      setTimeout(() => {
+        if (isVisible) rockets.push(new Rocket(width * 0.65 || 800, height * 0.24 || 200));
+      }, 250);
+      setTimeout(() => {
+        if (isVisible) rockets.push(new Rocket(width * 0.5 || 600, height * 0.32 || 250));
+      }, 550);
+    }
+
+    // Interactive sky click listener: tap to burst firework!
+    const handleSkyClick = (e) => {
+      // Ignore clicks on interactive buttons, inputs, or cards
+      if (e.target && (e.target.closest('button') || e.target.closest('input') || e.target.closest('form') || e.target.closest('a'))) {
+        return;
+      }
+      rockets.push(new Rocket(e.clientX, e.clientY));
+    };
+    window.addEventListener('click', handleSkyClick);
 
     // -------------------------------------------------------------
-    // 3. MAIN ANIMATION LOOP
+    // 3. MAIN RENDER LOOP
     // -------------------------------------------------------------
-    const animate = () => {
-      animationFrameId = requestAnimationFrame(animate);
+    const render = () => {
+      animationFrameId = requestAnimationFrame(render);
 
-      if (!isVisible) return; // skip processing when tab hidden
+      if (!isVisible) return;
 
       const now = Date.now();
-      if (now - lastLaunch > nextInterval) {
+
+      // Automatic rocket launcher
+      if (now - lastLaunchTime > nextLaunchDelay) {
         rockets.push(new Rocket());
-        // Occasional twin launch
-        if (Math.random() > 0.65) {
+        // Occasional double launch for grandeur
+        if (Math.random() > 0.55) {
           setTimeout(() => {
             if (isVisible) rockets.push(new Rocket());
-          }, 350);
+          }, 320);
         }
-        lastLaunch = now;
-        nextInterval = 1400 + Math.random() * 1200; // random delay between 1.4s and 2.6s
+        lastLaunchTime = now;
+        nextLaunchDelay = 1100 + Math.random() * 1100; // launches every 1.1s - 2.2s
       }
 
-      // 1. Draw Dusk/Evening Sky Gradient
+      // 1. Draw Deep Dusk/Evening Sky Gradient
       const skyGrad = ctx.createLinearGradient(0, 0, 0, height);
-      skyGrad.addColorStop(0, '#06030e'); // Deep midnight dusk
-      skyGrad.addColorStop(0.35, '#0e0622'); // Twilight indigo
-      skyGrad.addColorStop(0.7, '#1b0933'); // Dusk plum
-      skyGrad.addColorStop(0.9, '#2a093a'); // Horizon wine
-      skyGrad.addColorStop(1, '#3b0d45'); // Warm sunset magenta glow at horizon
+      skyGrad.addColorStop(0, '#030208'); // Midnight deep dusk
+      skyGrad.addColorStop(0.3, '#080318'); // Twilight indigo
+      skyGrad.addColorStop(0.65, '#130628'); // Dusk purple
+      skyGrad.addColorStop(0.85, '#240838'); // Horizon plum
+      skyGrad.addColorStop(1, '#3d0a46'); // Warm festive magenta sunset glow
       ctx.fillStyle = skyGrad;
       ctx.fillRect(0, 0, width, height);
 
-      // 2. Draw Distant Horizon Festive Glow
+      // 2. Horizon Ambient Festival Glow
       const horizonGlow = ctx.createRadialGradient(
         width * 0.5,
         height,
         height * 0.05,
         width * 0.5,
         height,
-        width * 0.8
+        width * 0.75
       );
-      horizonGlow.addColorStop(0, 'rgba(233, 30, 99, 0.16)');
-      horizonGlow.addColorStop(0.4, 'rgba(156, 39, 176, 0.1)');
+      horizonGlow.addColorStop(0, 'rgba(233, 30, 99, 0.22)');
+      horizonGlow.addColorStop(0.4, 'rgba(124, 58, 237, 0.14)');
       horizonGlow.addColorStop(1, 'rgba(0, 0, 0, 0)');
       ctx.fillStyle = horizonGlow;
-      ctx.fillRect(0, height * 0.6, width, height * 0.4);
+      ctx.fillRect(0, height * 0.55, width, height * 0.45);
 
-      // 3. Draw Blinking Stars
-      const time = now * 0.002;
+      // 3. Draw Blinking / Twinkling Stars
+      const t = now * 0.0025;
       for (let i = 0; i < stars.length; i++) {
         const s = stars[i];
-        const alpha = s.baseAlpha + Math.sin(time * s.twinkleSpeed * 50 + s.phase) * 0.35;
-        const clampedAlpha = Math.max(0.1, Math.min(1, alpha));
+        const sx = s.xRatio * width;
+        const sy = s.yRatio * height;
+        const alpha = s.baseAlpha + Math.sin(t * s.twinkleSpeed * 50 + s.phase) * 0.45;
+        const clampedAlpha = Math.max(0.15, Math.min(1, alpha));
 
         ctx.save();
         ctx.globalAlpha = clampedAlpha;
         ctx.fillStyle = s.color;
         ctx.shadowColor = s.color;
-        ctx.shadowBlur = s.radius * 3;
+        ctx.shadowBlur = s.radius * 4;
         ctx.beginPath();
-        ctx.arc(s.x, s.y, s.radius, 0, Math.PI * 2);
+        ctx.arc(sx, sy, s.radius, 0, Math.PI * 2);
         ctx.fill();
 
-        // 4-point ray for bright stars
-        if (s.hasRay && clampedAlpha > 0.6) {
+        // 4-Point cross rays for luminous stars
+        if (s.hasCross && clampedAlpha > 0.52) {
           ctx.strokeStyle = s.color;
-          ctx.lineWidth = 0.75;
+          ctx.lineWidth = 0.9;
           ctx.beginPath();
-          ctx.moveTo(s.x - s.radius * 2.8, s.y);
-          ctx.lineTo(s.x + s.radius * 2.8, s.y);
-          ctx.moveTo(s.x, s.y - s.radius * 2.8);
-          ctx.lineTo(s.x, s.y + s.radius * 2.8);
+          ctx.moveTo(sx - s.radius * 3.2, sy);
+          ctx.lineTo(sx + s.radius * 3.2, sy);
+          ctx.moveTo(sx, sy - s.radius * 3.2);
+          ctx.lineTo(sx, sy + s.radius * 3.2);
           ctx.stroke();
         }
         ctx.restore();
       }
 
-      // 4. Update & Draw Rockets
+      // 4. Draw Atmospheric Flash Blooms
+      for (let i = flashes.length - 1; i >= 0; i--) {
+        const f = flashes[i];
+        ctx.save();
+        ctx.globalCompositeOperation = 'screen';
+        ctx.globalAlpha = Math.max(0, f.alpha);
+        const flashGrad = ctx.createRadialGradient(f.x, f.y, 0, f.x, f.y, f.radius);
+        flashGrad.addColorStop(0, f.color);
+        flashGrad.addColorStop(0.4, f.color);
+        flashGrad.addColorStop(1, 'rgba(0,0,0,0)');
+        ctx.fillStyle = flashGrad;
+        ctx.beginPath();
+        ctx.arc(f.x, f.y, f.radius, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+
+        f.alpha -= 0.04;
+        f.radius += 2.5;
+        if (f.alpha <= 0) {
+          flashes.splice(i, 1);
+        }
+      }
+
+      // 5. Update & Draw Rockets
       for (let i = rockets.length - 1; i >= 0; i--) {
         const r = rockets[i];
         r.update();
@@ -287,7 +417,7 @@ export default function EveningSkyFireworks() {
         }
       }
 
-      // 5. Update & Draw Exploding Particles
+      // 6. Update & Draw Exploding Particles
       for (let i = particles.length - 1; i >= 0; i--) {
         const p = particles[i];
         p.update();
@@ -297,38 +427,37 @@ export default function EveningSkyFireworks() {
         }
       }
 
-      // 6. Draw Subtle Distant City / Festival Skyline Silhouette (like reference image)
-      drawSkylineSilhouette(ctx, width, height);
+      // 7. Draw Distant Skyline / Ferris Wheel Silhouette along horizon
+      drawSkyline(ctx, width, height);
     };
 
-    // Helper: Draw subtle festival skyline / ferris wheel silhouette at the bottom
-    const drawSkylineSilhouette = (ctx, w, h) => {
+    // Helper: Skyline silhouette
+    const drawSkyline = (ctx, w, h) => {
       ctx.save();
-      ctx.fillStyle = 'rgba(10, 3, 20, 0.75)';
+      ctx.fillStyle = 'rgba(8, 2, 16, 0.8)';
 
-      // Baseline ground
+      // Low rolling city skyline silhouette
       ctx.beginPath();
       ctx.moveTo(0, h);
-      ctx.lineTo(0, h - 35);
-
-      // Low silhouette hill/city profile
-      ctx.quadraticCurveTo(w * 0.25, h - 50, w * 0.5, h - 38);
-      ctx.quadraticCurveTo(w * 0.75, h - 55, w, h - 42);
+      ctx.lineTo(0, h - 38);
+      ctx.quadraticCurveTo(w * 0.22, h - 52, w * 0.48, h - 40);
+      ctx.quadraticCurveTo(w * 0.72, h - 58, w, h - 44);
       ctx.lineTo(w, h);
       ctx.closePath();
       ctx.fill();
 
-      // Subtle ferris wheel outline on right horizon (like reference image!)
-      const fwX = w * 0.68;
-      const fwY = h - 55;
-      const fwR = 26;
-      ctx.strokeStyle = 'rgba(255, 215, 0, 0.18)';
-      ctx.lineWidth = 1;
+      // Ferris Wheel on right horizon
+      const fwX = w * 0.76;
+      const fwY = h - 62;
+      const fwR = 28;
+
+      ctx.strokeStyle = 'rgba(255, 215, 0, 0.25)';
+      ctx.lineWidth = 1.2;
       ctx.beginPath();
       ctx.arc(fwX, fwY, fwR, 0, Math.PI * 2);
       ctx.stroke();
 
-      // Ferris wheel spokes
+      // Spokes
       for (let a = 0; a < Math.PI; a += Math.PI / 4) {
         ctx.beginPath();
         ctx.moveTo(fwX - Math.cos(a) * fwR, fwY - Math.sin(a) * fwR);
@@ -339,18 +468,19 @@ export default function EveningSkyFireworks() {
       // Support legs
       ctx.beginPath();
       ctx.moveTo(fwX, fwY);
-      ctx.lineTo(fwX - 16, h);
+      ctx.lineTo(fwX - 18, h);
       ctx.moveTo(fwX, fwY);
-      ctx.lineTo(fwX + 16, h);
+      ctx.lineTo(fwX + 18, h);
       ctx.stroke();
 
       ctx.restore();
     };
 
-    animate();
+    render();
 
     return () => {
       window.removeEventListener('resize', resize);
+      window.removeEventListener('click', handleSkyClick);
       document.removeEventListener('visibilitychange', handleVisibilityChange);
       cancelAnimationFrame(animationFrameId);
     };
@@ -359,9 +489,8 @@ export default function EveningSkyFireworks() {
   return (
     <canvas
       ref={canvasRef}
-      className="pointer-events-none fixed inset-0 -z-10 w-full h-full overflow-hidden select-none"
+      className="pointer-events-none fixed inset-0 z-0 w-full h-full overflow-hidden select-none"
       aria-hidden="true"
     />
   );
 }
-

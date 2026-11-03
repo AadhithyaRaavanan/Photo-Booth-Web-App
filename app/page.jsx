@@ -231,12 +231,8 @@ export default function PhotoBoothApp() {
   // Transition to Photo Booth (Page 2)
   const handleStartPhotoBooth = () => {
     playChimeSound('click');
-    if (!customerName.trim()) {
-      setShowNameModal(true);
-    } else {
-      setStep('camera');
-      startCamera();
-    }
+    setNameInput(customerName || '');
+    setShowNameModal(true);
   };
 
   const handleSaveNameAndProceed = (e) => {
@@ -1582,44 +1578,55 @@ export default function PhotoBoothApp() {
          ========================================================================= */}
       <AnimatePresence>
         {showNameModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-xl">
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="w-full max-w-sm p-6 sm:p-8 rounded-3xl bg-gradient-to-b from-[#3a0754] to-[#200330] border-2 border-amber-400/70 text-center shadow-2xl relative"
+              className="w-full max-w-sm p-6 sm:p-8 rounded-3xl bg-[#090317]/95 backdrop-blur-2xl border-2 border-cyan-400/50 text-center shadow-[0_0_60px_rgba(6,182,212,0.45)] relative overflow-hidden"
             >
-              <div className="flex justify-center mb-3">
-                <DiyaGraphic size={52} />
+              {/* Ambient Glows */}
+              <div className="absolute -top-12 -right-12 w-32 h-32 bg-cyan-500/20 rounded-full blur-2xl pointer-events-none" />
+              <div className="absolute -bottom-12 -left-12 w-32 h-32 bg-pink-500/20 rounded-full blur-2xl pointer-events-none" />
+
+              <div className="flex justify-center mb-3 relative z-10">
+                <div className="w-14 h-14 rounded-2xl bg-cyan-950/80 border border-cyan-400/40 flex items-center justify-center shadow-[0_0_20px_rgba(6,182,212,0.4)]">
+                  <DiyaGraphic size={40} />
+                </div>
               </div>
-              <h3 className="font-serif text-2xl font-bold text-white mb-1">
+
+              <h3 className="font-serif text-xl sm:text-2xl font-black text-white tracking-wide uppercase drop-shadow mb-1 relative z-10">
                 Personalize Your Portrait
               </h3>
-              <p className="text-xs text-violet-100/75 mb-5">
+              <p className="text-xs text-cyan-100/80 mb-5 relative z-10">
                 Enter your name to appear on your royal festive frame and discount voucher.
               </p>
-              <form onSubmit={handleSaveNameAndProceed} className="space-y-4">
+
+              <form onSubmit={handleSaveNameAndProceed} className="space-y-4 relative z-10">
                 <input
                   type="text"
                   placeholder="Enter your name (e.g. Priya)"
                   value={nameInput}
                   onChange={(e) => setNameInput(e.target.value)}
-                  className="w-full py-3.5 px-4 rounded-xl bg-black/60 border border-violet-400/50 text-white placeholder:text-white/40 text-sm focus:outline-none focus:border-amber-300"
+                  className="w-full py-3.5 px-4 rounded-xl bg-black/70 border border-cyan-400/40 text-white placeholder:text-white/40 text-sm focus:outline-none focus:border-cyan-300 focus:ring-2 focus:ring-cyan-400/30 transition shadow-inner"
                   autoFocus
                 />
+
                 <button
                   type="submit"
                   disabled={!nameInput.trim()}
-                  className="w-full py-3.5 rounded-xl bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 text-black font-bold text-xs uppercase tracking-wider disabled:opacity-50 transition shadow-md"
+                  className="w-full py-3.5 sm:py-4 rounded-full bg-gradient-to-r from-cyan-400 via-cyan-500 to-blue-500 hover:from-cyan-300 hover:to-blue-400 text-slate-950 font-black text-xs uppercase tracking-widest disabled:opacity-40 transition shadow-[0_0_25px_rgba(6,182,212,0.6)] active:scale-95 flex items-center justify-center gap-2"
                 >
-                  CONTINUE TO PHOTO BOOTH
+                  <span>CONTINUE TO PHOTO BOOTH</span>
+                  <ArrowRight className="w-4 h-4 stroke-[3]" />
                 </button>
+
                 <button
                   type="button"
                   onClick={handleSkipName}
-                  className="w-full py-2 text-xs text-violet-200/60 hover:text-white"
+                  className="w-full py-2 text-xs text-cyan-200/75 hover:text-white font-medium tracking-wide transition hover:underline underline-offset-4"
                 >
-                  Skip & Continue as Guest
+                  Skip &amp; Continue as Guest
                 </button>
               </form>
             </motion.div>

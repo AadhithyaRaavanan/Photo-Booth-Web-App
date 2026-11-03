@@ -28,7 +28,7 @@ export default function RootLayout({ children }) {
           rel="stylesheet"
         />
       </head>
-      <body className="bg-[#0e0217] text-champagne min-h-screen selection:bg-gold-500 selection:text-black">
+      <body className="bg-[#030208] text-champagne min-h-screen selection:bg-cyan-400 selection:text-black relative">
         {children}
       </body>
     </html>
