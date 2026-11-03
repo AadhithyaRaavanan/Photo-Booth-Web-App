@@ -19,6 +19,7 @@ import {
   Smartphone,
   AlertTriangle,
   X,
+  Layers,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ExactDiwaliLanding from '@/components/ExactDiwaliLanding';
@@ -26,6 +27,7 @@ import FestiveParticles from '@/components/FestiveParticles';
 import DiyaGraphic from '@/components/DiyaGraphic';
 import RoyalMasterFrame, { composeRoyalMasterPhoto, ROYAL_FRAMES } from '@/components/RoyalMasterFrame';
 import CouponModal from '@/components/CouponModal';
+import OtherMediaModal from '@/components/OtherMediaModal';
 import { playChimeSound } from '@/components/AudioChime';
 
 export default function PhotoBoothApp() {
@@ -37,6 +39,7 @@ export default function PhotoBoothApp() {
   const [nameInput, setNameInput] = useState('');
   const [phoneInput, setPhoneInput] = useState('');
   const [showNameModal, setShowNameModal] = useState(false);
+  const [showOtherMediaModal, setShowOtherMediaModal] = useState(false);
 
   const [shopConfig, setShopConfig] = useState({
     shopName: 'Dream Salon',
@@ -1127,6 +1130,18 @@ export default function PhotoBoothApp() {
                         </button>
                       </div>
 
+                      {/* OTHER MEDIA FORMATS BUTTON */}
+                      <button
+                        onClick={() => {
+                          playChimeSound('click');
+                          setShowOtherMediaModal(true);
+                        }}
+                        className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-amber-500/20 via-pink-500/25 to-amber-500/20 hover:from-amber-500/30 hover:to-pink-500/35 text-amber-200 font-bold text-xs flex items-center justify-center gap-2 border border-amber-400/50 shadow-md transition active:scale-[0.98]"
+                      >
+                        <Layers className="w-4 h-4 text-amber-400" />
+                        <span>OTHER MEDIA SIZES (STORY, SQUARE, REELS...)</span>
+                      </button>
+
                       <button
                         onClick={() => {
                           playChimeSound('click');
@@ -1205,6 +1220,21 @@ export default function PhotoBoothApp() {
                           <span>POST TO WHATSAPP STATUS</span>
                         </div>
                         <ChevronRight className="w-5 h-5" />
+                      </button>
+
+                      {/* OTHER MEDIA FORMATS BUTTON */}
+                      <button
+                        onClick={() => {
+                          playChimeSound('click');
+                          setShowOtherMediaModal(true);
+                        }}
+                        className="w-full py-3.5 px-5 rounded-2xl bg-white/10 hover:bg-white/15 text-amber-200 font-bold text-xs sm:text-sm flex items-center justify-between border border-amber-400/35 transition hover:border-amber-400/60 active:scale-[0.98]"
+                      >
+                        <div className="flex items-center gap-2.5">
+                          <Layers className="w-4 h-4 text-amber-400" />
+                          <span>OTHER MEDIA SIZES (FACEBOOK, SQUARE, REELS...)</span>
+                        </div>
+                        <ChevronRight className="w-5 h-5 text-amber-400/80" />
                       </button>
 
                       <div className="p-3.5 rounded-xl bg-[#390856]/85 border border-violet-400/30 text-xs text-champagne/80 text-center">
@@ -1466,6 +1496,19 @@ export default function PhotoBoothApp() {
         onClose={() => setShowCouponModal(false)}
         coupon={activeCoupon || { customerName: customerName || 'Valued Guest', discount: 'FLAT 30% OFF' }}
         shopConfig={shopConfig}
+      />
+
+      {/* =========================================================================
+          OTHER SOCIAL MEDIA SIZES MODAL (AUTO RESIZE & DOWNLOAD FOR FACEBOOK, REELS, ETC.)
+         ========================================================================= */}
+      <OtherMediaModal
+        isOpen={showOtherMediaModal}
+        onClose={() => setShowOtherMediaModal(false)}
+        rawPhoto={capturedRawPhoto}
+        customerName={customerName || 'Valued Guest'}
+        shopConfig={shopConfig}
+        selectedFrameId={selectedFrameId}
+        discount="FLAT 30% OFF"
       />
     </>
   );

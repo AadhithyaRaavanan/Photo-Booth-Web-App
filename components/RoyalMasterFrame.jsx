@@ -158,7 +158,7 @@ export function getHighContrastDiwaliSealSvg({ discount = '30% OFF', size = 220 
       <path d="${JHAROKHA_SEAL_PATH}" transform="translate(100, 100) scale(0.92) translate(-100, -100)" fill="none" stroke="#ffd54f" stroke-width="1.2" opacity="0.8" />
       <path d="${JHAROKHA_SEAL_PATH}" transform="translate(100, 100) scale(0.85) translate(-100, -100)" fill="none" stroke="#ffd54f" stroke-width="3.2" stroke-linecap="round" stroke-dasharray="0.1 7.2" />
       <path d="${JHAROKHA_SEAL_PATH}" transform="translate(100, 100) scale(0.77) translate(-100, -100)" fill="none" stroke="#ffb300" stroke-width="0.8" opacity="0.6" />
-      <text x="100" y="56" text-anchor="middle" class="seal-header" font-size="12.5" fill="#ffe082">${header}</text>
+      <text x="100" y="56" text-anchor="middle" class="seal-header" font-size="12.5" fill="#ffe082">SHARE &amp; GET</text>
       <line x1="52" y1="63" x2="148" y2="63" stroke="#ffd54f" stroke-width="1.5" stroke-linecap="round" opacity="0.85" />
       <polygon points="100,60 103.5,63 100,66 96.5,63" fill="#ffd54f" />
       <!-- Extra Large 30% Hero -->
@@ -221,6 +221,11 @@ export function getDiwaliBrandBoxSvg({
       <stop offset="50%" stop-color="#d97706" />
       <stop offset="100%" stop-color="#92400e" />
     </linearGradient>
+    <linearGradient id="ctaBtnGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#e60067" />
+      <stop offset="50%" stop-color="#ff3b30" />
+      <stop offset="100%" stop-color="#ff9500" />
+    </linearGradient>
     <filter id="boxShadow">
       <feDropShadow dx="0" dy="3" stdDeviation="5" flood-color="#000000" flood-opacity="0.9" />
     </filter>
@@ -239,27 +244,24 @@ export function getDiwaliBrandBoxSvg({
       <ellipse cx="18" cy="16" rx="2" ry="4" fill="#ffffff" opacity="0.9" />
     </g>
 
-    <!-- Brand Name (Enlarged to 26px) -->
-    <text x="72" y="33" class="gold-title" font-size="26" fill="url(#brandGoldText)">${cleanName}</text>
+    <!-- Brand Name (24px Cinzel Gold) -->
+    <text x="64" y="32" class="gold-title" font-size="24" fill="url(#brandGoldText)">${cleanName}</text>
 
-    <!-- Tagline (Enlarged to 11px) -->
-    <text x="74" y="50" class="gold-tagline" font-size="11" fill="#fae7b4">${cleanTagline}</text>
+    <!-- Tagline (10px Plus Jakarta Sans) -->
+    <text x="66" y="49" class="gold-tagline" font-size="10" fill="#fae7b4">${cleanTagline}</text>
 
-    <!-- Personalized Greeting (Enlarged to 14.5px) -->
-    ${cleanCustomer ? `
-      <text x="74" y="69" class="gold-greeting" font-size="14.5" fill="#ffd54f">
-        ✨ Happy Diwali, <tspan fill="#ffffff" font-weight="900">${cleanCustomer}</tspan>!
-      </text>
-    ` : ''}
+    <!-- Customer Greeting or Celebration -->
+    <text x="66" y="68" class="gold-greeting" font-size="13" fill="#ffd54f">
+      ✨ Happy Diwali${cleanCustomer ? `, <tspan fill="#ffffff" font-weight="900">${cleanCustomer}</tspan>!` : ' Celebration!'}
+    </text>
 
-    <!-- Right Authentic Vector Diya Icon + Diwali Flourish (Enlarged) -->
-    <g transform="translate(535, 17) scale(1.1)">
-      <path d="M 4 24 Q 18 36 32 24 Q 28 32 18 34 Q 8 32 4 24 Z" fill="url(#bowlGrad)" stroke="#fef08a" stroke-width="0.8" />
-      <ellipse cx="18" cy="24" rx="14" ry="3.5" fill="#f59e0b" stroke="#fde047" stroke-width="0.8" />
-      <path d="M 18 22 C 14 18 13 11 18 2 C 23 11 22 18 18 22 Z" fill="url(#flameGrad)" />
-      <ellipse cx="18" cy="16" rx="2" ry="4" fill="#ffffff" opacity="0.9" />
+    <!-- Eye-Catchy Radiant Call-To-Action Pill: Share & Get Offer -->
+    <g transform="translate(370, 16)">
+      <rect x="0" y="0" width="216" height="52" rx="26" ry="26" fill="url(#ctaBtnGrad)" stroke="#ffd700" stroke-width="2" />
+      <rect x="3" y="3" width="210" height="46" rx="23" ry="23" fill="none" stroke="#fff3cd" stroke-width="1" stroke-dasharray="3 3" opacity="0.8" />
+      <text x="108" y="24" text-anchor="middle" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-weight="900" font-size="12" letter-spacing="1.2" fill="#ffffff">✨ SHARE &amp; GET OFFER ✨</text>
+      <text x="108" y="41" text-anchor="middle" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-weight="800" font-size="9.5" letter-spacing="1" fill="#fffbeb">CLAIM 30% OFF PASS</text>
     </g>
-    <text x="554" y="66" text-anchor="middle" class="gold-greeting" font-size="11" letter-spacing="1.5" fill="#ffd700">Diwali</text>
   </g>
 </svg>`;
 }
@@ -355,40 +357,136 @@ export async function composeRoyalMasterPhoto({
   shopConfig = {},
   discount = 'FLAT 30% OFF',
   selectedFrameId = 'frame-1',
+  targetWidth = 1080,
+  targetHeight = 1440,
+  formatId = 'photobooth-classic',
 }) {
   const currentFrame = ROYAL_FRAMES.find((f) => f.id === selectedFrameId) || ROYAL_FRAMES[0];
   const canvas = document.createElement('canvas');
-  const width = 1080;
-  const height = 1440; // 3:4 portrait aspect ratio
+  const width = targetWidth;
+  const height = targetHeight;
   canvas.width = width;
   canvas.height = height;
   const ctx = canvas.getContext('2d');
 
-  // 1. Draw customer photograph (scaled & centered to fill 1080x1440)
+  const isLandscape = width > height * 1.15;
+
+  if (isLandscape) {
+    // -----------------------------------------------------------------
+    // LANDSCAPE COMPOSITION (1.91:1, e.g. 1200 x 630 Facebook / Web)
+    // -----------------------------------------------------------------
+    const bgGrad = ctx.createLinearGradient(0, 0, width, height);
+    bgGrad.addColorStop(0, '#260214');
+    bgGrad.addColorStop(0.5, '#16010c');
+    bgGrad.addColorStop(1, '#080004');
+    ctx.fillStyle = bgGrad;
+    ctx.fillRect(0, 0, width, height);
+
+    const portraitH = Math.round(height * 0.94);
+    const portraitW = Math.round(portraitH * 0.75);
+    const portraitX = Math.round((width - portraitW) / 2);
+    const portraitY = Math.round((height - portraitH) / 2);
+
+    if (imageElement) {
+      const imgW = imageElement.videoWidth || imageElement.width || 1080;
+      const imgH = imageElement.videoHeight || imageElement.height || 1440;
+      const imgRatio = imgW / imgH;
+      const portRatio = portraitW / portraitH;
+      let sx = 0, sy = 0, sw = imgW, sh = imgH;
+      if (imgRatio > portRatio) {
+        sw = imgH * portRatio;
+        sx = (imgW - sw) / 2;
+      } else {
+        sh = imgW / portRatio;
+        sy = (imgH - sh) / 2;
+      }
+      ctx.drawImage(imageElement, sx, sy, sw, sh, portraitX, portraitY, portraitW, portraitH);
+    }
+
+    await new Promise((resolve) => {
+      const frameImg = new Image();
+      frameImg.crossOrigin = 'anonymous';
+      frameImg.onload = () => {
+        ctx.drawImage(frameImg, portraitX, portraitY, portraitW, portraitH);
+        resolve();
+      };
+      frameImg.onerror = resolve;
+      frameImg.src = `${currentFrame.image}?v=11`;
+    });
+
+    const sealWidth = Math.round(portraitW * 0.28);
+    const sealX = portraitX + portraitW - sealWidth - 8;
+    const sealY = portraitY + 8;
+    const sealSvgDataUri = `data:image/svg+xml;utf8,${encodeURIComponent(
+      getHighContrastDiwaliSealSvg({ discount, size: sealWidth })
+    )}`;
+
+    await new Promise((resolve) => {
+      const sImg = new Image();
+      sImg.onload = () => {
+        ctx.save();
+        ctx.shadowColor = 'rgba(0, 0, 0, 0.7)';
+        ctx.shadowBlur = 14;
+        ctx.drawImage(sImg, sealX, sealY, sealWidth, sealWidth);
+        ctx.restore();
+        resolve();
+      };
+      sImg.onerror = resolve;
+      sImg.src = sealSvgDataUri;
+    });
+
+    const boxW = Math.round(portraitW * 0.95);
+    const boxH = Math.round(boxW * (85 / 600));
+    const boxX = portraitX + Math.round((portraitW - boxW) / 2);
+    const boxY = portraitY + portraitH - boxH - 10;
+
+    const brandSvgDataUri = `data:image/svg+xml;utf8,${encodeURIComponent(
+      getDiwaliBrandBoxSvg({
+        shopName: shopConfig.shopName || 'Dream Salon',
+        shopTagline: shopConfig.shopTagline || 'BEAUTY · STYLE · CONFIDENCE',
+        customerName,
+        width: boxW,
+        height: boxH,
+      })
+    )}`;
+
+    await new Promise((resolve) => {
+      const bImg = new Image();
+      bImg.onload = () => {
+        ctx.save();
+        ctx.shadowColor = 'rgba(0, 0, 0, 0.85)';
+        ctx.shadowBlur = 16;
+        ctx.drawImage(bImg, boxX, boxY, boxW, boxH);
+        ctx.restore();
+        resolve();
+      };
+      bImg.onerror = resolve;
+      bImg.src = brandSvgDataUri;
+    });
+
+    return canvas.toDataURL('image/jpeg', 0.95);
+  }
+
+  // -----------------------------------------------------------------
+  // PORTRAIT & SQUARE COMPOSITION (1080x1440, 1080x1920 Story, 1080x1350, 1080x1080 Square, etc.)
+  // -----------------------------------------------------------------
   if (imageElement) {
-    const imgRatio = imageElement.videoWidth
-      ? imageElement.videoWidth / imageElement.videoHeight
-      : imageElement.width / imageElement.height;
+    const imgW = imageElement.videoWidth || imageElement.width || 1080;
+    const imgH = imageElement.videoHeight || imageElement.height || 1440;
+    const imgRatio = imgW / imgH;
     const canvasRatio = width / height;
 
-    let sx = 0,
-      sy = 0,
-      sw = imageElement.videoWidth || imageElement.width,
-      sh = imageElement.videoHeight || imageElement.height;
-
+    let sx = 0, sy = 0, sw = imgW, sh = imgH;
     if (imgRatio > canvasRatio) {
-      const newWidth = sh * canvasRatio;
-      sx = (sw - newWidth) / 2;
-      sw = newWidth;
+      sw = imgH * canvasRatio;
+      sx = (imgW - sw) / 2;
     } else {
-      const newHeight = sw / canvasRatio;
-      sy = (sh - newHeight) / 2;
-      sh = newHeight;
+      sh = imgW / canvasRatio;
+      sy = (imgH - sh) / 2;
     }
 
     ctx.drawImage(imageElement, sx, sy, sw, sh, 0, 0, width, height);
   } else {
-    // Fallback gradient
     const grad = ctx.createLinearGradient(0, 0, 0, height);
     grad.addColorStop(0, '#2e0417');
     grad.addColorStop(0.5, '#1e0210');
