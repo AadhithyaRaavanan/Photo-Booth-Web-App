@@ -105,6 +105,17 @@
   ],
   "submissions": [
     {
+      "id": "sub-1793811558783",
+      "customerName": "Aathithyan Live Test",
+      "discount": "FLAT 30% OFF",
+      "couponCode": "DIWALI-VIP-30",
+      "platform": "Instagram_Story",
+      "status": "APPROVED",
+      "createdAt": "2026-11-04T16:59:18.783Z",
+      "verifiedAt": "2026-11-04T16:59:18.783Z",
+      "isRedeemed": false
+    },
+    {
       "id": "sub-1793805866594",
       "customerName": "Aathithyan Test",
       "discount": "FLAT 30% OFF",
@@ -178,9 +189,9 @@
   ],
   "stats": {
     "totalVisits": 158,
-    "photosCaptured": 91,
-    "sharesSubmitted": 55,
-    "couponsIssued": 44,
+    "photosCaptured": 92,
+    "sharesSubmitted": 56,
+    "couponsIssued": 45,
     "couponsRedeemed": 19
   }
 }
