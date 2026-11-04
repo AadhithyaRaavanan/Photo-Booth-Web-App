@@ -865,10 +865,10 @@ export default function PhotoBoothApp() {
                   </div>
 
                   {/* Main Studio Area: Camera Phone Card + Side Frames Panel */}
-                  <div className="w-full flex flex-col md:flex-row items-center md:items-stretch justify-center gap-6 lg:gap-8 relative select-none">
-                    {/* Left Column: The Spacious, Wide Camera Card */}
-                    <div className="flex flex-col items-center">
-                      <div className="w-full max-w-[380px] sm:max-w-[450px] md:max-w-[470px] rounded-3xl overflow-hidden relative shadow-[0_20px_60px_rgba(0,0,0,0.85)] border border-[#e8a33d]/40 bg-[#0d0414] flex flex-col justify-between">
+                  <div className="w-full flex flex-col md:flex-row items-center md:items-start justify-center gap-6 lg:gap-8 relative select-none">
+                    {/* Left Column: The Spacious, Wide Camera Card (Identical width & scaling to after-photo preview) */}
+                    <div className="flex-1 max-w-[380px] sm:max-w-[450px] md:max-w-[470px] w-full flex flex-col items-center">
+                      <div className="w-full rounded-3xl overflow-hidden relative shadow-[0_20px_60px_rgba(0,0,0,0.85)] border border-[#e8a33d]/40 bg-[#0d0414] flex flex-col justify-between">
                         {/* Camera Feed & Transparent Royal Festive Frame with Authentic 3:4 Aspect Ratio */}
                         <div className="relative w-full aspect-[3/4] overflow-hidden bg-neutral-950">
                           {/* 1. Live Video Element: ABSOLUTE INSET-0 to fill the frame completely */}
@@ -1006,7 +1006,7 @@ export default function PhotoBoothApp() {
                       </div>
 
                       {/* Friendly Action Bar Under the Card */}
-                      <div className="mt-3 flex items-center justify-center gap-2 w-full max-w-[380px] sm:max-w-[450px] flex-wrap text-center">
+                      <div className="mt-3 flex items-center justify-center gap-2 w-full flex-wrap text-center">
                         <button
                           onClick={() => nativeCameraInputRef.current?.click()}
                           className="px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-[11px] font-medium text-[#b5a8be] hover:text-[#f6ebdd] hover:bg-white/10 flex items-center gap-1.5 transition"
@@ -1033,7 +1033,7 @@ export default function PhotoBoothApp() {
                     </div>
 
                     {/* Right Column: Royal Frame Studio Side Panel (Desktop / Tablet) */}
-                    <div className="hidden md:flex flex-col w-72 lg:w-80 self-stretch min-h-[580px] rounded-3xl bg-[#14051f]/90 border border-[#e8a33d]/30 shadow-2xl p-4 overflow-hidden backdrop-blur-sm">
+                    <div className="hidden md:flex flex-col w-72 lg:w-80 h-[560px] sm:h-[600px] lg:h-[640px] max-h-[calc(100vh-140px)] rounded-3xl bg-[#14051f]/90 border border-[#e8a33d]/30 shadow-2xl p-4 overflow-hidden backdrop-blur-sm">
                       <div className="flex items-center justify-between pb-3 border-b border-[#e8a33d]/20 shrink-0">
                         <div>
                           <h3 className="font-serif text-sm sm:text-base font-semibold text-[#f6ebdd]">
@@ -1049,7 +1049,7 @@ export default function PhotoBoothApp() {
                       </div>
 
                       {/* Scrollable Frame Cards List (Curated Catalogue Aesthetic) */}
-                      <div className="flex-1 overflow-y-auto pr-1 py-3 space-y-2 boutique-scrollbar">
+                      <div className="flex-1 overflow-y-auto min-h-0 pr-1.5 py-3 space-y-2 boutique-scrollbar">
                         {ROYAL_FRAMES.map((f) => {
                           const isSelected = selectedFrameId === f.id;
                           return (
