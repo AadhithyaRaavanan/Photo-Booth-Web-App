@@ -8,6 +8,7 @@ export const revalidate = 0;
 export async function GET() {
   const store = getStore();
 
+  let totalVisits = store.stats.totalVisits || 0;
   let photosCaptured = store.stats.photosCaptured || 0;
   let couponsIssued = store.stats.couponsIssued || 0;
   let recentPhotos = [];
@@ -16,9 +17,10 @@ export async function GET() {
 
   if (prisma) {
     try {
-      const [pCount, cCount, pList, cList] = await Promise.all([
+      const [pCount, cCount, visitRow, pList, cList] = await Promise.all([
         prisma.photoCapture.count(),
         prisma.couponClaim.count(),
+        prisma.storeMetric.findUnique({ where: { key: 'total_visits' } }).catch(() => null),
         prisma.photoCapture.findMany({
           take: 10,
           orderBy: { createdAt: 'desc' },
@@ -31,6 +33,9 @@ export async function GET() {
 
       photosCaptured = pCount;
       couponsIssued = cCount;
+      if (visitRow && typeof visitRow.value === 'number') {
+        totalVisits = visitRow.value;
+      }
       recentPhotos = pList;
       recentCoupons = cList;
       isSupabaseConnected = true;
@@ -55,7 +60,7 @@ export async function GET() {
   return NextResponse.json({
     success: true,
     stats: {
-      totalVisits: store.stats.totalVisits || 0,
+      totalVisits,
       photosCaptured,
       couponsIssued,
       couponsRedeemed: store.stats.couponsRedeemed || 0,

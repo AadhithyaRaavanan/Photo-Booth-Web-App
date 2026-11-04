@@ -103,95 +103,12 @@
       "active": true
     }
   ],
-  "submissions": [
-    {
-      "id": "sub-1793811558783",
-      "customerName": "Aathithyan Live Test",
-      "discount": "FLAT 30% OFF",
-      "couponCode": "DIWALI-VIP-30",
-      "platform": "Instagram_Story",
-      "status": "APPROVED",
-      "createdAt": "2026-11-04T16:59:18.783Z",
-      "verifiedAt": "2026-11-04T16:59:18.783Z",
-      "isRedeemed": false
-    },
-    {
-      "id": "sub-1793805866594",
-      "customerName": "Aathithyan Test",
-      "discount": "FLAT 30% OFF",
-      "couponCode": "DIWALI-AAT-30",
-      "platform": "Instagram_Story",
-      "status": "APPROVED",
-      "createdAt": "2026-11-04T15:24:26.594Z",
-      "verifiedAt": "2026-11-04T15:24:26.594Z",
-      "isRedeemed": false
-    },
-    {
-      "id": "sub-1793795504474-873",
-      "customerName": "Test",
-      "phone": "+91 9876543210",
-      "frameId": "frame-1",
-      "frameName": "Twin Royal Peacocks",
-      "discount": "FLAT 30% OFF",
-      "photoUrl": "",
-      "screenshotUrl": "",
-      "status": "APPROVED",
-      "couponCode": "DIWALI-TES-7218",
-      "createdAt": "2026-11-04T12:31:44.474Z",
-      "verifiedAt": "2026-11-04T12:31:44.474Z",
-      "isRedeemed": false
-    },
-    {
-      "id": "sub-1793793351550-670",
-      "customerName": "Test User",
-      "phone": "1234567890",
-      "frameId": "frame-1",
-      "frameName": "Twin Royal Peacocks",
-      "discount": "FLAT 30% OFF",
-      "photoUrl": "",
-      "screenshotUrl": "",
-      "status": "APPROVED",
-      "couponCode": "DIWALI-TES-1131",
-      "createdAt": "2026-11-04T11:55:51.550Z",
-      "verifiedAt": "2026-11-04T11:55:51.603Z",
-      "isRedeemed": false
-    },
-    {
-      "id": "sub-101",
-      "customerName": "Aanya Sharma",
-      "phone": "+91 98765 43210",
-      "frameId": "frame-1",
-      "frameName": "Royal Diwali",
-      "discount": "FLAT 30% OFF",
-      "photoUrl": "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=600&q=80",
-      "screenshotUrl": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=600&q=80",
-      "status": "APPROVED",
-      "couponCode": "DIWALI-AAN-8421",
-      "createdAt": "2026-10-31T13:14:11.588Z",
-      "verifiedAt": "2026-10-31T14:14:11.589Z",
-      "isRedeemed": false
-    },
-    {
-      "id": "sub-102",
-      "customerName": "Rohan Kapoor",
-      "phone": "+91 91234 56789",
-      "frameId": "frame-3",
-      "frameName": "Traditional",
-      "discount": "FLAT 30% OFF",
-      "photoUrl": "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=600&q=80",
-      "screenshotUrl": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=600&q=80",
-      "status": "PENDING",
-      "couponCode": null,
-      "createdAt": "2026-10-31T14:44:11.589Z",
-      "verifiedAt": null,
-      "isRedeemed": false
-    }
-  ],
+  "submissions": [],
   "stats": {
-    "totalVisits": 158,
-    "photosCaptured": 92,
-    "sharesSubmitted": 56,
-    "couponsIssued": 45,
-    "couponsRedeemed": 19
+    "totalVisits": 0,
+    "photosCaptured": 0,
+    "sharesSubmitted": 0,
+    "couponsIssued": 0,
+    "couponsRedeemed": 0
   }
 }
