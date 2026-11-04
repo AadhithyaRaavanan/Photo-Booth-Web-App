@@ -73,3 +73,4 @@ verifyVercelAdmin().catch((err) => {
   console.error('Error during Vercel admin verification:', err);
   process.exit(1);
 });
+

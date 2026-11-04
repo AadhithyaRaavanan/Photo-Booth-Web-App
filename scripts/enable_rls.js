@@ -30,3 +30,4 @@ async function enableRLS() {
 }
 
 enableRLS();
+
