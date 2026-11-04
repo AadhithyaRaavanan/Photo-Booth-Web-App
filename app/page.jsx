@@ -6,8 +6,6 @@ import {
   RotateCcw,
   Sparkles,
   Share2,
-  UploadCloud,
-  CheckCircle2,
   ArrowRight,
   ChevronLeft,
   ChevronRight,
@@ -15,10 +13,6 @@ import {
   Gift,
   RefreshCw,
   Image as ImageIcon,
-  ShieldCheck,
-  Smartphone,
-  AlertTriangle,
-  X,
   Layers,
 } from 'lucide-react';
 import dynamic from 'next/dynamic';
@@ -34,13 +28,12 @@ const CouponModal = dynamic(() => import('@/components/CouponModal'), { ssr: fal
 const OtherMediaModal = dynamic(() => import('@/components/OtherMediaModal'), { ssr: false });
 
 export default function PhotoBoothApp() {
-  // App navigation: 'landing' (Page 1) or 'camera' | 'preview' | 'share' | 'verification' (Page 2: Photo Booth)
+  // App navigation: 'landing' (Page 1) or 'camera' | 'preview' (Page 2: Photo Booth)
   const [step, setStep] = useState('landing');
 
   // Customer & Store info
   const [customerName, setCustomerName] = useState('');
   const [nameInput, setNameInput] = useState('');
-  const [phoneInput, setPhoneInput] = useState('');
   const [showNameModal, setShowNameModal] = useState(false);
   const [showOtherMediaModal, setShowOtherMediaModal] = useState(false);
 
@@ -71,19 +64,13 @@ export default function PhotoBoothApp() {
   const [storyPhotoUrl, setStoryPhotoUrl] = useState(null);
   const [isComposing, setIsComposing] = useState(false);
 
-  // Verification & Submission state
-  const [screenshotFile, setScreenshotFile] = useState(null);
-  const [screenshotPreview, setScreenshotPreview] = useState(null);
-  const [submissionId, setSubmissionId] = useState(null);
-  const [submissionStatus, setSubmissionStatus] = useState(null); // 'PENDING' | 'APPROVED'
+  // Rewards & Modals state
   const [activeCoupon, setActiveCoupon] = useState(null);
   const [showCouponModal, setShowCouponModal] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const videoRef = useRef(null);
   const fileInputRef = useRef(null);
   const nativeCameraInputRef = useRef(null);
-  const screenshotInputRef = useRef(null);
 
   // Fetch campaign config on mount
   useEffect(() => {
@@ -671,83 +658,6 @@ export default function PhotoBoothApp() {
     }
   };
 
-  // Screenshot Selection & Upload
-  const handleScreenshotChange = (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    setScreenshotFile(file);
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      setScreenshotPreview(event.target.result);
-    };
-    reader.readAsDataURL(file);
-  };
-
-  // Submit Screenshot: Requires screenshot + mandatory 10-digit numeric phone number
-  const handleSubmitVerification = async () => {
-    if (!screenshotPreview) {
-      alert('Please select or upload your story screenshot first.');
-      return;
-    }
-
-    const cleanPhone = (phoneInput || '').replace(/\D/g, '');
-    if (cleanPhone.length !== 10) {
-      alert('Please enter a valid 10-digit mobile phone number (numbers only).');
-      return;
-    }
-
-    setIsSubmitting(true);
-    playChimeSound('click');
-
-    const cleanCustomer = (customerName || '').trim() || 'Valued Guest';
-    const cleanPrefix = cleanCustomer.replace(/[^a-zA-Z]/g, '').slice(0, 3).toUpperCase() || 'VIP';
-    const fallbackCode = `DIWALI-${cleanPrefix}-${Math.floor(1000 + Math.random() * 9000)}`;
-
-    const fallbackSubmission = {
-      id: `sub-${Date.now()}`,
-      customerName: cleanCustomer,
-      phone: `+91 ${cleanPhone}`,
-      discount: 'FLAT 30% OFF',
-      couponCode: fallbackCode,
-      status: 'APPROVED',
-      verifiedAt: new Date().toISOString(),
-    };
-
-    try {
-      const res = await fetch('/api/submissions', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          customerName: cleanCustomer,
-          phone: cleanPhone,
-          frameId: selectedFrameId,
-          discount: 'FLAT 30% OFF',
-        }),
-      });
-
-      const data = await res.json();
-      const approvedSubmission = data?.success && data?.submission ? data.submission : fallbackSubmission;
-
-      setSubmissionId(approvedSubmission.id);
-      setActiveCoupon(approvedSubmission);
-      setSubmissionStatus('APPROVED');
-      setStep('verification');
-      playChimeSound('celebrate');
-      setShowCouponModal(true);
-    } catch (e) {
-      console.warn('Submission network fallback', e);
-      setSubmissionId(fallbackSubmission.id);
-      setActiveCoupon(fallbackSubmission);
-      setSubmissionStatus('APPROVED');
-      setStep('verification');
-      playChimeSound('celebrate');
-      setShowCouponModal(true);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
   return (
     <>
       {/* =========================================================================
@@ -796,14 +706,7 @@ export default function PhotoBoothApp() {
               </span>
             </div>
 
-            {submissionStatus === 'APPROVED' ? (
-              <button
-                onClick={() => setShowCouponModal(true)}
-                className="px-3.5 py-1.5 rounded-full bg-emerald-600/90 border border-emerald-400 text-xs font-bold text-white shadow-lg animate-pulse"
-              >
-                30% OFF Pass
-              </button>
-            ) : (
+            {step === 'camera' ? (
               <button
                 onClick={handleToggleCamera}
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/60 border border-amber-400/40 text-xs font-medium text-amber-200 hover:bg-black/80 transition"
@@ -811,6 +714,17 @@ export default function PhotoBoothApp() {
               >
                 <RotateCcw className="w-3.5 h-3.5" />
                 <span className="hidden sm:inline">Flip Camera</span>
+              </button>
+            ) : (
+              <button
+                onClick={() => {
+                  playChimeSound('celebrate');
+                  setShowCouponModal(true);
+                }}
+                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-gradient-to-r from-amber-500/30 to-amber-400/20 border border-amber-400 text-xs font-bold text-amber-200 hover:bg-amber-400/30 transition shadow-md"
+              >
+                <Gift className="w-3.5 h-3.5 text-amber-400" />
+                <span>30% OFF Pass</span>
               </button>
             )}
           </header>
@@ -1133,30 +1047,36 @@ export default function PhotoBoothApp() {
               )}
 
               {/* ---------------------------------------------------------------
-                  STAGE 2B: CAPTURED PHOTO PREVIEW
+                  STAGE 2B: FINAL FESTIVE PORTRAIT (SHARING & DOWNLOAD OPTIONS)
+                  The app seamlessly culminates here with instant sharing & saving
                  --------------------------------------------------------------- */}
-              {step === 'preview' && (
+              {(step === 'preview' || step === 'share') && (
                 <div className="w-full flex-1 flex flex-col justify-center py-2 sm:py-4">
-                  <div className="text-center pb-4">
-                    <h2 className="font-serif text-2xl sm:text-3xl font-bold text-white">
+                  <div className="text-center pb-3">
+                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-400/15 border border-amber-400/40 text-amber-300 text-xs font-semibold mb-1.5 shadow-[0_0_15px_rgba(255,215,0,0.2)]">
+                      <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                      <span>Festive Portrait Ready</span>
+                    </div>
+                    <h2 className="font-serif text-2xl sm:text-3xl font-bold text-white tracking-wide">
                       Your Festive Portrait
                     </h2>
-                    <p className="text-xs sm:text-sm text-champagne/75 mt-1">
-                      Framed with Dream Salon royal Diwali honors.
+                    <p className="text-xs sm:text-sm text-cyan-100/80 max-w-md mx-auto mt-0.5">
+                      Framed with {shopConfig.shopName || 'Dream Salon'} royal Diwali honors.
                     </p>
                   </div>
 
-                  <div className="w-full flex flex-col md:flex-row items-center justify-center gap-6 my-auto">
-                    <div className="flex-1 max-w-xs sm:max-w-sm w-full">
+                  <div className="w-full flex flex-col md:flex-row items-center md:items-start justify-center gap-6 lg:gap-8 my-auto">
+                    {/* Left: The Framed Photo & Quick Action Bar */}
+                    <div className="flex-1 max-w-[320px] sm:max-w-sm w-full flex flex-col items-center">
                       {brandedPhotoUrl ? (
                         <motion.div
-                          initial={{ scale: 0.92, opacity: 0 }}
+                          initial={{ scale: 0.95, opacity: 0 }}
                           animate={{ scale: 1, opacity: 1 }}
-                          className="rounded-2xl overflow-hidden border-2 border-amber-400/80 shadow-[0_0_40px_rgba(255,215,0,0.35)]"
+                          className="w-full rounded-2xl overflow-hidden border-2 border-amber-400/80 shadow-[0_0_40px_rgba(255,215,0,0.35)] relative group"
                         >
                           <img
                             src={brandedPhotoUrl}
-                            alt="Branded Festive Moment"
+                            alt="Festive Portrait"
                             className="w-full h-auto object-cover"
                           />
                         </motion.div>
@@ -1165,126 +1085,71 @@ export default function PhotoBoothApp() {
                           Generating composition...
                         </div>
                       )}
-                    </div>
 
-                    <div className="w-full md:max-w-xs flex flex-col space-y-3">
-                      <div className="p-5 rounded-2xl bg-[#0b041c]/80 backdrop-blur-md border border-cyan-400/35 text-xs text-cyan-100/90 space-y-2 shadow-[0_0_25px_rgba(0,0,0,0.5)]">
-                        <span className="font-serif font-bold text-cyan-300 text-sm block">
-                          ✨ Ready to Unlock 30% OFF
-                        </span>
-                        <p>
-                          Share your portrait to your Instagram Story or WhatsApp Status to unlock your exclusive voucher.
-                        </p>
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-3">
+                      {/* Instant Save & Retake Buttons right below the photo */}
+                      <div className="grid grid-cols-2 gap-2.5 w-full mt-3">
                         <button
                           onClick={() => {
                             playChimeSound('click');
                             setStep('camera');
                             startCamera();
                           }}
-                          className="py-3 px-4 rounded-xl bg-white/10 hover:bg-white/15 text-white font-medium text-xs flex items-center justify-center gap-2 border border-white/10 transition"
+                          className="py-3 px-3 rounded-xl bg-white/10 hover:bg-white/15 text-white font-semibold text-xs flex items-center justify-center gap-2 border border-white/15 transition active:scale-95 shadow-sm"
                         >
-                          <RotateCcw className="w-4 h-4" />
+                          <RotateCcw className="w-4 h-4 text-amber-300" />
                           <span>RETAKE</span>
                         </button>
 
                         <button
                           onClick={handleDownloadPhoto}
-                          className="py-3 px-4 rounded-xl bg-cyan-950/70 hover:bg-cyan-900/80 text-cyan-200 font-semibold text-xs flex items-center justify-center gap-2 border border-cyan-400/40 transition shadow-sm"
+                          className="py-3 px-3 rounded-xl bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-400 hover:brightness-105 text-black font-black text-xs flex items-center justify-center gap-1.5 shadow-[0_0_20px_rgba(255,215,0,0.4)] transition active:scale-95"
                         >
-                          <Download className="w-4 h-4" />
+                          <Download className="w-4 h-4 stroke-[2.5]" />
                           <span>SAVE PHOTO</span>
                         </button>
                       </div>
-
-                      <button
-                        onClick={() => {
-                          playChimeSound('click');
-                          setStep('share');
-                        }}
-                        className="w-full py-4 px-6 rounded-xl bg-gradient-to-r from-cyan-500 via-blue-600 to-indigo-600 hover:from-cyan-400 hover:to-blue-500 text-white font-sans font-bold text-sm tracking-wide shadow-[0_0_25px_rgba(6,182,212,0.5)] flex items-center justify-center gap-2 transition active:scale-[0.98]"
-                      >
-                        <span>CONTINUE TO SHARE & REWARDS</span>
-                        <ArrowRight className="w-4 h-4 stroke-[3]" />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* ---------------------------------------------------------------
-                  STAGE 2C: SOCIAL MEDIA SHARING
-                 --------------------------------------------------------------- */}
-              {step === 'share' && (
-                <div className="w-full flex-1 flex flex-col justify-center py-2 sm:py-4">
-                  <div className="text-center pb-4">
-                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-500/20 border border-cyan-400/40 text-cyan-300 text-xs font-semibold mb-2 shadow-[0_0_15px_rgba(6,182,212,0.3)]">
-                      <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
-                      <span>Step 2 of 3</span>
-                    </div>
-                    <h2 className="font-serif text-2xl sm:text-3xl font-bold text-white tracking-wide">
-                      Share & Unlock Offer
-                    </h2>
-                    <p className="text-xs sm:text-sm text-cyan-100/80 max-w-md mx-auto mt-1">
-                      Share it on Instagram Story or WhatsApp Status and unlock your exclusive 30% OFF festive pass.
-                    </p>
-                  </div>
-
-                  <div className="w-full flex flex-col md:flex-row items-center justify-center gap-6 my-auto">
-                    <div className="max-w-[200px] md:max-w-xs w-full">
-                      {brandedPhotoUrl && (
-                        <div className="rounded-2xl overflow-hidden border-2 border-cyan-400/60 shadow-[0_0_30px_rgba(6,182,212,0.3)] relative group">
-                          <img src={brandedPhotoUrl} alt="Thumbnail" className="w-full h-auto object-cover" />
-                          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition">
-                            <button
-                              onClick={handleDownloadPhoto}
-                              className="p-2.5 rounded-full bg-cyan-400 text-slate-950 shadow-lg hover:scale-110 transition"
-                            >
-                              <Download className="w-5 h-5" />
-                            </button>
-                          </div>
-                        </div>
-                      )}
                     </div>
 
+                    {/* Right: Sharing, More Media Sizes & Bonus Pass */}
                     <div className="w-full md:max-w-md flex flex-col space-y-3">
-                      <button
-                        onClick={handleShareInstagram}
-                        className="w-full py-4 px-5 rounded-2xl bg-gradient-to-r from-[#e1306c] via-[#fd1d1d] to-[#f77737] text-white font-bold text-xs sm:text-sm shadow-md flex items-center justify-between transition hover:opacity-95 active:scale-[0.98]"
-                      >
-                        <div className="flex items-center gap-3 text-left">
-                          <div className="w-6 h-6 rounded-lg border-2 border-white flex items-center justify-center shrink-0">
-                            <div className="w-2.5 h-2.5 rounded-full border-2 border-white" />
+                      {/* Sharing Section */}
+                      <div className="space-y-2">
+                        <button
+                          onClick={handleShareInstagram}
+                          className="w-full py-4 px-5 rounded-2xl bg-gradient-to-r from-[#e1306c] via-[#fd1d1d] to-[#f77737] text-white font-bold text-xs sm:text-sm shadow-md flex items-center justify-between transition hover:opacity-95 active:scale-[0.98]"
+                        >
+                          <div className="flex items-center gap-3 text-left">
+                            <div className="w-6 h-6 rounded-lg border-2 border-white flex items-center justify-center shrink-0">
+                              <div className="w-2.5 h-2.5 rounded-full border-2 border-white" />
+                            </div>
+                            <div>
+                              <span className="block font-bold">SHARE ON INSTAGRAM STORY</span>
+                              <span className="block text-[10px] text-white/80 font-normal">
+                                Downloads 1080×1920 (9:16) Story · Opens Instagram
+                              </span>
+                            </div>
                           </div>
-                          <div>
-                            <span className="block font-bold">SHARE ON INSTAGRAM STORY</span>
-                            <span className="block text-[10px] text-white/80 font-normal">
-                              Downloads 1080×1920 (9:16) Story · Opens Instagram
-                            </span>
-                          </div>
-                        </div>
-                        <ChevronRight className="w-5 h-5 text-white/90 shrink-0" />
-                      </button>
+                          <ChevronRight className="w-5 h-5 text-white/90 shrink-0" />
+                        </button>
 
-                      <button
-                        onClick={handleShareWhatsApp}
-                        className="w-full py-3.5 px-5 rounded-2xl bg-[#25d366] text-black font-bold text-xs sm:text-sm flex items-center justify-between transition hover:brightness-105 active:scale-[0.98]"
-                      >
-                        <div className="flex items-center gap-2.5 text-left">
-                          <Share2 className="w-4 h-4 shrink-0" />
-                          <div>
-                            <span className="block font-bold">POST TO WHATSAPP STATUS</span>
-                            <span className="block text-[10px] text-black/75 font-normal">
-                              Downloads 1080×1920 (9:16) Status · Opens WhatsApp
-                            </span>
+                        <button
+                          onClick={handleShareWhatsApp}
+                          className="w-full py-3.5 px-5 rounded-2xl bg-[#25d366] text-black font-bold text-xs sm:text-sm flex items-center justify-between transition hover:brightness-105 active:scale-[0.98]"
+                        >
+                          <div className="flex items-center gap-2.5 text-left">
+                            <Share2 className="w-4 h-4 shrink-0" />
+                            <div>
+                              <span className="block font-bold">POST TO WHATSAPP STATUS</span>
+                              <span className="block text-[10px] text-black/75 font-normal">
+                                Downloads 1080×1920 (9:16) Status · Opens WhatsApp
+                              </span>
+                            </div>
                           </div>
-                        </div>
-                        <ChevronRight className="w-5 h-5 shrink-0" />
-                      </button>
+                          <ChevronRight className="w-5 h-5 shrink-0" />
+                        </button>
+                      </div>
 
-                      {/* OTHER MEDIA FORMATS BUTTON */}
+                      {/* Other Media Sizes Modal Trigger */}
                       <button
                         onClick={() => {
                           playChimeSound('click');
@@ -1294,241 +1159,43 @@ export default function PhotoBoothApp() {
                       >
                         <div className="flex items-center gap-2.5">
                           <Layers className="w-4 h-4 text-cyan-400" />
-                          <span>OTHER MEDIA SIZES (FACEBOOK, SQUARE, REELS...)</span>
+                          <span>OTHER MEDIA SIZES (REELS, SQUARE, FEED...)</span>
                         </div>
                         <ChevronRight className="w-5 h-5 text-cyan-400/80" />
                       </button>
 
-                      <div className="p-3.5 rounded-xl bg-[#0b041c]/85 border border-cyan-400/30 text-xs text-cyan-100/90 text-center shadow-sm">
-                        Tag <strong className="text-cyan-300">{shopConfig.instagramTag}</strong>{' '}
-                        and <strong className="text-cyan-300">{shopConfig.partnerTag}</strong> in your story!
+                      {/* Tagging Reminder */}
+                      <div className="p-3 rounded-xl bg-[#0b041c]/80 border border-cyan-400/30 text-xs text-cyan-100/90 text-center shadow-sm">
+                        Tag <strong className="text-cyan-300">{shopConfig.instagramTag}</strong> and{' '}
+                        <strong className="text-cyan-300">{shopConfig.partnerTag}</strong> in your story!
                       </div>
 
+                      {/* 30% OFF Coupon Pass Direct Claim */}
                       <button
                         onClick={() => {
-                          playChimeSound('click');
-                          setStep('verification');
+                          playChimeSound('celebrate');
+                          setShowCouponModal(true);
                         }}
-                        className="w-full py-4 px-5 rounded-2xl bg-gradient-to-r from-cyan-500 via-blue-600 to-indigo-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold text-xs sm:text-sm shadow-[0_0_25px_rgba(6,182,212,0.5)] flex items-center justify-between transition active:scale-[0.98]"
+                        className="w-full py-3.5 px-5 rounded-2xl bg-gradient-to-r from-cyan-500 via-blue-600 to-indigo-600 hover:from-cyan-400 hover:to-blue-500 text-white font-sans font-black text-xs sm:text-sm tracking-wide shadow-[0_0_25px_rgba(6,182,212,0.5)] flex items-center justify-center gap-2 transition active:scale-[0.98]"
                       >
-                        <div className="flex items-center gap-2.5">
-                          <UploadCloud className="w-5 h-5 text-white" />
-                          <span>I've Shared (Upload Screenshot)</span>
-                        </div>
-                        <ChevronRight className="w-5 h-5 text-white" />
+                        <Gift className="w-4 h-4 stroke-[2.5]" />
+                        <span>CLAIM 30% OFF SALON PASS ✦</span>
                       </button>
 
+                      {/* Back to Home Navigation */}
                       <div className="text-center pt-1">
                         <button
-                          onClick={() => setStep('landing')}
-                          className="text-xs text-champagne/50 hover:text-champagne underline"
+                          onClick={() => {
+                            stopCameraStream();
+                            setStep('landing');
+                          }}
+                          className="text-xs text-cyan-200/60 hover:text-white transition underline underline-offset-4"
                         >
-                          Back to Home
+                          ← Back to Home
                         </button>
                       </div>
                     </div>
                   </div>
-                </div>
-              )}
-
-              {/* ---------------------------------------------------------------
-                  STAGE 2D: SCREENSHOT UPLOAD & AUTOMATIC VERIFICATION
-                 --------------------------------------------------------------- */}
-              {step === 'verification' && (
-                <div className="w-full max-w-lg mx-auto flex-1 flex flex-col justify-center py-2 sm:py-4">
-                  {!submissionStatus && (
-                    <>
-                      <div className="text-center pb-3">
-                        <h2 className="font-serif text-2xl sm:text-3xl font-bold text-white tracking-wide">
-                          Verify Your Story
-                        </h2>
-                        <p className="text-xs sm:text-sm text-champagne/75 max-w-md mx-auto mt-1">
-                          Upload a screenshot of your posted story to claim your {shopConfig.defaultDiscount}{' '}
-                          OFF discount pass.
-                        </p>
-                      </div>
-
-                      <div className="my-auto py-4">
-                        <div
-                          onClick={() => screenshotInputRef.current?.click()}
-                          className={`w-full p-6 sm:p-8 rounded-3xl border-2 border-dashed flex flex-col items-center justify-center text-center cursor-pointer transition ${
-                            screenshotPreview
-                              ? 'border-cyan-400 bg-[#0b041c]/85 shadow-[0_0_25px_rgba(6,182,212,0.3)]'
-                              : 'border-cyan-400/35 hover:border-cyan-300 bg-[#070314]/75 backdrop-blur-md'
-                          }`}
-                        >
-                          <input
-                            ref={screenshotInputRef}
-                            type="file"
-                            accept="image/*"
-                            onChange={handleScreenshotChange}
-                            className="hidden"
-                          />
-
-                          {screenshotPreview ? (
-                            <div className="space-y-3">
-                              <div className="w-36 h-48 mx-auto rounded-xl overflow-hidden border border-cyan-400/60 shadow-md">
-                                <img
-                                  src={screenshotPreview}
-                                  alt="Screenshot preview"
-                                  className="w-full h-full object-cover"
-                                />
-                              </div>
-                              <div className="text-xs text-cyan-300 font-semibold flex items-center justify-center gap-1.5">
-                                <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                                <span>Screenshot Selected</span>
-                              </div>
-                              <span className="text-[10px] text-cyan-200/70 underline">
-                                Tap to change screenshot
-                              </span>
-                            </div>
-                          ) : (
-                            <div className="space-y-3">
-                              <div className="w-16 h-16 mx-auto rounded-full bg-cyan-500/20 border border-cyan-400/40 flex items-center justify-center text-cyan-300">
-                                <UploadCloud className="w-8 h-8" />
-                              </div>
-                              <div>
-                                <p className="text-sm font-bold text-white mb-0.5">
-                                  Upload screenshot of your Story
-                                </p>
-                                <p className="text-xs text-slate-300/80">
-                                  Tap here or select from photo gallery
-                                </p>
-                              </div>
-                              <button
-                                type="button"
-                                className="py-2.5 px-6 rounded-xl bg-cyan-400 hover:bg-cyan-300 text-slate-950 font-black text-xs uppercase shadow-[0_0_15px_rgba(6,182,212,0.4)]"
-                              >
-                                CHOOSE PHOTO
-                              </button>
-                            </div>
-                          )}
-                        </div>
-
-                        {/* Mandatory 10-Digit Mobile Number Input (Numbers Only) */}
-                        <div className="mt-4 text-left">
-                          <div className="flex items-center justify-between mb-1.5">
-                            <label className="text-xs font-bold text-cyan-100 flex items-center gap-1.5">
-                              <span>📱 Mobile Number</span>
-                              <span className="text-amber-400 font-extrabold text-[11px]">* (10 Digits Required)</span>
-                            </label>
-                            <span
-                              className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded-full border ${
-                                phoneInput.length === 10
-                                  ? 'bg-emerald-950/80 border-emerald-400 text-emerald-300'
-                                  : 'bg-black/60 border-amber-400/30 text-amber-300'
-                              }`}
-                            >
-                              {phoneInput.length} / 10 digits
-                            </span>
-                          </div>
-
-                          <div className="relative flex items-center">
-                            <div className="absolute left-3 px-2 py-1 rounded-lg bg-cyan-950/90 border border-cyan-400/40 text-cyan-300 font-mono font-bold text-xs pointer-events-none select-none">
-                              +91
-                            </div>
-                            <input
-                              type="tel"
-                              inputMode="numeric"
-                              pattern="[0-9]*"
-                              maxLength={10}
-                              placeholder="9876543210"
-                              value={phoneInput}
-                              onChange={(e) => {
-                                // Strictly allow ONLY numbers (digits 0-9) and limit to max 10 digits
-                                const numericOnly = e.target.value.replace(/\D/g, '').slice(0, 10);
-                                setPhoneInput(numericOnly);
-                              }}
-                              className={`w-full py-3.5 pl-16 pr-10 rounded-xl bg-[#0b041c]/90 border text-white placeholder:text-white/30 text-sm font-mono tracking-widest focus:outline-none transition shadow-inner ${
-                                phoneInput.length === 10
-                                  ? 'border-emerald-400 focus:border-emerald-300 focus:ring-2 focus:ring-emerald-400/30'
-                                  : 'border-cyan-400/40 focus:border-cyan-300 focus:ring-2 focus:ring-cyan-400/30'
-                              }`}
-                            />
-                            {phoneInput.length === 10 && (
-                              <div className="absolute right-3.5 text-emerald-400">
-                                <CheckCircle2 className="w-4 h-4 stroke-[2.5]" />
-                              </div>
-                            )}
-                          </div>
-                          <p className="text-[10px] text-cyan-200/70 mt-1 pl-1">
-                            Only numbers are allowed. Exactly 10 digits required to claim your coupon pass.
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="space-y-2">
-                        <button
-                          onClick={handleSubmitVerification}
-                          disabled={!screenshotPreview || phoneInput.length !== 10 || isSubmitting}
-                          className="w-full py-4 px-6 rounded-xl bg-gradient-to-r from-cyan-500 via-blue-600 to-indigo-600 hover:from-cyan-400 hover:to-blue-500 text-white font-sans font-black text-sm tracking-wide disabled:opacity-40 disabled:cursor-not-allowed shadow-[0_0_25px_rgba(6,182,212,0.5)] flex items-center justify-center gap-2 transition active:scale-[0.98]"
-                        >
-                          <ShieldCheck className="w-4 h-4 stroke-[2.5]" />
-                          <span>{isSubmitting ? 'SUBMITTING...' : 'SUBMIT FOR VERIFICATION'}</span>
-                        </button>
-
-                        {(!screenshotPreview || phoneInput.length !== 10) && (
-                          <p className="text-center text-[10px] text-amber-300/80 font-medium">
-                            {!screenshotPreview
-                              ? '⚠️ Please select a screenshot of your story above'
-                              : '⚠️ Enter full 10-digit mobile number to unlock coupon'}
-                          </p>
-                        )}
-
-                        <button
-                          onClick={() => setStep('share')}
-                          className="w-full py-2 text-center text-xs text-champagne/60 hover:text-white"
-                        >
-                          Back to Sharing
-                        </button>
-                      </div>
-                    </>
-                  )}
-
-                  {submissionStatus && (
-                    <div className="flex-1 flex flex-col items-center justify-center text-center p-6 space-y-6 my-auto">
-                      <motion.div
-                        initial={{ scale: 0.8, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
-                        className="w-24 h-24 rounded-full bg-gradient-to-tr from-emerald-600 to-teal-400 border-2 border-emerald-300 flex items-center justify-center text-white shadow-[0_0_35px_rgba(16,185,129,0.55)]"
-                      >
-                        <CheckCircle2 className="w-12 h-12 stroke-[2.5]" />
-                      </motion.div>
-
-                      <div className="space-y-1.5">
-                        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-950/80 border border-emerald-400/40 text-[11px] font-bold text-emerald-300 uppercase tracking-wider">
-                          <span>✨</span>
-                          <span>SUBMISSION RECEIVED</span>
-                        </div>
-                        <h3 className="font-serif text-2xl sm:text-3xl font-bold text-white">
-                          Your Submission Was Successful!
-                        </h3>
-                        <p className="text-xs sm:text-sm text-champagne/80 max-w-sm mx-auto leading-relaxed">
-                          Thank you for sharing your festive portrait with {shopConfig.shopName || 'Dream Salon'}! Your exclusive 30% OFF Diwali coupon pass has been unlocked.
-                        </p>
-                      </div>
-
-                      <div className="space-y-3 w-full max-w-xs">
-                        <button
-                          onClick={() => {
-                            playChimeSound('celebrate');
-                            setShowCouponModal(true);
-                          }}
-                          className="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-400 hover:from-amber-300 hover:to-yellow-300 text-black font-sans font-black text-xs sm:text-sm uppercase tracking-wider shadow-[0_0_30px_rgba(255,215,0,0.45)] flex items-center justify-center gap-2.5 transition active:scale-95"
-                        >
-                          <Gift className="w-4 h-4 stroke-[2.5]" />
-                          <span>VIEW 30% OFF COUPON PASS ✦</span>
-                        </button>
-
-                        <button
-                          onClick={() => setStep('landing')}
-                          className="w-full py-2 text-center text-xs text-champagne/60 hover:text-white transition"
-                        >
-                          Back to Home
-                        </button>
-                      </div>
-                    </div>
-                  )}
                 </div>
               )}
             </div>
@@ -1603,7 +1270,13 @@ export default function PhotoBoothApp() {
       <CouponModal
         isOpen={showCouponModal}
         onClose={() => setShowCouponModal(false)}
-        coupon={activeCoupon || { customerName: customerName || 'Valued Guest', discount: 'FLAT 30% OFF' }}
+        coupon={
+          activeCoupon || {
+            customerName: customerName || 'Valued Guest',
+            discount: 'FLAT 30% OFF',
+            couponCode: `DIWALI-${(customerName || 'VIP').replace(/[^a-zA-Z]/g, '').slice(0, 3).toUpperCase() || 'VIP'}-30`,
+          }
+        }
         shopConfig={shopConfig}
       />
 
