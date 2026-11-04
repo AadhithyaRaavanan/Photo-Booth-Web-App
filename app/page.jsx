@@ -14,6 +14,7 @@ import {
   RefreshCw,
   Image as ImageIcon,
   Layers,
+  Check,
 } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -746,34 +747,39 @@ export default function PhotoBoothApp() {
            PAGE 2: ROYAL FESTIVE PHOTO BOOTH & REWARDS FLOW (NO NAV BAR)
            Clean, focused camera & sharing experience with back-to-home navigation
            ========================================================================= */
-        <div className="min-h-screen w-full bg-transparent text-champagne flex flex-col items-center justify-start relative overflow-x-hidden selection:bg-cyan-400 selection:text-black">
-          {/* Clean Top Header (No Navbar) with Simple Back to Home */}
+        <div className="min-h-screen w-full bg-transparent text-[#f6ebdd] flex flex-col items-center justify-start relative overflow-x-hidden selection:bg-[#e8a33d]/30 selection:text-[#f6ebdd]">
+          {/* Clean Top Header with Refined Boutique Back to Home */}
           <header className="w-full max-w-4xl mx-auto pt-4 sm:pt-6 pb-2 px-4 flex items-center justify-between relative z-30">
             <button
               onClick={() => {
                 stopCameraStream();
                 setStep('landing');
               }}
-              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#0a0418]/80 backdrop-blur-md border border-cyan-400/40 text-xs font-semibold text-cyan-200 hover:bg-[#12082b] hover:text-white transition shadow-sm"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 backdrop-blur-md border border-white/10 hover:border-[#e8a33d]/40 text-xs font-medium text-[#b5a8be] hover:text-[#f6ebdd] transition shadow-sm"
             >
-              <ChevronLeft className="w-4 h-4" />
+              <ChevronLeft className="w-4 h-4 text-[#e8a33d]" />
               <span>Back to Home</span>
             </button>
 
             <div className="flex items-center gap-2">
-              <span className="text-base">🪔</span>
-              <span className="font-serif text-sm sm:text-base font-bold text-cyan-200 tracking-wide drop-shadow">
-                {shopConfig.shopName} Photo Booth
+              <span className="w-5 h-5 flex items-center justify-center text-[#e8a33d]">
+                <DiyaGraphic size={18} />
+              </span>
+              <span className="font-serif text-sm sm:text-base font-normal text-[#f6ebdd] tracking-wider">
+                {shopConfig.shopName}
+              </span>
+              <span className="hidden sm:inline text-xs text-[#b5a8be] font-sans">
+                Photo Booth
               </span>
             </div>
 
             {step === 'camera' ? (
               <button
                 onClick={handleToggleCamera}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/60 border border-amber-400/40 text-xs font-medium text-amber-200 hover:bg-black/80 transition"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 border border-[#e8a33d]/30 text-xs font-medium text-[#f6ebdd] transition"
                 title="Switch Camera"
               >
-                <RotateCcw className="w-3.5 h-3.5" />
+                <RotateCcw className="w-3.5 h-3.5 text-[#e8a33d]" />
                 <span className="hidden sm:inline">Flip Camera</span>
               </button>
             ) : (
@@ -782,9 +788,9 @@ export default function PhotoBoothApp() {
                   playChimeSound('celebrate');
                   setShowCouponModal(true);
                 }}
-                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-gradient-to-r from-amber-500/30 to-amber-400/20 border border-amber-400 text-xs font-bold text-amber-200 hover:bg-amber-400/30 transition shadow-md"
+                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#1a0828] border border-[#e8a33d]/50 text-xs font-medium text-[#e8a33d] hover:bg-[#e8a33d]/15 transition shadow-sm"
               >
-                <Gift className="w-3.5 h-3.5 text-amber-400" />
+                <Gift className="w-3.5 h-3.5 text-[#e8a33d]" />
                 <span>30% OFF Pass</span>
               </button>
             )}
@@ -820,10 +826,10 @@ export default function PhotoBoothApp() {
                         const prevIdx = (currIdx - 1 + ROYAL_FRAMES.length) % ROYAL_FRAMES.length;
                         setSelectedFrameId(ROYAL_FRAMES[prevIdx].id);
                       }}
-                      className="py-1.5 px-3 rounded-full bg-black/60 border border-amber-400/40 text-amber-300 hover:bg-black/80 flex items-center gap-1 text-[11px] font-semibold transition shadow-md"
+                      className="py-1.5 px-3 rounded-full bg-white/5 border border-white/10 text-[#b5a8be] hover:text-[#f6ebdd] hover:bg-white/10 flex items-center gap-1 text-[11px] font-medium transition"
                     >
                       <ChevronLeft className="w-3.5 h-3.5" />
-                      <span>Prev Frame</span>
+                      <span>Prev</span>
                     </button>
 
                     <button
@@ -834,14 +840,13 @@ export default function PhotoBoothApp() {
                         setSelectedFrameId(ROYAL_FRAMES[nextIdx].id);
                       }}
                       title="Tap to switch frame"
-                      className="px-3.5 py-1.5 rounded-full bg-gradient-to-r from-amber-500/25 to-pink-500/25 border border-amber-400/60 shadow-md text-amber-200 hover:text-white flex items-center gap-1.5 text-xs font-bold transition active:scale-95"
+                      className="px-3.5 py-1.5 rounded-full bg-[#14051f]/90 border border-[#e8a33d]/40 shadow-sm text-[#f6ebdd] hover:border-[#e8a33d] flex items-center gap-2 text-xs font-serif transition active:scale-95"
                     >
-                      <span>✨</span>
                       <span className="truncate max-w-[130px]">
                         {ROYAL_FRAMES.find((f) => f.id === selectedFrameId)?.name}
                       </span>
-                      <span className="text-[10px] text-amber-400">
-                        ({ROYAL_FRAMES.findIndex((f) => f.id === selectedFrameId) + 1}/8)
+                      <span className="text-[10px] text-[#e8a33d] font-mono">
+                        {String(ROYAL_FRAMES.findIndex((f) => f.id === selectedFrameId) + 1).padStart(2, '0')} / 08
                       </span>
                     </button>
 
@@ -852,9 +857,9 @@ export default function PhotoBoothApp() {
                         const nextIdx = (currIdx + 1) % ROYAL_FRAMES.length;
                         setSelectedFrameId(ROYAL_FRAMES[nextIdx].id);
                       }}
-                      className="py-1.5 px-3 rounded-full bg-black/60 border border-amber-400/40 text-amber-300 hover:bg-black/80 flex items-center gap-1 text-[11px] font-semibold transition shadow-md"
+                      className="py-1.5 px-3 rounded-full bg-white/5 border border-white/10 text-[#b5a8be] hover:text-[#f6ebdd] hover:bg-white/10 flex items-center gap-1 text-[11px] font-medium transition"
                     >
-                      <span>Next Frame</span>
+                      <span>Next</span>
                       <ChevronRight className="w-3.5 h-3.5" />
                     </button>
                   </div>
@@ -863,7 +868,7 @@ export default function PhotoBoothApp() {
                   <div className="w-full flex flex-col md:flex-row items-center md:items-start justify-center gap-6 lg:gap-8 relative select-none">
                     {/* Left Column: The Spacious, Decongested Camera Card */}
                     <div className="flex flex-col items-center">
-                      <div className="w-full max-w-[340px] sm:max-w-[400px] h-[520px] sm:h-[580px] rounded-3xl overflow-hidden relative shadow-[0_16px_50px_rgba(0,0,0,0.85)] border-2 border-amber-400/70 bg-neutral-950 flex flex-col justify-between">
+                      <div className="w-full max-w-[340px] sm:max-w-[400px] h-[520px] sm:h-[580px] rounded-3xl overflow-hidden relative shadow-[0_20px_60px_rgba(0,0,0,0.85)] border border-[#e8a33d]/40 bg-[#0d0414] flex flex-col justify-between">
                         {/* Camera Feed & Transparent Royal Festive Frame */}
                         <div className="relative w-full h-full flex-1 overflow-hidden bg-neutral-950">
                           {/* 1. Live Video Element: ABSOLUTE INSET-0 to fill the frame completely */}
@@ -890,8 +895,8 @@ export default function PhotoBoothApp() {
                           {/* 2. Loading State indicator */}
                           {isInitializingCamera && (
                             <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/85 z-20 space-y-3">
-                              <div className="w-12 h-12 rounded-full border-4 border-amber-400 border-t-transparent animate-spin" />
-                              <p className="text-xs text-amber-200 font-semibold tracking-wider uppercase">
+                              <div className="w-10 h-10 rounded-full border-2 border-[#e8a33d] border-t-transparent animate-spin" />
+                              <p className="text-xs text-[#f6ebdd] font-serif tracking-wider">
                                 Starting Camera...
                               </p>
                             </div>
@@ -899,21 +904,21 @@ export default function PhotoBoothApp() {
 
                           {/* 3. Camera Access Card (Shown if camera is blocked/denied/busy/no frames) */}
                           {!isInitializingCamera && (!isCameraActive || !hasVideoFrames) && (
-                            <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center z-15 bg-[#250438]/90 backdrop-blur-sm">
-                              <div className="w-14 h-14 rounded-full bg-amber-400/20 border border-amber-400/50 flex items-center justify-center text-amber-300 mb-2 shadow-lg">
+                            <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center z-15 bg-[#14051f]/95 backdrop-blur-sm">
+                              <div className="w-14 h-14 rounded-full bg-[#e8a33d]/10 border border-[#e8a33d]/35 flex items-center justify-center text-[#e8a33d] mb-3 shadow-lg">
                                 <Camera className="w-7 h-7" />
                               </div>
-                              <h3 className="font-serif text-base sm:text-lg font-bold text-white mb-1">
+                              <h3 className="font-serif text-lg font-normal text-[#f6ebdd] mb-1">
                                 Camera Preview
                               </h3>
-                              <p className="text-[11px] text-violet-200/80 max-w-xs mb-3.5 leading-relaxed">
-                                {cameraError || 'Allow camera access in your browser, or tap an option below to take your photo:'}
+                              <p className="text-xs text-[#b5a8be] max-w-xs mb-4 leading-relaxed">
+                                {cameraError || 'Allow camera access in your browser, or select an option below to snap your portrait:'}
                               </p>
 
-                              <div className="flex flex-col gap-2 w-full max-w-[260px]">
+                              <div className="flex flex-col gap-2.5 w-full max-w-[260px]">
                                 <button
                                   onClick={() => nativeCameraInputRef.current?.click()}
-                                  className="w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-amber-400 to-yellow-300 text-black font-bold text-xs uppercase tracking-wider shadow-md hover:brightness-105 active:scale-98 transition flex items-center justify-center gap-2"
+                                  className="btn-primary-marigold w-full py-2.5 px-3 rounded-xl font-semibold text-xs tracking-wide shadow-md transition flex items-center justify-center gap-2"
                                 >
                                   <Camera className="w-4 h-4" />
                                   <span>Take Photo With Camera</span>
@@ -921,17 +926,17 @@ export default function PhotoBoothApp() {
 
                                 <button
                                   onClick={() => fileInputRef.current?.click()}
-                                  className="w-full py-2 px-3 rounded-xl bg-white/15 hover:bg-white/20 text-white font-semibold text-xs transition border border-white/20 flex items-center justify-center gap-2"
+                                  className="w-full py-2 px-3 rounded-xl bg-white/10 hover:bg-white/15 text-[#f6ebdd] font-medium text-xs transition border border-white/15 flex items-center justify-center gap-2"
                                 >
-                                  <ImageIcon className="w-4 h-4 text-amber-300" />
+                                  <ImageIcon className="w-4 h-4 text-[#e8a33d]" />
                                   <span>Choose From Gallery</span>
                                 </button>
 
                                 <button
                                   onClick={handleUseDemoSelfie}
-                                  className="w-full py-1.5 px-3 rounded-xl bg-violet-800/60 hover:bg-violet-800 text-amber-200 font-medium text-[11px] transition border border-violet-400/30 flex items-center justify-center gap-1.5"
+                                  className="w-full py-1.5 px-3 rounded-xl bg-white/5 hover:bg-white/10 text-[#b5a8be] hover:text-[#f6ebdd] font-medium text-[11px] transition border border-white/10 flex items-center justify-center gap-1.5"
                                 >
-                                  <span>✨ Instant Demo Selfie</span>
+                                  <span>Sample Photo</span>
                                 </button>
                               </div>
                             </div>
@@ -963,89 +968,88 @@ export default function PhotoBoothApp() {
                           />
                         </div>
 
-                        {/* Bottom Control Deck (Clean, Non-Overlapping) */}
-                        <div className="relative z-30 pt-3 pb-5 px-6 bg-gradient-to-t from-black via-black/90 to-transparent flex items-center justify-between">
+                        {/* Bottom Control Deck (Minimal, Non-Overlapping Shutter) */}
+                        <div className="relative z-30 pt-3 pb-5 px-6 bg-gradient-to-t from-black via-black/85 to-transparent flex items-center justify-between">
                           {/* Left: Gallery Picker */}
                           <button
                             onClick={() => fileInputRef.current?.click()}
-                            className="w-12 h-12 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 flex flex-col items-center justify-center text-champagne hover:bg-white/20 hover:text-white transition group"
+                            className="w-12 h-12 rounded-2xl bg-white/5 backdrop-blur-md border border-[#e8a33d]/25 flex flex-col items-center justify-center text-[#f6ebdd] hover:bg-white/10 hover:border-[#e8a33d]/50 transition group"
                             title="Upload from Photo Gallery"
                           >
-                            <ImageIcon className="w-5 h-5 text-amber-400 group-hover:scale-110 transition" />
-                            <span className="text-[8px] font-semibold text-champagne/70 mt-0.5">Gallery</span>
+                            <ImageIcon className="w-5 h-5 text-[#e8a33d] group-hover:scale-105 transition" />
+                            <span className="text-[8px] font-medium text-[#b5a8be] mt-0.5">Gallery</span>
                           </button>
 
-                          {/* Center: Gold Shutter Button */}
+                          {/* Center: Refined Gold Shutter Button */}
                           <motion.button
-                            whileTap={{ scale: 0.92 }}
+                            whileTap={{ scale: 0.94 }}
                             onClick={handleCapturePhoto}
                             disabled={isComposing}
-                            className="relative w-18 h-18 sm:w-20 sm:h-20 rounded-full bg-white p-1.5 flex items-center justify-center shadow-[0_0_30px_rgba(255,215,0,0.7)] focus:outline-none"
+                            className="relative w-18 h-18 sm:w-20 sm:h-20 rounded-full p-1.5 flex items-center justify-center ring-2 ring-[#f6ebdd]/40 bg-transparent focus:outline-none transition active:scale-95"
                             aria-label="Capture photo"
                           >
-                            <div className="w-full h-full rounded-full border-4 border-amber-400 flex items-center justify-center bg-white transition hover:bg-amber-50">
-                              <div className="w-13 h-13 sm:w-14 sm:h-14 rounded-full bg-gradient-to-tr from-amber-400 to-yellow-200 shadow-inner" />
+                            <div className="w-full h-full rounded-full bg-gradient-to-tr from-[#e8a33d] to-[#f2c14e] shadow-[0_4px_16px_rgba(232,163,61,0.4)] flex items-center justify-center transition hover:brightness-105">
+                              <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full border border-black/15" />
                             </div>
                           </motion.button>
 
                           {/* Right: Camera Flip */}
                           <button
                             onClick={handleToggleCamera}
-                            className="w-12 h-12 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 flex flex-col items-center justify-center text-champagne hover:bg-white/20 hover:text-white transition group"
+                            className="w-12 h-12 rounded-2xl bg-white/5 backdrop-blur-md border border-[#e8a33d]/25 flex flex-col items-center justify-center text-[#f6ebdd] hover:bg-white/10 hover:border-[#e8a33d]/50 transition group"
                             title="Flip Camera"
                           >
-                            <RotateCcw className="w-5 h-5 text-amber-400 group-hover:rotate-180 transition duration-300" />
-                            <span className="text-[8px] font-semibold text-champagne/70 mt-0.5">Flip</span>
+                            <RotateCcw className="w-5 h-5 text-[#e8a33d] group-hover:rotate-180 transition duration-300" />
+                            <span className="text-[8px] font-medium text-[#b5a8be] mt-0.5">Flip</span>
                           </button>
                         </div>
                       </div>
 
-                      {/* Fallback Action Bar Under the Card */}
+                      {/* Friendly Action Bar Under the Card */}
                       <div className="mt-3 flex items-center justify-center gap-2 max-w-sm flex-wrap text-center">
                         <button
                           onClick={() => nativeCameraInputRef.current?.click()}
-                          className="px-3 py-1.5 rounded-full bg-black/50 border border-amber-400/30 text-[11px] font-medium text-amber-200 hover:bg-black/70 flex items-center gap-1.5 transition"
+                          className="px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-[11px] font-medium text-[#b5a8be] hover:text-[#f6ebdd] hover:bg-white/10 flex items-center gap-1.5 transition"
                         >
-                          <Camera className="w-3.5 h-3.5 text-amber-300" />
-                          <span>Device Camera</span>
+                          <Camera className="w-3.5 h-3.5 text-[#e8a33d]" />
+                          <span>Camera</span>
                         </button>
 
                         <button
                           onClick={handleUseDemoSelfie}
-                          className="px-3 py-1.5 rounded-full bg-violet-900/60 border border-violet-400/40 text-[11px] font-medium text-violet-200 hover:bg-violet-800 flex items-center gap-1.5 transition"
+                          className="px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-[11px] font-medium text-[#b5a8be] hover:text-[#f6ebdd] hover:bg-white/10 flex items-center gap-1.5 transition"
                         >
-                          <span>✨ Demo Selfie</span>
+                          <span>Sample Photo</span>
                         </button>
 
                         <button
                           onClick={() => startCamera(facingMode)}
-                          className="px-3 py-1.5 rounded-full bg-black/50 border border-white/20 text-[11px] font-medium text-white/70 hover:text-white flex items-center gap-1.5 transition"
+                          className="px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-[11px] font-medium text-[#b5a8be] hover:text-[#f6ebdd] hover:bg-white/10 flex items-center gap-1.5 transition"
                         >
-                          <RefreshCw className="w-3.5 h-3.5" />
-                          <span>Refresh Stream</span>
+                          <RefreshCw className="w-3.5 h-3.5 text-[#e8a33d]" />
+                          <span>Reconnect</span>
                         </button>
                       </div>
                     </div>
 
                     {/* Right Column: Royal Frame Studio Side Panel (Desktop / Tablet) */}
-                    <div className="hidden md:flex flex-col w-72 lg:w-80 h-[520px] sm:h-[580px] rounded-3xl bg-[#1a0210] border border-amber-400/50 shadow-2xl p-4 overflow-hidden">
-                      <div className="flex items-center justify-between pb-3 border-b border-amber-400/20 shrink-0">
+                    <div className="hidden md:flex flex-col w-72 lg:w-80 h-[520px] sm:h-[580px] rounded-3xl bg-[#14051f]/90 border border-[#e8a33d]/30 shadow-2xl p-4 overflow-hidden backdrop-blur-sm">
+                      <div className="flex items-center justify-between pb-3 border-b border-[#e8a33d]/20 shrink-0">
                         <div>
-                          <h3 className="font-serif text-sm sm:text-base font-bold text-amber-300 flex items-center gap-1.5">
-                            <span>✨</span>
-                            <span>ROYAL FRAME STUDIO</span>
+                          <h3 className="font-serif text-sm sm:text-base font-semibold text-[#f6ebdd]">
+                            Royal Frame Studio
                           </h3>
-                          <p className="text-[10px] text-champagne/70 mt-0.5">
-                            Click any frame to preview live
+                          <p className="text-[10px] text-[#b5a8be] mt-0.5">
+                            Select a handcrafted frame
                           </p>
                         </div>
-                        <span className="px-2 py-0.5 rounded-full bg-amber-400/20 border border-amber-400/40 text-[10px] font-bold text-amber-200">
-                          {ROYAL_FRAMES.findIndex((f) => f.id === selectedFrameId) + 1} / {ROYAL_FRAMES.length}
+                        <span className="px-2 py-0.5 rounded-full bg-[#e8a33d]/15 border border-[#e8a33d]/30 text-[10px] font-mono text-[#e8a33d]">
+                          {String(ROYAL_FRAMES.findIndex((f) => f.id === selectedFrameId) + 1).padStart(2, '0')} / 08
                         </span>
                       </div>
 
-                      {/* Scrollable Frame Cards List */}
-                      <div className="flex-1 overflow-y-auto pr-1 py-3 space-y-2.5">
+                      {/* Scrollable Frame Cards List (Curated Catalogue Aesthetic) */}
+                      <div className="flex-1 overflow-y-auto pr-1 py-3 space-y-2 boutique-scrollbar">
                         {ROYAL_FRAMES.map((f) => {
                           const isSelected = selectedFrameId === f.id;
                           return (
@@ -1055,14 +1059,14 @@ export default function PhotoBoothApp() {
                                 playChimeSound('click');
                                 setSelectedFrameId(f.id);
                               }}
-                              className={`w-full flex items-center gap-3 p-2 rounded-2xl transition-all duration-200 text-left group ${
+                              className={`w-full flex items-center gap-3 p-2.5 rounded-2xl transition-all duration-200 text-left group ${
                                 isSelected
-                                  ? 'bg-gradient-to-r from-amber-500/30 to-amber-500/10 border-2 border-amber-400 shadow-[0_0_18px_rgba(255,215,0,0.35)] scale-[1.02]'
-                                  : 'bg-black/40 hover:bg-white/10 border border-white/15 hover:border-amber-400/40'
+                                  ? 'bg-[#e8a33d]/15 border border-[#e8a33d] shadow-[0_4px_16px_rgba(232,163,61,0.2)]'
+                                  : 'bg-white/5 hover:bg-white/10 border border-white/10 hover:border-[#e8a33d]/30'
                               }`}
                             >
                               {/* Lightweight WebP Thumbnail */}
-                              <div className="relative w-12 h-16 rounded-xl overflow-hidden shrink-0 border border-amber-400/30 shadow-md">
+                              <div className="relative w-12 h-16 rounded-xl overflow-hidden shrink-0 border border-[#e8a33d]/30 shadow-sm bg-black/40">
                                 <picture className="w-full h-full">
                                   <source srcSet={f.thumb} type="image/webp" />
                                   <img
@@ -1074,8 +1078,8 @@ export default function PhotoBoothApp() {
                                   />
                                 </picture>
                                 {isSelected && (
-                                  <div className="absolute inset-0 bg-amber-400/20 flex items-center justify-center">
-                                    <span className="w-5 h-5 rounded-full bg-amber-400 text-black flex items-center justify-center text-[10px] font-black shadow-md">
+                                  <div className="absolute inset-0 bg-[#e8a33d]/20 flex items-center justify-center">
+                                    <span className="w-4 h-4 rounded-full bg-[#e8a33d] text-[#14051f] flex items-center justify-center text-[9px] font-bold shadow-md">
                                       ✓
                                     </span>
                                   </div>
@@ -1084,17 +1088,14 @@ export default function PhotoBoothApp() {
 
                               {/* Details */}
                               <div className="flex-1 min-w-0">
-                                <div className="flex items-center gap-1.5">
-                                  <span className="text-xs">{f.badge.split(' ')[0]}</span>
-                                  <h4
-                                    className={`text-xs font-bold truncate ${
-                                      isSelected ? 'text-amber-300' : 'text-white group-hover:text-amber-200'
-                                    }`}
-                                  >
-                                    {f.name}
-                                  </h4>
-                                </div>
-                                <p className="text-[10px] text-champagne/60 line-clamp-2 mt-0.5 leading-snug">
+                                <h4
+                                  className={`text-xs font-serif font-medium truncate ${
+                                    isSelected ? 'text-[#e8a33d]' : 'text-[#f6ebdd] group-hover:text-[#e8a33d]'
+                                  }`}
+                                >
+                                  {f.name}
+                                </h4>
+                                <p className="text-[10px] text-[#b5a8be] line-clamp-1 mt-0.5 leading-snug">
                                   {f.description}
                                 </p>
                               </div>
@@ -1114,24 +1115,14 @@ export default function PhotoBoothApp() {
               {(step === 'preview' || step === 'share') && (
                 <div className="w-full flex-1 flex flex-col justify-center py-2 sm:py-4">
                   <div className="text-center pb-4 max-w-2xl mx-auto px-3">
-                    <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl font-bold text-white tracking-wide drop-shadow">
+                    <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl font-normal text-[#f6ebdd] tracking-tight">
                       Your Festive Portrait
                     </h2>
 
-                    {/* BIG BOLD TEXT DIRECTLY UNDER THE FESTIVE PORTRAIT TITLE */}
-                    <div className="mt-2.5 sm:mt-3 px-4 py-2 sm:py-2.5 rounded-2xl bg-amber-400/10 border border-amber-400/35 inline-block shadow-[0_0_20px_rgba(255,215,0,0.15)]">
-                      <p className="text-sm sm:text-lg md:text-xl font-black text-amber-300 tracking-wide drop-shadow flex items-center justify-center gap-1.5 sm:gap-2 flex-wrap">
-                        <span>Tag</span>
-                        <span className="text-white bg-gradient-to-r from-pink-500 to-purple-600 px-2 py-0.5 rounded-lg text-xs sm:text-base font-black shadow-sm">
-                          {shopConfig.instagramTag}
-                        </span>
-                        <span>and</span>
-                        <span className="text-slate-950 bg-gradient-to-r from-cyan-400 to-blue-400 px-2 py-0.5 rounded-lg text-xs sm:text-base font-black shadow-sm">
-                          {shopConfig.partnerTag}
-                        </span>
-                        <span>in your story! 🪔✨</span>
-                      </p>
-                    </div>
+                    {/* Refined Gold-Underlined Tagging Instruction */}
+                    <p className="text-xs sm:text-sm text-[#b5a8be] mt-2 leading-relaxed">
+                      Tag <span className="text-[#f6ebdd] font-semibold underline decoration-[#e8a33d] underline-offset-4">{shopConfig.instagramTag}</span> and <span className="text-[#f6ebdd] font-semibold underline decoration-[#e8a33d] underline-offset-4">{shopConfig.partnerTag}</span> in your story to unlock your 30% OFF pass.
+                    </p>
                   </div>
 
                   <div className="w-full flex flex-col md:flex-row items-center md:items-start justify-center gap-6 lg:gap-8 my-auto">
@@ -1141,16 +1132,16 @@ export default function PhotoBoothApp() {
                         <motion.div
                           initial={{ scale: 0.95, opacity: 0 }}
                           animate={{ scale: 1, opacity: 1 }}
-                          className="w-full rounded-2xl overflow-hidden border-2 border-amber-400/80 shadow-[0_0_40px_rgba(255,215,0,0.35)] relative group"
+                          className="w-full rounded-2xl overflow-hidden border border-[#e8a33d]/40 shadow-[0_20px_50px_rgba(0,0,0,0.85)] p-1 bg-[#1a0828] relative group"
                         >
                           <img
                             src={brandedPhotoUrl}
                             alt="Festive Portrait"
-                            className="w-full h-auto object-cover"
+                            className="w-full h-auto object-cover rounded-xl"
                           />
                         </motion.div>
                       ) : (
-                        <div className="p-12 text-center text-xs text-champagne/60">
+                        <div className="p-12 text-center text-xs text-[#b5a8be]">
                           Generating composition...
                         </div>
                       )}
@@ -1163,15 +1154,15 @@ export default function PhotoBoothApp() {
                             setStep('camera');
                             startCamera();
                           }}
-                          className="py-3 px-3 rounded-xl bg-white/10 hover:bg-white/15 text-white font-semibold text-xs flex items-center justify-center gap-2 border border-white/15 transition active:scale-95 shadow-sm"
+                          className="py-3 px-3 rounded-xl bg-white/5 hover:bg-white/10 text-[#f6ebdd] font-medium text-xs flex items-center justify-center gap-2 border border-white/15 transition active:scale-95 shadow-sm"
                         >
-                          <RotateCcw className="w-4 h-4 text-amber-300" />
+                          <RotateCcw className="w-4 h-4 text-[#e8a33d]" />
                           <span>RETAKE</span>
                         </button>
 
                         <button
                           onClick={handleDownloadPhoto}
-                          className="py-3 px-3 rounded-xl bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-400 hover:brightness-105 text-black font-black text-xs flex items-center justify-center gap-1.5 shadow-[0_0_20px_rgba(255,215,0,0.4)] transition active:scale-95"
+                          className="btn-primary-marigold py-3 px-3 rounded-xl font-semibold text-xs flex items-center justify-center gap-1.5 active:scale-95 shadow-md"
                         >
                           <Download className="w-4 h-4 stroke-[2.5]" />
                           <span>SAVE PHOTO</span>
@@ -1181,66 +1172,74 @@ export default function PhotoBoothApp() {
 
                     {/* Right: Sharing, More Media Sizes & Bonus Pass */}
                     <div className="w-full md:max-w-md flex flex-col space-y-3">
-                      {/* Sharing Section */}
-                      <div className="space-y-2">
+                      {/* Sharing Section: Tonal Refined Buttons */}
+                      <div className="space-y-2.5">
                         <button
                           onClick={handleShareInstagram}
-                          className="w-full py-4 px-5 rounded-2xl bg-gradient-to-r from-[#e1306c] via-[#fd1d1d] to-[#f77737] text-white font-bold text-xs sm:text-sm shadow-md flex items-center justify-between transition hover:opacity-95 active:scale-[0.98]"
+                          className="w-full py-3.5 px-4 rounded-2xl bg-[#1c0828] hover:bg-[#250b36] border border-[#e8a33d]/25 text-[#f6ebdd] shadow-md flex items-center justify-between transition active:scale-[0.98] group"
                         >
                           <div className="flex items-center gap-3 text-left">
-                            <div className="w-6 h-6 rounded-lg border-2 border-white flex items-center justify-center shrink-0">
-                              <div className="w-2.5 h-2.5 rounded-full border-2 border-white" />
+                            <div className="w-8 h-8 rounded-xl bg-white/5 border border-[#e8a33d]/30 flex items-center justify-center shrink-0 group-hover:border-[#e8a33d]/60 transition">
+                              <div className="w-4 h-4 rounded-md border border-[#e8a33d] flex items-center justify-center">
+                                <div className="w-1.5 h-1.5 rounded-full bg-[#e8a33d]" />
+                              </div>
                             </div>
                             <div>
-                              <span className="block font-bold">SHARE ON INSTAGRAM STORY</span>
-                              <span className="block text-[10px] text-white/90 font-medium">
-                                Downloads 9:16 Story · Opens IG &amp; Unlocks {shopConfig.discountLabel || '30% OFF'} Pass
+                              <span className="block font-medium text-xs sm:text-sm text-[#f6ebdd]">
+                                Share on Instagram Story
+                              </span>
+                              <span className="block text-[10px] text-[#b5a8be]">
+                                Downloads 9:16 Story · Opens Instagram &amp; unlocks {shopConfig.discountLabel || '30% OFF'}
                               </span>
                             </div>
                           </div>
-                          <ChevronRight className="w-5 h-5 text-white/90 shrink-0" />
+                          <ChevronRight className="w-4 h-4 text-[#b5a8be] group-hover:text-[#f6ebdd] transition shrink-0" />
                         </button>
 
                         <button
                           onClick={handleShareWhatsApp}
-                          className="w-full py-3.5 px-5 rounded-2xl bg-[#25d366] text-black font-bold text-xs sm:text-sm flex items-center justify-between transition hover:brightness-105 active:scale-[0.98]"
+                          className="w-full py-3.5 px-4 rounded-2xl bg-[#0c1a14] hover:bg-[#12241c] border border-[#25d366]/30 text-[#f6ebdd] shadow-md flex items-center justify-between transition active:scale-[0.98] group"
                         >
-                          <div className="flex items-center gap-2.5 text-left">
-                            <Share2 className="w-4 h-4 shrink-0" />
+                          <div className="flex items-center gap-3 text-left">
+                            <div className="w-8 h-8 rounded-xl bg-[#25d366]/10 border border-[#25d366]/40 flex items-center justify-center shrink-0 group-hover:border-[#25d366]/70 transition">
+                              <Share2 className="w-4 h-4 text-[#25d366]" />
+                            </div>
                             <div>
-                              <span className="block font-bold">POST TO WHATSAPP STATUS</span>
-                              <span className="block text-[10px] text-black/85 font-medium">
-                                Downloads 9:16 Status · Opens WhatsApp &amp; Unlocks {shopConfig.discountLabel || '30% OFF'} Pass
+                              <span className="block font-medium text-xs sm:text-sm text-[#f6ebdd]">
+                                Post to WhatsApp Status
+                              </span>
+                              <span className="block text-[10px] text-[#b5a8be]">
+                                Downloads 9:16 Status · Opens WhatsApp &amp; unlocks {shopConfig.discountLabel || '30% OFF'}
                               </span>
                             </div>
                           </div>
-                          <ChevronRight className="w-5 h-5 shrink-0" />
+                          <ChevronRight className="w-4 h-4 text-[#b5a8be] group-hover:text-[#f6ebdd] transition shrink-0" />
                         </button>
                       </div>
 
-                      {/* Other Media Sizes Modal Trigger */}
+                      {/* Other Media Sizes Trigger */}
                       <button
                         onClick={() => {
                           playChimeSound('click');
                           setShowOtherMediaModal(true);
                         }}
-                        className="w-full py-3.5 px-5 rounded-2xl bg-white/10 hover:bg-white/15 text-cyan-200 font-bold text-xs sm:text-sm flex items-center justify-between border border-cyan-400/35 transition hover:border-cyan-400/60 active:scale-[0.98]"
+                        className="w-full py-3 px-4 rounded-2xl bg-white/5 hover:bg-white/10 text-[#b5a8be] hover:text-[#f6ebdd] font-medium text-xs flex items-center justify-between border border-white/10 transition active:scale-[0.98]"
                       >
                         <div className="flex items-center gap-2.5">
-                          <Layers className="w-4 h-4 text-cyan-400" />
-                          <span>OTHER MEDIA SIZES (REELS, SQUARE, FEED...)</span>
+                          <Layers className="w-4 h-4 text-[#e8a33d]" />
+                          <span>Other Media Formats (Reels, Square, Feed)</span>
                         </div>
-                        <ChevronRight className="w-5 h-5 text-cyan-400/80" />
+                        <ChevronRight className="w-4 h-4 text-[#b5a8be]" />
                       </button>
 
                       {/* Back to Home Navigation */}
-                      <div className="text-center pt-1">
+                      <div className="text-center pt-2">
                         <button
                           onClick={() => {
                             stopCameraStream();
                             setStep('landing');
                           }}
-                          className="text-xs text-cyan-200/60 hover:text-white transition underline underline-offset-4"
+                          className="text-xs text-[#b5a8be] hover:text-[#f6ebdd] transition underline underline-offset-4"
                         >
                           ← Back to Home
                         </button>
@@ -1255,31 +1254,27 @@ export default function PhotoBoothApp() {
       )}
 
       {/* =========================================================================
-          NAME PERSONALIZATION MODAL
+          NAME PERSONALIZATION MODAL (Refined Boutique Card)
          ========================================================================= */}
       <AnimatePresence>
         {showNameModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85">
             <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
+              initial={{ scale: 0.92, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              className="w-full max-w-sm p-6 sm:p-8 rounded-3xl bg-[#090317] border-2 border-cyan-400/50 text-center shadow-[0_0_60px_rgba(6,182,212,0.45)] relative overflow-hidden"
+              exit={{ scale: 0.92, opacity: 0 }}
+              className="w-full max-w-sm p-6 sm:p-8 rounded-3xl bg-[#14051f]/95 border border-[#e8a33d]/35 text-center shadow-[0_20px_60px_rgba(0,0,0,0.9)] relative overflow-hidden backdrop-blur-md"
             >
-              {/* Ambient Glows */}
-              <div className="absolute -top-12 -right-12 w-32 h-32 bg-cyan-500/20 rounded-full blur-2xl pointer-events-none" />
-              <div className="absolute -bottom-12 -left-12 w-32 h-32 bg-pink-500/20 rounded-full blur-2xl pointer-events-none" />
-
               <div className="flex justify-center mb-3 relative z-10">
-                <div className="w-14 h-14 rounded-2xl bg-cyan-950/80 border border-cyan-400/40 flex items-center justify-center shadow-[0_0_20px_rgba(6,182,212,0.4)]">
-                  <DiyaGraphic size={40} />
+                <div className="w-12 h-12 rounded-full bg-[#e8a33d]/10 border border-[#e8a33d]/30 flex items-center justify-center text-[#e8a33d] shadow-sm">
+                  <DiyaGraphic size={28} />
                 </div>
               </div>
 
-              <h3 className="font-serif text-xl sm:text-2xl font-black text-white tracking-wide uppercase drop-shadow mb-1 relative z-10">
+              <h3 className="font-serif text-xl sm:text-2xl font-normal text-[#f6ebdd] tracking-tight mb-1 relative z-10">
                 Personalize Your Portrait
               </h3>
-              <p className="text-xs text-cyan-100/80 mb-5 relative z-10">
+              <p className="text-xs text-[#b5a8be] mb-5 relative z-10 leading-relaxed">
                 Enter your name to appear on your royal festive frame and discount voucher.
               </p>
 
@@ -1289,25 +1284,25 @@ export default function PhotoBoothApp() {
                   placeholder="Enter your name (e.g. Priya)"
                   value={nameInput}
                   onChange={(e) => setNameInput(e.target.value)}
-                  className="w-full py-3.5 px-4 rounded-xl bg-black/70 border border-cyan-400/40 text-white placeholder:text-white/40 text-sm focus:outline-none focus:border-cyan-300 focus:ring-2 focus:ring-cyan-400/30 transition shadow-inner"
+                  className="w-full py-3.5 px-4 rounded-xl bg-black/60 border border-[#e8a33d]/30 text-[#f6ebdd] placeholder:text-[#b5a8be]/50 text-sm focus:outline-none focus:border-[#e8a33d] focus:ring-1 focus:ring-[#e8a33d]/40 transition shadow-inner"
                   autoFocus
                 />
 
                 <button
                   type="submit"
                   disabled={!nameInput.trim()}
-                  className="w-full py-3.5 sm:py-4 rounded-full bg-gradient-to-r from-cyan-400 via-cyan-500 to-blue-500 hover:from-cyan-300 hover:to-blue-400 text-slate-950 font-black text-xs uppercase tracking-widest disabled:opacity-40 transition shadow-[0_0_25px_rgba(6,182,212,0.6)] active:scale-95 flex items-center justify-center gap-2"
+                  className="btn-primary-marigold w-full py-3.5 rounded-full font-semibold text-xs uppercase tracking-wider disabled:opacity-40 transition active:scale-95 flex items-center justify-center gap-2"
                 >
-                  <span>CONTINUE TO PHOTO BOOTH</span>
-                  <ArrowRight className="w-4 h-4 stroke-[3]" />
+                  <span>Continue to Photo Booth</span>
+                  <ArrowRight className="w-4 h-4 stroke-[2.5]" />
                 </button>
 
                 <button
                   type="button"
                   onClick={handleSkipName}
-                  className="w-full py-2 text-xs text-cyan-200/75 hover:text-white font-medium tracking-wide transition hover:underline underline-offset-4"
+                  className="w-full py-2 text-xs text-[#b5a8be] hover:text-[#f6ebdd] font-medium tracking-wide transition hover:underline underline-offset-4"
                 >
-                  Skip &amp; Continue as Guest
+                  Skip &amp; continue as guest
                 </button>
               </form>
             </motion.div>

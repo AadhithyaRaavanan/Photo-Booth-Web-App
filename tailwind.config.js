@@ -9,65 +9,47 @@ export default {
   theme: {
     extend: {
       colors: {
-        festive: {
-          darkest: '#0e0217',
-          dark: '#180426',
-          purple: '#28083f',
-          plum: '#3e072b',
-          burgundy: '#580c2e',
-          accent: '#ff8a00',
-          orange: '#ff6200',
+        plum: {
+          950: '#07010c',
+          900: '#0e0316',
+          850: '#14051f',
+          800: '#1a0828',
+          700: '#260c3b',
+          600: '#381254',
         },
-        gold: {
-          50: '#fffbf0',
-          100: '#fdf4dc',
-          200: '#fae7b4',
-          300: '#f6d584',
-          400: '#f1be52',
-          500: '#d4af37',
-          600: '#b78e24',
-          700: '#8f6a19',
-          800: '#6d4f17',
-          900: '#4a3410',
+        marigold: {
+          50: '#fffbf2',
+          100: '#fef5e1',
+          200: '#fbe7bd',
+          300: '#f6d289',
+          400: '#f2c14e',
+          500: '#e8a33d',
+          600: '#c98622',
+          700: '#9d6316',
+          800: '#754714',
+          900: '#4e2d0d',
         },
-        champagne: {
-          light: '#fff8ea',
-          DEFAULT: '#f7ebd2',
-          dark: '#e5d1a8',
-        }
+        boutique: {
+          ivory: '#f6ebdd',
+          muted: '#a89cb5',
+          dim: '#7a6e88',
+          rose: '#9e1644',
+          teal: '#0f8b8d',
+        },
       },
       fontFamily: {
-        serif: ['var(--font-cinzel)', 'Georgia', 'serif'],
-        heading: ['var(--font-cinzel)', 'serif'],
-        festive: ['var(--font-playfair)', 'serif'],
-        sans: ['var(--font-sans)', 'system-ui', 'sans-serif'],
+        serif: ['var(--font-playfair)', 'Playfair Display', 'Cinzel', 'Georgia', 'serif'],
+        cinzel: ['var(--font-cinzel)', 'Cinzel', 'serif'],
+        sans: ['var(--font-sans)', 'Plus Jakarta Sans', 'system-ui', 'sans-serif'],
       },
       boxShadow: {
-        'gold-glow': '0 0 25px rgba(212, 175, 55, 0.45)',
-        'gold-glow-lg': '0 0 45px rgba(212, 175, 55, 0.65)',
-        'purple-glow': '0 0 35px rgba(115, 20, 115, 0.5)',
-        'diya': '0 0 20px rgba(255, 140, 0, 0.7), 0 0 40px rgba(255, 87, 34, 0.4)',
+        'boutique-card': '0 16px 40px -10px rgba(0, 0, 0, 0.75), 0 1px 0 0 rgba(255, 235, 205, 0.08) inset',
+        'boutique-elevated': '0 24px 60px -12px rgba(0, 0, 0, 0.85), 0 1px 0 0 rgba(232, 163, 61, 0.2) inset',
+        'gold-soft': '0 4px 14px 0 rgba(232, 163, 61, 0.25)',
       },
-      animation: {
-        'flame': 'flame 1.5s ease-in-out infinite alternate',
-        'float-slow': 'float 4s ease-in-out infinite',
-        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-        'shimmer': 'shimmer 2.5s linear infinite',
+      transitionTimingFunction: {
+        'boutique': 'cubic-bezier(0.22, 1, 0.36, 1)',
       },
-      keyframes: {
-        flame: {
-          '0%': { transform: 'scale(1) rotate(-1deg)', opacity: '0.9' },
-          '100%': { transform: 'scale(1.1) rotate(2deg)', opacity: '1', filter: 'drop-shadow(0 0 12px #ff9800)' },
-        },
-        float: {
-          '0%, 100%': { transform: 'translateY(0px)' },
-          '50%': { transform: 'translateY(-8px)' },
-        },
-        shimmer: {
-          '0%': { backgroundPosition: '-200% 0' },
-          '100%': { backgroundPosition: '200% 0' },
-        }
-      }
     },
   },
   plugins: [],

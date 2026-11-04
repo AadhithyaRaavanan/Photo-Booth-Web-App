@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import confetti from 'canvas-confetti';
 import { CheckCircle2, Copy, Download, X, Gift, Sparkles, Check } from 'lucide-react';
 import { playChimeSound } from './AudioChime';
+import DiyaGraphic from './DiyaGraphic';
 
 export default function CouponModal({
   isOpen,
@@ -26,8 +27,8 @@ export default function CouponModal({
     if (isOpen) {
       playChimeSound('celebrate');
 
-      // Golden and festive color palette for confetti
-      const goldColors = ['#f5c518', '#ffd700', '#d4af37', '#ff8c00', '#ffffff', '#fae3b3'];
+      // Warm luxury festive palette for celebratory confetti (marigold gold, saffron, rose, warm ivory)
+      const goldColors = ['#e8a33d', '#f2c14e', '#c2185b', '#f6ebdd', '#d4af37'];
 
       // Left blast
       confetti({
@@ -212,93 +213,82 @@ export default function CouponModal({
             className="fixed inset-0 bg-black/85"
           />
 
-          {/* 2. Main Coupon Modal Card */}
+          {/* 2. Main Coupon Modal Card (Tactile Boutique Voucher Ticket) */}
           <motion.div
-            initial={{ scale: 0.75, opacity: 0, y: 30 }}
+            initial={{ scale: 0.85, opacity: 0, y: 20 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
-            exit={{ scale: 0.8, opacity: 0, y: 20 }}
+            exit={{ scale: 0.85, opacity: 0, y: 20 }}
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
-            className="relative w-full max-w-sm sm:max-w-md mx-auto my-auto rounded-3xl overflow-hidden card-festive border-2 border-gold-500/80 shadow-[0_0_50px_rgba(212,175,55,0.45)] z-10"
+            className="relative w-full max-w-sm sm:max-w-md mx-auto my-auto rounded-3xl overflow-hidden bg-[#14051f] border border-[#e8a33d]/40 shadow-[0_25px_70px_rgba(0,0,0,0.9)] z-10"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Top Close Button */}
             <button
               onClick={onClose}
-              className="absolute top-4 right-4 z-20 w-8 h-8 rounded-full bg-black/40 border border-gold-500/30 flex items-center justify-center text-champagne hover:text-white hover:bg-black/60 transition"
+              className="absolute top-4 right-4 z-20 w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-[#b5a8be] hover:text-[#f6ebdd] hover:bg-white/10 transition"
               aria-label="Close modal"
             >
               <X className="w-4 h-4" />
             </button>
 
-            {/* Glowing Accent Header Ribbon */}
-            <div className="relative pt-8 pb-4 px-6 text-center overflow-hidden">
-              {/* Background radial gold glow */}
-              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-48 bg-gold-500/20 rounded-full blur-3xl pointer-events-none" />
+            {/* Header: Refined Diya Seal & Typography */}
+            <div className="relative pt-8 pb-3 px-6 text-center">
+              {/* Refined Diya Emblem */}
+              <div className="w-14 h-14 rounded-full bg-[#e8a33d]/10 border border-[#e8a33d]/35 flex items-center justify-center text-[#e8a33d] mx-auto mb-3 shadow-sm">
+                <DiyaGraphic size={30} />
+              </div>
 
-              {/* 3D Animated Gift Box Illustration */}
-              <motion.div
-                initial={{ rotate: -10, scale: 0.8 }}
-                animate={{ rotate: [ -5, 5, -5 ], scale: [ 1, 1.05, 1 ] }}
-                transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
-                className="relative mx-auto w-20 h-20 mb-3 flex items-center justify-center"
-              >
-                <div className="absolute inset-0 bg-gradient-to-tr from-amber-500 to-yellow-300 rounded-2xl filter blur-md opacity-40 animate-pulse" />
-                <div className="relative w-18 h-18 p-3 rounded-2xl bg-gradient-to-b from-[#ffcf40] via-[#d4af37] to-[#8f6a19] shadow-lg flex items-center justify-center border border-gold-200">
-                  <Gift className="w-10 h-10 text-festive-darkest fill-festive-darkest/10 drop-shadow" />
-                </div>
-                {/* Sparkle badge */}
-                <div className="absolute -top-1 -right-1 text-gold-300 animate-bounce">
-                  <Sparkles className="w-5 h-5 fill-current" />
-                </div>
-              </motion.div>
-
-              {/* Small Heading */}
-              <p className="text-[11px] font-bold tracking-[0.25em] text-gold-400 uppercase font-sans mb-1">
-                CONGRATULATIONS!
+              {/* Eyebrow */}
+              <p className="text-[10px] font-sans font-medium tracking-[0.2em] text-[#e8a33d] uppercase mb-1">
+                Festive Celebration Reward
               </p>
 
-              {/* Main Heading */}
-              <h2 className="text-xl sm:text-2xl font-bold font-serif gold-gradient-text tracking-wide">
-                YOUR FESTIVE GIFT IS UNLOCKED!
+              {/* Headline */}
+              <h2 className="text-xl sm:text-2xl font-serif font-normal text-[#f6ebdd] tracking-tight">
+                Your Festive Gift is Unlocked
               </h2>
 
               {/* Verified Story Pill */}
-              <div className="inline-flex items-center gap-1.5 mt-2 px-3 py-1 rounded-full bg-emerald-950/80 border border-emerald-500/50 shadow-sm">
+              <div className="inline-flex items-center gap-1.5 mt-2.5 px-3 py-1 rounded-full bg-emerald-950/40 border border-emerald-500/30 shadow-sm">
                 <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-                <span className="text-xs font-semibold text-emerald-300">
-                  Verified Instagram Story
+                <span className="text-[11px] font-medium text-emerald-300">
+                  Verified Story Share
                 </span>
               </div>
             </div>
 
-            {/* Main Discount Display Box */}
+            {/* Main Discount Display (Tactile Voucher Card with Perforation) */}
             <div className="px-6 py-2">
-              <div className="relative p-5 rounded-2xl bg-gradient-to-br from-[#3b0954]/90 to-[#1e032e]/90 border border-gold-400/50 text-center shadow-inner">
-                <span className="text-[10px] font-bold uppercase tracking-widest text-[#fae3b3]">
-                  EXCLUSIVE OFFER UNLOCKED
+              <div className="relative p-5 rounded-2xl bg-[#1c0828] border border-[#e8a33d]/30 text-center overflow-hidden">
+                {/* Notched voucher ticket edges */}
+                <div className="absolute top-1/2 -translate-y-1/2 -left-2.5 w-5 h-5 rounded-full bg-[#14051f] border-r border-[#e8a33d]/30" />
+                <div className="absolute top-1/2 -translate-y-1/2 -right-2.5 w-5 h-5 rounded-full bg-[#14051f] border-l border-[#e8a33d]/30" />
+
+                <span className="text-[10px] font-sans font-medium uppercase tracking-widest text-[#e8a33d]">
+                  Exclusive Discount Pass
                 </span>
 
-                {/* Big Radiant Discount */}
+                {/* Big Display Serif Discount */}
                 <div className="my-1.5">
-                  <span className="text-3xl sm:text-4xl font-extrabold font-serif text-white tracking-tight drop-shadow-[0_0_20px_rgba(255,215,0,0.6)]">
+                  <span className="text-4xl sm:text-5xl font-serif font-normal text-[#f6ebdd] tracking-tight">
                     {discount}
                   </span>
                 </div>
 
-                <p className="text-xs text-champagne/80 font-medium">
-                  Prepared with love for <strong className="text-gold-300">{customerName}</strong>
+                <p className="text-xs text-[#b5a8be] font-sans">
+                  Prepared with love for <strong className="text-[#f6ebdd] font-medium">{customerName}</strong>
                 </p>
               </div>
             </div>
 
             {/* Unique Coupon Code Ticket */}
             <div className="px-6 py-3">
-              <div className="relative p-3.5 rounded-xl bg-black/50 border border-dashed border-gold-400/60 flex items-center justify-between gap-2">
+              <div className="relative p-3.5 rounded-xl bg-black/60 border border-[#e8a33d]/30 flex items-center justify-between gap-3">
                 <div className="flex-1 text-left overflow-hidden">
-                  <span className="block text-[9px] uppercase tracking-wider text-gold-400/80 font-semibold">
-                    YOUR EXCLUSIVE COUPON CODE
+                  <span className="block text-[9px] uppercase tracking-wider text-[#b5a8be] font-medium">
+                    Your Voucher Code
                   </span>
-                  <span className="block text-base sm:text-lg font-mono font-bold text-white tracking-widest truncate">
+                  <span className="block text-base sm:text-lg font-mono font-bold text-[#f6ebdd] tracking-widest truncate">
                     {couponCode}
                   </span>
                 </div>
@@ -306,11 +296,11 @@ export default function CouponModal({
                 {/* Copy button */}
                 <button
                   onClick={handleCopyCode}
-                  className="flex-shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-lg bg-gradient-to-r from-gold-500 to-amber-500 text-black text-xs font-bold hover:brightness-110 active:scale-95 transition shadow-sm"
+                  className="btn-primary-marigold flex-shrink-0 flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-semibold active:scale-95 transition shadow-sm"
                 >
                   {copied ? (
                     <>
-                      <Check className="w-3.5 h-3.5 text-black stroke-[3]" />
+                      <Check className="w-3.5 h-3.5 stroke-[2.5]" />
                       <span>COPIED!</span>
                     </>
                   ) : (
@@ -323,32 +313,32 @@ export default function CouponModal({
               </div>
 
               {/* Redemption instructions */}
-              <p className="mt-2 text-center text-[11px] text-champagne/70 leading-relaxed">
-                Show this coupon code at <strong className="text-gold-300">{shopName}</strong> billing counter to redeem your discount.
+              <p className="mt-2.5 text-center text-[11px] text-[#b5a8be] leading-relaxed">
+                Show this voucher code at <strong className="text-[#f6ebdd] font-medium">{shopName}</strong> billing counter to redeem.
               </p>
-              <p className="text-center text-[10px] text-gold-400/80 mt-0.5">
-                Valid until {validityDate}
+              <p className="text-center text-[10px] text-[#e8a33d] mt-0.5">
+                Valid through {validityDate}
               </p>
             </div>
 
             {/* Modal Bottom Actions */}
-            <div className="p-6 pt-2 space-y-2.5">
+            <div className="p-6 pt-1 space-y-2.5">
               {/* Action 1: Download pass */}
               <button
                 onClick={handleDownloadCoupon}
                 disabled={downloading}
-                className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-gradient-to-r from-gold-400 via-amber-400 to-gold-500 text-festive-darkest font-bold text-sm shadow-[0_0_20px_rgba(212,175,55,0.4)] hover:brightness-110 active:scale-[0.98] transition"
+                className="btn-primary-marigold w-full flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl font-semibold text-xs uppercase tracking-wider shadow-md active:scale-[0.98] transition"
               >
-                <Download className="w-4 h-4" />
+                <Download className="w-4 h-4 stroke-[2.5]" />
                 <span>{downloading ? "GENERATING PASS..." : "DOWNLOAD COUPON PASS"}</span>
               </button>
 
               {/* Action 2: Done */}
               <button
                 onClick={onClose}
-                className="w-full py-2.5 px-4 rounded-xl bg-white/5 hover:bg-white/10 text-champagne text-xs font-semibold border border-white/10 transition"
+                className="w-full py-2.5 px-4 rounded-xl bg-white/5 hover:bg-white/10 text-[#b5a8be] hover:text-[#f6ebdd] text-xs font-medium border border-white/10 transition"
               >
-                DONE
+                Done
               </button>
             </div>
           </motion.div>

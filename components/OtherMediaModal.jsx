@@ -150,30 +150,30 @@ export default function OtherMediaModal({
           initial={{ opacity: 0, scale: 0.94, y: 15 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.94, y: 15 }}
-          className="relative w-full max-w-4xl bg-gradient-to-b from-[#240217] via-[#1a0110] to-[#0d0008] border-2 border-amber-400/60 rounded-3xl shadow-[0_0_60px_rgba(255,215,0,0.35)] overflow-hidden flex flex-col my-auto max-h-[92vh]"
+          className="relative w-full max-w-4xl bg-[#14051f] border border-[#e8a33d]/40 rounded-3xl shadow-[0_25px_70px_rgba(0,0,0,0.9)] overflow-hidden flex flex-col my-auto max-h-[92vh]"
         >
           {/* Header */}
-          <div className="flex items-center justify-between px-6 py-4 border-b border-amber-400/20 bg-black/30">
+          <div className="flex items-center justify-between px-6 py-4 border-b border-[#e8a33d]/20 bg-black/30">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#e60067] via-[#ff3b30] to-[#ff9500] flex items-center justify-center shadow-md">
-                <Layers className="w-5 h-5 text-white" />
+              <div className="w-10 h-10 rounded-2xl bg-[#e8a33d]/15 border border-[#e8a33d]/30 flex items-center justify-center text-[#e8a33d] shadow-sm">
+                <Layers className="w-5 h-5 text-[#e8a33d]" />
               </div>
               <div>
-                <h3 className="font-serif text-lg sm:text-xl font-bold text-white flex items-center gap-2">
+                <h3 className="font-serif text-lg sm:text-xl font-normal text-[#f6ebdd] flex items-center gap-2">
                   <span>Other Media Formats</span>
-                  <span className="text-[11px] font-sans font-semibold px-2.5 py-0.5 rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/40">
-                    Social Master Guide
+                  <span className="text-[10px] font-sans font-medium px-2.5 py-0.5 rounded-full bg-[#e8a33d]/15 text-[#e8a33d] border border-[#e8a33d]/30">
+                    Social Presets
                   </span>
                 </h3>
-                <p className="text-xs text-champagne/70">
-                  Auto-resize and download your festive portrait for Instagram, WhatsApp, Facebook, and more!
+                <p className="text-xs text-[#b5a8be]">
+                  Auto-resize and download your festive portrait for Instagram, WhatsApp, Facebook, and more.
                 </p>
               </div>
             </div>
 
             <button
               onClick={onClose}
-              className="p-2 rounded-full bg-white/10 hover:bg-white/20 text-champagne/80 hover:text-white transition"
+              className="p-2 rounded-full bg-white/5 hover:bg-white/10 text-[#b5a8be] hover:text-[#f6ebdd] transition"
               aria-label="Close"
             >
               <X className="w-5 h-5" />
@@ -185,7 +185,6 @@ export default function OtherMediaModal({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
               {SOCIAL_PRESETS.map((preset) => {
                 const IconComponent = ICON_MAP[preset.id] || Share2;
-                const gradientClass = PLATFORM_COLORS[preset.id] || 'from-[#e60067] to-[#ff9500]';
                 const isDownloading = downloadingId === preset.id;
                 const isDownloaded = downloadedId === preset.id;
                 const isSelected = previewPreset?.id === preset.id;
@@ -195,45 +194,45 @@ export default function OtherMediaModal({
                     key={preset.id}
                     className={`relative p-4 rounded-2xl border transition flex flex-col justify-between gap-3 ${
                       isSelected
-                        ? 'bg-[#3d0628]/80 border-amber-400 shadow-[0_0_20px_rgba(255,215,0,0.25)]'
-                        : 'bg-[#2a041c]/60 hover:bg-[#320522]/70 border-amber-400/25'
+                        ? 'bg-[#e8a33d]/15 border-[#e8a33d] shadow-[0_4px_16px_rgba(232,163,61,0.2)]'
+                        : 'bg-[#1c0828]/80 hover:bg-[#250b36] border-[#e8a33d]/20 hover:border-[#e8a33d]/40'
                     }`}
                   >
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex items-center gap-3">
                         <div
-                          className={`w-10 h-10 rounded-xl bg-gradient-to-tr ${gradientClass} flex items-center justify-center text-white shrink-0 shadow-md`}
+                          className="w-10 h-10 rounded-xl bg-[#e8a33d]/10 border border-[#e8a33d]/25 flex items-center justify-center text-[#e8a33d] shrink-0 shadow-sm"
                         >
                           <IconComponent className="w-5 h-5" />
                         </div>
                         <div>
                           <div className="flex items-center gap-2">
-                            <h4 className="font-sans font-bold text-sm text-white">{preset.name}</h4>
-                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-amber-400/15 text-amber-300 border border-amber-400/30">
+                            <h4 className="font-serif font-medium text-sm text-[#f6ebdd]">{preset.name}</h4>
+                            <span className="text-[10px] font-sans font-medium px-2 py-0.5 rounded-md bg-[#e8a33d]/10 text-[#e8a33d] border border-[#e8a33d]/25">
                               {preset.aspect}
                             </span>
                           </div>
-                          <span className="text-[11px] text-champagne/70 font-medium block">
+                          <span className="text-[11px] text-[#b5a8be] font-sans block">
                             {preset.platform}
                           </span>
                         </div>
                       </div>
 
-                      <span className="text-[10px] font-mono font-bold text-amber-300/80 bg-black/40 px-2 py-1 rounded-md border border-white/10 shrink-0">
+                      <span className="text-[10px] font-mono text-[#b5a8be] bg-black/40 px-2 py-1 rounded-md border border-white/10 shrink-0">
                         {preset.width} × {preset.height} px
                       </span>
                     </div>
 
-                    <p className="text-xs text-champagne/60 leading-relaxed">{preset.desc}</p>
+                    <p className="text-xs text-[#b5a8be] leading-relaxed">{preset.desc}</p>
 
                     <div className="flex items-center gap-2 pt-1 border-t border-white/5">
                       <button
                         onClick={() => handleDownloadFormat(preset)}
                         disabled={isDownloading}
-                        className={`flex-1 py-2.5 px-4 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition shadow-md active:scale-[0.98] ${
+                        className={`flex-1 py-2.5 px-4 rounded-xl font-semibold text-xs flex items-center justify-center gap-2 transition shadow-sm active:scale-[0.98] ${
                           isDownloaded
                             ? 'bg-emerald-600 text-white'
-                            : 'bg-gradient-to-r from-[#e60067] via-[#ff3b30] to-[#ff9500] hover:brightness-110 text-white'
+                            : 'btn-primary-marigold'
                         }`}
                       >
                         {isDownloading ? (
@@ -248,7 +247,7 @@ export default function OtherMediaModal({
                           </>
                         ) : (
                           <>
-                            <Download className="w-4 h-4" />
+                            <Download className="w-4 h-4 stroke-[2.5]" />
                             <span>Download ({preset.aspect})</span>
                           </>
                         )}

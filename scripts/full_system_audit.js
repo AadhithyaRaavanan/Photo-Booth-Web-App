@@ -167,34 +167,42 @@ async function runFullAudit() {
   console.log('3B. Opening Name Modal on Mobile...');
   await mobilePage.evaluate(() => {
     const btns = Array.from(document.querySelectorAll('button'));
-    const enter = btns.find((b) => b.innerText.includes('ENTER PHOTO BOOTH'));
+    const enter = btns.find((b) => b.innerText.toUpperCase().includes('ENTER'));
     if (enter) enter.click();
   });
-  await sleep(600);
+  await mobilePage.waitForFunction(
+    () => document.body.innerText.toUpperCase().includes('PERSONALIZE YOUR PORTRAIT'),
+    { timeout: 8000 }
+  );
+  await sleep(400);
 
   const modalText = await mobilePage.evaluate(() => document.body.innerText);
-  assert(modalText.includes('PERSONALIZE YOUR PORTRAIT'), 'Personalization Name Modal opens cleanly');
+  assert(modalText.toUpperCase().includes('PERSONALIZE YOUR PORTRAIT'), 'Personalization Name Modal opens cleanly');
 
   // Skip / Continue to Camera
   console.log('3C. Proceeding to Camera View...');
   await mobilePage.evaluate(() => {
     const btns = Array.from(document.querySelectorAll('button'));
-    const skip = btns.find((b) => b.innerText.includes('Skip & Continue as Guest'));
+    const skip = btns.find((b) => b.innerText.toLowerCase().includes('skip'));
     if (skip) skip.click();
   });
-  await sleep(1000);
+  await mobilePage.waitForFunction(
+    () => document.body.innerText.includes('Prev') || document.body.innerText.includes('Twin Royal Peacocks'),
+    { timeout: 8000 }
+  );
+  await sleep(600);
 
   // Verify Mobile Camera Screen Layout
   console.log('3D. Testing Mobile Camera Controls & Frame Switcher...');
   const cameraText = await mobilePage.evaluate(() => document.body.innerText);
-  assert(cameraText.includes('Prev Frame'), 'Mobile Prev Frame button exists');
-  assert(cameraText.includes('Next Frame'), 'Mobile Next Frame button exists');
+  assert(cameraText.includes('Prev'), 'Mobile Prev Frame button exists');
+  assert(cameraText.includes('Next'), 'Mobile Next Frame button exists');
   assert(cameraText.includes('Twin Royal Peacocks'), 'Selected frame title displays on mobile');
 
   // Test Frame Switcher Click (Next Frame)
   await mobilePage.evaluate(() => {
     const btns = Array.from(document.querySelectorAll('button'));
-    const nextBtn = btns.find((b) => b.innerText.includes('Next Frame'));
+    const nextBtn = btns.find((b) => b.innerText.includes('Next'));
     if (nextBtn) nextBtn.click();
   });
   await sleep(500);
@@ -205,14 +213,15 @@ async function runFullAudit() {
     'Clicking Next Frame advances to Frame 2 without opening any intrusive scroll menu'
   );
 
-  // Take Demo Selfie
+  // Take Demo Selfie / Sample Photo
   console.log('3E. Generating Festive Photo Preview on Mobile...');
   await mobilePage.evaluate(() => {
     const btns = Array.from(document.querySelectorAll('button'));
-    const demo = btns.find((b) => b.innerText.includes('Demo Selfie'));
+    const demo = btns.find((b) => b.innerText.toLowerCase().includes('sample photo') || b.innerText.toLowerCase().includes('demo'));
     if (demo) demo.click();
   });
-  await sleep(1500);
+  await mobilePage.waitForFunction(() => document.body.innerText.includes('Your Festive Portrait'), { timeout: 12000 });
+  await sleep(600);
 
   // Verify Preview Screen
   const previewText = await mobilePage.evaluate(() => document.body.innerText);
@@ -225,16 +234,16 @@ async function runFullAudit() {
     !previewText.includes('CLAIM 30% OFF SALON PASS'),
     'Standalone Claim Pass button is completely removed from mobile screen'
   );
-  assert(previewText.includes('SHARE ON INSTAGRAM STORY'), 'SHARE ON INSTAGRAM STORY button is present');
-  assert(previewText.includes('POST TO WHATSAPP STATUS'), 'POST TO WHATSAPP STATUS button is present');
-  assert(previewText.includes('SAVE PHOTO'), 'SAVE PHOTO button is present');
-  assert(previewText.includes('RETAKE'), 'RETAKE button is present');
+  assert(previewText.toUpperCase().includes('SHARE ON INSTAGRAM STORY'), 'SHARE ON INSTAGRAM STORY button is present');
+  assert(previewText.toUpperCase().includes('POST TO WHATSAPP STATUS'), 'POST TO WHATSAPP STATUS button is present');
+  assert(previewText.toUpperCase().includes('SAVE PHOTO'), 'SAVE PHOTO button is present');
+  assert(previewText.toUpperCase().includes('RETAKE'), 'RETAKE button is present');
 
   // Test Sharing Action opens Coupon Modal
   console.log('3F. Testing Social Share Trigger -> Opens 30% OFF Coupon Modal...');
   await mobilePage.evaluate(() => {
     const btns = Array.from(document.querySelectorAll('button'));
-    const ig = btns.find((b) => b.innerText.includes('SHARE ON INSTAGRAM STORY'));
+    const ig = btns.find((b) => b.innerText.toUpperCase().includes('SHARE ON INSTAGRAM STORY'));
     if (ig) ig.click();
   });
   await sleep(1000);
@@ -268,9 +277,9 @@ async function runFullAudit() {
 
   const adminText = await desktopPage.evaluate(() => document.body.innerText);
   assert(adminText.includes('Photo Booth Live Analytics'), 'Admin header renders correctly');
-  assert(adminText.includes('PHOTOS CAPTURED'), 'PHOTOS CAPTURED card renders');
-  assert(adminText.includes('COUPONS CLAIMED'), 'COUPONS CLAIMED card renders');
-  assert(adminText.includes('TOTAL VISITS'), 'TOTAL VISITS card renders');
+  assert(adminText.toUpperCase().includes('PHOTOS CAPTURED'), 'PHOTOS CAPTURED card renders');
+  assert(adminText.toUpperCase().includes('COUPONS CLAIMED'), 'COUPONS CLAIMED card renders');
+  assert(adminText.toUpperCase().includes('TOTAL VISITS'), 'TOTAL VISITS card renders');
   assert(adminText.includes('Supabase & Prisma Live'), 'Live Supabase badge displays in green');
   assert(!adminText.includes('Recent Photo Captures'), 'Removed activity feed 1 is absent');
   assert(!adminText.includes('Recent Coupon Passes Issued'), 'Removed activity feed 2 is absent');
@@ -280,22 +289,27 @@ async function runFullAudit() {
   await desktopPage.goto(`${LOCAL_URL}`, { waitUntil: 'networkidle2' });
   await desktopPage.evaluate(() => {
     const btns = Array.from(document.querySelectorAll('button'));
-    const enter = btns.find((b) => b.innerText.includes('ENTER PHOTO BOOTH'));
+    const enter = btns.find((b) => b.innerText.toUpperCase().includes('ENTER'));
     if (enter) enter.click();
   });
   await sleep(600);
   await desktopPage.evaluate(() => {
     const btns = Array.from(document.querySelectorAll('button'));
-    const skip = btns.find((b) => b.innerText.includes('Skip & Continue as Guest'));
+    const skip = btns.find((b) => b.innerText.toLowerCase().includes('skip'));
     if (skip) skip.click();
   });
   await sleep(1000);
 
   const desktopCameraText = await desktopPage.evaluate(() => document.body.innerText);
-  assert(desktopCameraText.includes('ROYAL FRAME STUDIO'), 'Desktop view displays the docked Royal Frame Studio side panel');
+  assert(desktopCameraText.toUpperCase().includes('ROYAL FRAME STUDIO'), 'Desktop view displays the docked Royal Frame Studio side panel');
 
-  await desktopPage.close();
-  await browser.close();
+  try {
+    await desktopPage.close();
+    await Promise.race([
+      browser.close(),
+      new Promise((resolve) => setTimeout(resolve, 2500)),
+    ]);
+  } catch (e) {}
 
   // ---------------------------------------------------------------------------
   // PHASE 5: FINAL CLEANUP & ZERO RESET
@@ -326,7 +340,6 @@ async function runFullAudit() {
     console.error('  ⚠️ Some tests failed. Please review the log output above.');
   }
   console.log('========================================================================\n');
-
   process.exit(failCount === 0 ? 0 : 1);
 }
 

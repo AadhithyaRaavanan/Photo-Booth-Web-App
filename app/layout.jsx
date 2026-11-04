@@ -30,7 +30,7 @@ export default function RootLayout({ children }) {
         {/* Preload the primary high-priority frame in WebP for instantaneous display */}
         <link rel="preload" as="image" href="/frames/frame_1_peacocks.webp" type="image/webp" />
       </head>
-      <body className="bg-black text-champagne min-h-screen selection:bg-cyan-400 selection:text-black relative">
+      <body className="bg-black text-[#f6ebdd] min-h-screen selection:bg-[#e8a33d]/30 selection:text-white relative">
         {children}
       </body>
     </html>

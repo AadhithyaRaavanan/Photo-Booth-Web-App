@@ -4,23 +4,42 @@
 
 @layer base {
   :root {
-    --color-palace-burgundy: #3d071e;
-    --color-gold: #d4af37;
-    --font-cinzel: 'Cinzel', serif;
-    --font-cinzel-dec: 'Cinzel Decorative', serif;
-    --font-rozha: 'Rozha One', serif;
-    --font-marcellus: 'Marcellus', serif;
-    --font-playfair: 'Playfair Display', serif;
-    --font-sans: 'Plus Jakarta Sans', system-ui, sans-serif;
+    /* Luxury Boutique Indian Festive Palette */
+    --color-bg-base: #030006;
+    --color-surface-plum: #14051f;
+    --color-surface-plum-deep: #0e0316;
+    --color-surface-plum-elevated: #1a0828;
+    
+    /* Antique Marigold / Saffron Gold */
+    --color-gold-marigold: #e8a33d;
+    --color-gold-light: #f6d289;
+    --color-gold-bright: #f2c14e;
+    --color-gold-deep: #b87919;
+    --color-gold-hairline: rgba(232, 163, 61, 0.22);
+    --color-gold-hairline-subtle: rgba(232, 163, 61, 0.12);
+    
+    /* Rare Accents */
+    --color-accent-rose: #9e1644;
+    --color-accent-teal: #0f8b8d;
+    
+    /* Text Palette */
+    --color-text-ivory: #f6ebdd;
+    --color-text-muted: #a89cb5;
+    --color-text-dim: #7a6e88;
+    
+    /* Font Families */
+    --font-serif-display: 'Playfair Display', Georgia, serif;
+    --font-serif-royal: 'Cinzel', serif;
+    --font-sans-body: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
   }
   
   html, body {
     margin: 0;
     padding: 0;
     min-height: 100%;
-    background-color: #1a030c;
-    color: #f7ebd2;
-    font-family: var(--font-sans);
+    background-color: #030006;
+    color: var(--color-text-ivory);
+    font-family: var(--font-sans-body);
     -webkit-tap-highlight-color: transparent;
   }
 
@@ -32,83 +51,128 @@
   }
 }
 
-/* Luxurious Gold Foil Gradients */
-.gold-gradient-text {
-  background: linear-gradient(135deg, #fff7d6 0%, #f7cf45 25%, #d4af37 55%, #fff3bf 75%, #a67919 100%);
+/* Refined Antique Gold Foil Text Gradient */
+.gold-foil-text {
+  background: linear-gradient(135deg, #fdf4dc 0%, #f2c14e 35%, #e8a33d 70%, #d4952d 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4));
 }
 
-.gold-shimmer {
-  background: linear-gradient(90deg, #d4af37 0%, #fff7d6 50%, #d4af37 100%);
+.gold-subtle-shimmer {
+  background: linear-gradient(120deg, #f6ebdd 0%, #f2c14e 40%, #e8a33d 70%, #f6ebdd 100%);
   background-size: 200% auto;
-  animation: shine 4s linear infinite;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
-@keyframes shine {
-  to {
-    background-position: 200% center;
-  }
-}
-
-/* Royal Palace Burgundy Gradient */
-.palace-burgundy-bg {
-  background: radial-gradient(circle at 50% 25%, #590d2e 0%, #3d071e 45%, #22030f 100%);
-}
-
-.card-festive-royal {
-  background: linear-gradient(145deg, rgba(74, 11, 38, 0.85) 0%, rgba(41, 5, 20, 0.92) 100%);
-  border: 1px solid rgba(212, 175, 55, 0.45);
-  box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 247, 214, 0.2);
+/* Boutique Card Surface: Deep Aubergine/Plum with Crisp 1px Antique Gold Hairline */
+.boutique-card {
+  background: linear-gradient(180deg, rgba(26, 8, 40, 0.88) 0%, rgba(14, 3, 22, 0.94) 100%);
+  border: 1px solid rgba(232, 163, 61, 0.2);
+  box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.75), 0 1px 0 0 rgba(255, 235, 205, 0.08) inset;
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
 }
 
-/* Hide scrollbars */
+.boutique-card-subtle {
+  background: rgba(18, 5, 28, 0.75);
+  border: 1px solid rgba(232, 163, 61, 0.14);
+  box-shadow: 0 8px 24px -6px rgba(0, 0, 0, 0.6);
+}
+
+/* Primary Boutique Button: Rich Saffron/Marigold with Deep Plum Text */
+.btn-primary-marigold {
+  background: linear-gradient(180deg, #f4c65b 0%, #e8a33d 100%);
+  color: #14051f;
+  border: 1px solid rgba(255, 235, 200, 0.4);
+  box-shadow: 0 4px 14px 0 rgba(232, 163, 61, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  font-weight: 700;
+  transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.btn-primary-marigold:hover {
+  background: linear-gradient(180deg, #fbd87e 0%, #f0ae48 100%);
+  box-shadow: 0 6px 20px 0 rgba(232, 163, 61, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  transform: translateY(-1px);
+}
+
+.btn-primary-marigold:active {
+  transform: translateY(1px) scale(0.99);
+  box-shadow: 0 2px 8px 0 rgba(232, 163, 61, 0.3);
+}
+
+/* Secondary Boutique Button: Muted Plum Surface with Gold Hairline */
+.btn-secondary-boutique {
+  background: rgba(26, 8, 40, 0.65);
+  color: #f6ebdd;
+  border: 1px solid rgba(232, 163, 61, 0.25);
+  backdrop-filter: blur(10px);
+  transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.btn-secondary-boutique:hover {
+  background: rgba(38, 12, 58, 0.85);
+  border-color: rgba(232, 163, 61, 0.45);
+  color: #ffffff;
+}
+
+/* Tactile Perforated Voucher Styling */
+.ticket-perforation {
+  position: relative;
+}
+
+.ticket-perforation::before,
+.ticket-perforation::after {
+  content: '';
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background-color: #030006;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.8);
+}
+
+.ticket-perforation::before {
+  left: -9px;
+  border-right: 1px solid rgba(232, 163, 61, 0.22);
+}
+
+.ticket-perforation::after {
+  right: -9px;
+  border-left: 1px solid rgba(232, 163, 61, 0.22);
+}
+
+.perforated-line {
+  background-image: linear-gradient(to right, rgba(232, 163, 61, 0.35) 40%, rgba(255, 255, 255, 0) 0%);
+  background-position: bottom;
+  background-size: 8px 1px;
+  background-repeat: repeat-x;
+}
+
+/* Custom Scrollbar for Catalog Panels */
+.boutique-scrollbar::-webkit-scrollbar {
+  width: 5px;
+}
+.boutique-scrollbar::-webkit-scrollbar-track {
+  background: rgba(14, 3, 22, 0.6);
+  border-radius: 9999px;
+}
+.boutique-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(232, 163, 61, 0.3);
+  border-radius: 9999px;
+}
+.boutique-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(232, 163, 61, 0.5);
+}
+
+/* Hide scrollbars where needed */
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
-}
-
-/* Flickering Diya Flame Animation */
-@keyframes flameFlicker {
-  0% { transform: scale(1) rotate(-1deg); opacity: 0.95; filter: drop-shadow(0 0 6px #ff9800); }
-  25% { transform: scale(1.06, 1.03) rotate(2deg); opacity: 1; filter: drop-shadow(0 0 12px #ff6d00); }
-  50% { transform: scale(0.97, 1.05) rotate(-2deg); opacity: 0.9; filter: drop-shadow(0 0 8px #ffb300); }
-  75% { transform: scale(1.04, 0.98) rotate(1deg); opacity: 1; filter: drop-shadow(0 0 14px #ff8c00); }
-  100% { transform: scale(1) rotate(-1deg); opacity: 0.95; filter: drop-shadow(0 0 6px #ff9800); }
-}
-
-.animate-diya-flame {
-  animation: flameFlicker 1.8s infinite ease-in-out;
-  transform-origin: bottom center;
-}
-
-/* Hanging Lantern Sway with natural physics */
-@keyframes lanternSway {
-  0% { transform: rotate(0deg); }
-  33% { transform: rotate(1.8deg); }
-  66% { transform: rotate(-1.8deg); }
-  100% { transform: rotate(0deg); }
-}
-
-.animate-sway-slow {
-  animation: lanternSway 6.5s ease-in-out infinite;
-  transform-origin: top center;
-}
-
-/* Pulsing Gold Glow */
-@keyframes goldPulse {
-  0%, 100% { box-shadow: 0 0 15px rgba(212, 175, 55, 0.4); }
-  50% { box-shadow: 0 0 35px rgba(212, 175, 55, 0.8), 0 0 15px rgba(245, 197, 24, 0.6); }
-}
-
-.pulse-gold {
-  animation: goldPulse 2.5s infinite ease-in-out;
 }
