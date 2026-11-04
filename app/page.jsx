@@ -75,9 +75,19 @@ export default function PhotoBoothApp() {
   const videoRef = useRef(null);
   const fileInputRef = useRef(null);
   const nativeCameraInputRef = useRef(null);
+  const hasTrackedVisitRef = useRef(false);
 
-  // Fetch campaign config on mount
+  // Fetch campaign config & track initial visitor on mount
   useEffect(() => {
+    // 1. Automatically track QR code scan / page visit in Supabase
+    if (!hasTrackedVisitRef.current) {
+      hasTrackedVisitRef.current = true;
+      fetch('/api/track-visit', { method: 'POST' }).catch((err) =>
+        console.log('Visit tracking fallback', err)
+      );
+    }
+
+    // 2. Fetch campaign config
     fetch('/api/config')
       .then((res) => res.json())
       .then((data) => {

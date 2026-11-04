@@ -36,6 +36,9 @@ export async function GET() {
       if (visitRow && typeof visitRow.value === 'number') {
         totalVisits = visitRow.value;
       }
+      // Logical guarantee: Total visits is always at least the number of photos captured
+      totalVisits = Math.max(totalVisits, photosCaptured);
+
       recentPhotos = pList;
       recentCoupons = cList;
       isSupabaseConnected = true;
@@ -46,6 +49,7 @@ export async function GET() {
 
   // Fallback lists if not connected to Supabase
   if (!isSupabaseConnected) {
+    totalVisits = Math.max(totalVisits, photosCaptured);
     recentCoupons = store.submissions.slice(0, 10).map((s) => ({
       id: s.id,
       customerName: s.customerName,
