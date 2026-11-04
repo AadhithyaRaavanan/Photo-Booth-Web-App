@@ -8,15 +8,20 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "node scripts/verify_photobooth.js"
+    "test": "node scripts/verify_photobooth.js",
+    "db:push": "prisma db push",
+    "db:generate": "prisma generate",
+    "db:studio": "prisma studio"
   },
   "dependencies": {
+    "@prisma/client": "5.22.0",
     "canvas-confetti": "^1.9.3",
     "framer-motion": "^11.11.17",
     "jpeg-js": "^0.4.4",
     "lucide-react": "^0.460.0",
     "next": "^14.2.18",
     "pngjs": "^7.0.0",
+    "prisma": "5.22.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },

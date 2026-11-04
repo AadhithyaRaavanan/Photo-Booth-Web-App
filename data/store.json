@@ -2,13 +2,16 @@
   "config": {
     "shopName": "Dream Salon",
     "shopTagline": "BEAUTY · STYLE · CONFIDENCE",
-    "campaignHeadline": "Celebrate Diwali in Style!",
-    "campaignSubtext": "Capture your festive moments and unlock an exclusive surprise.",
+    "campaignHeadline": "DIWALI PARTY",
+    "campaignSubtext": "Capture your radiant festive celebration, frame your portrait with royal palace frames, and unlock your exclusive 30% OFF festive pass!",
     "defaultDiscount": "30%",
     "instagramTag": "@DreamSalon",
     "partnerTag": "@ZenXea",
     "validityDate": "Nov 25, 2026",
-    "adminPin": "1234"
+    "adminPin": "1234",
+    "storeAddress": "123 Royal Festive Promenade, Festive City",
+    "phoneNumber": "+91 98765 43210",
+    "discountLabel": "FLAT 30% OFF"
   },
   "frames": [
     {
@@ -102,6 +105,17 @@
   ],
   "submissions": [
     {
+      "id": "sub-1793805866594",
+      "customerName": "Aathithyan Test",
+      "discount": "FLAT 30% OFF",
+      "couponCode": "DIWALI-AAT-30",
+      "platform": "Instagram_Story",
+      "status": "APPROVED",
+      "createdAt": "2026-11-04T15:24:26.594Z",
+      "verifiedAt": "2026-11-04T15:24:26.594Z",
+      "isRedeemed": false
+    },
+    {
       "id": "sub-1793795504474-873",
       "customerName": "Test",
       "phone": "+91 9876543210",
@@ -164,9 +178,9 @@
   ],
   "stats": {
     "totalVisits": 158,
-    "photosCaptured": 90,
-    "sharesSubmitted": 54,
-    "couponsIssued": 43,
+    "photosCaptured": 91,
+    "sharesSubmitted": 55,
+    "couponsIssued": 44,
     "couponsRedeemed": 19
   }
 }

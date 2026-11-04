@@ -244,6 +244,39 @@ export default function PhotoBoothApp() {
     startCamera();
   };
 
+  // Counting System: Record Photo Capture in Supabase & local store
+  const trackPhotoCapture = (frameId = selectedFrameId) => {
+    const frameName = ROYAL_FRAMES.find((f) => f.id === frameId)?.name || 'Twin Royal Peacocks';
+    fetch('/api/track-photo', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        customerName: customerName || 'Valued Guest',
+        frameId,
+        frameName,
+      }),
+    }).catch((err) => console.log('Photo track network fallback', err));
+  };
+
+  // Counting System: Record Coupon Claim in Supabase & local store
+  const trackCouponClaim = (platform = 'Instagram_Story') => {
+    const cleanCustomer = (customerName || '').trim() || 'Valued Guest';
+    const code =
+      activeCoupon?.couponCode ||
+      `DIWALI-${cleanCustomer.replace(/[^a-zA-Z]/g, '').slice(0, 3).toUpperCase() || 'VIP'}-30`;
+
+    fetch('/api/track-coupon', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        customerName: cleanCustomer,
+        couponCode: code,
+        discount: shopConfig.discountLabel || 'FLAT 30% OFF',
+        platform,
+      }),
+    }).catch((err) => console.log('Coupon track network fallback', err));
+  };
+
   // Capture Photo
   const handleCapturePhoto = async () => {
     playChimeSound('shutter');
@@ -291,6 +324,7 @@ export default function PhotoBoothApp() {
       setStoryPhotoUrl(null);
       stopCameraStream();
       setStep('preview');
+      trackPhotoCapture(selectedFrameId);
     } catch (e) {
       console.error('Error during photo capture composition', e);
     } finally {
@@ -324,6 +358,7 @@ export default function PhotoBoothApp() {
         stopCameraStream();
         setIsComposing(false);
         setStep('preview');
+        trackPhotoCapture(selectedFrameId);
       };
       img.src = event.target.result;
     };
@@ -455,6 +490,7 @@ export default function PhotoBoothApp() {
     stopCameraStream();
     setIsComposing(false);
     setStep('preview');
+    trackPhotoCapture(selectedFrameId);
   };
 
   // Download composed photo in standard portrait format (1080x1440)
@@ -605,6 +641,7 @@ export default function PhotoBoothApp() {
     // Automatically trigger the 30% OFF Coupon Pass event right after download & share
     playChimeSound('celebrate');
     setShowCouponModal(true);
+    trackCouponClaim('Instagram_Story');
   };
 
   // Sharing Actions - WhatsApp (Exact 1080x1920 9:16 Status format)
@@ -668,6 +705,7 @@ export default function PhotoBoothApp() {
     // Automatically trigger the 30% OFF Coupon Pass event right after download & share
     playChimeSound('celebrate');
     setShowCouponModal(true);
+    trackCouponClaim('WhatsApp_Status');
   };
 
   return (

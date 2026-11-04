@@ -1,23 +1,64 @@
 import { NextResponse } from 'next/server';
+import { prisma } from '@/lib/prisma';
 import { getStore } from '@/lib/store';
 
 export async function GET() {
   const store = getStore();
-  const totalSubmissions = store.submissions.length;
-  const pendingCount = store.submissions.filter((s) => s.status === 'PENDING').length;
-  const approvedCount = store.submissions.filter((s) => s.status === 'APPROVED').length;
-  const redeemedCount = store.submissions.filter((s) => s.isRedeemed).length;
+
+  let photosCaptured = store.stats.photosCaptured || 0;
+  let couponsIssued = store.stats.couponsIssued || 0;
+  let recentPhotos = [];
+  let recentCoupons = [];
+  let isSupabaseConnected = false;
+
+  if (prisma) {
+    try {
+      const [pCount, cCount, pList, cList] = await Promise.all([
+        prisma.photoCapture.count(),
+        prisma.couponClaim.count(),
+        prisma.photoCapture.findMany({
+          take: 10,
+          orderBy: { createdAt: 'desc' },
+        }),
+        prisma.couponClaim.findMany({
+          take: 10,
+          orderBy: { claimedAt: 'desc' },
+        }),
+      ]);
+
+      photosCaptured = pCount;
+      couponsIssued = cCount;
+      recentPhotos = pList;
+      recentCoupons = cList;
+      isSupabaseConnected = true;
+    } catch (err) {
+      console.warn('Prisma/Supabase stats query warning (falling back to local):', err.message);
+    }
+  }
+
+  // Fallback lists if not connected to Supabase
+  if (!isSupabaseConnected) {
+    recentCoupons = store.submissions.slice(0, 10).map((s) => ({
+      id: s.id,
+      customerName: s.customerName,
+      couponCode: s.couponCode,
+      discount: s.discount,
+      platform: s.platform || 'Instagram_Story',
+      claimedAt: s.verifiedAt || s.createdAt,
+      isRedeemed: s.isRedeemed,
+    }));
+  }
 
   return NextResponse.json({
     success: true,
     stats: {
-      totalVisits: store.stats.totalVisits,
-      photosCaptured: store.stats.photosCaptured,
-      sharesSubmitted: store.stats.sharesSubmitted,
-      pendingVerifications: pendingCount,
-      couponsIssued: approvedCount,
-      couponsRedeemed: redeemedCount,
+      totalVisits: store.stats.totalVisits || 0,
+      photosCaptured,
+      couponsIssued,
+      couponsRedeemed: store.stats.couponsRedeemed || 0,
+      isSupabaseConnected,
+      recentPhotos,
+      recentCoupons,
     },
   });
 }
-

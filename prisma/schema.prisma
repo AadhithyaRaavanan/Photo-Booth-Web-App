@@ -1,0 +1,47 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// 1. Photo Capture Records (Every time a user snaps or uploads a festive portrait)
+model PhotoCapture {
+  id           String   @id @default(uuid())
+  customerName String   @default("Valued Guest")
+  frameId      String   @default("frame-1")
+  frameName    String   @default("Twin Royal Peacocks")
+  createdAt    DateTime @default(now())
+
+  @@index([createdAt])
+}
+
+// 2. Coupon Claim Records (Every time a user shares & unlocks their discount coupon pass)
+model CouponClaim {
+  id           String    @id @default(uuid())
+  customerName String    @default("Valued Guest")
+  couponCode   String
+  discount     String    @default("FLAT 30% OFF")
+  platform     String    @default("Instagram_Story") // "Instagram_Story" | "WhatsApp_Status"
+  claimedAt    DateTime  @default(now())
+  isRedeemed   Boolean   @default(false)
+  redeemedAt   DateTime?
+
+  @@index([claimedAt])
+  @@index([couponCode])
+}
+
+// 3. Overall Aggregate Analytics & Counters
+model StoreMetric {
+  id        String   @id @default(uuid())
+  key       String   @unique // "photos_captured" | "coupons_issued" | "total_visits"
+  value     Int      @default(0)
+  updatedAt DateTime @updatedAt
+}
+
