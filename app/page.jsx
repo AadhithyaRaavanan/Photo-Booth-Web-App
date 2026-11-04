@@ -684,10 +684,16 @@ export default function PhotoBoothApp() {
     reader.readAsDataURL(file);
   };
 
-  // Submit Screenshot: Immediately confirms "Your Submission Was Successful!" and unlocks coupon
+  // Submit Screenshot: Requires screenshot + mandatory 10-digit numeric phone number
   const handleSubmitVerification = async () => {
     if (!screenshotPreview) {
-      alert('Please select or upload your screenshot first.');
+      alert('Please select or upload your story screenshot first.');
+      return;
+    }
+
+    const cleanPhone = (phoneInput || '').replace(/\D/g, '');
+    if (cleanPhone.length !== 10) {
+      alert('Please enter a valid 10-digit mobile phone number (numbers only).');
       return;
     }
 
@@ -701,6 +707,7 @@ export default function PhotoBoothApp() {
     const fallbackSubmission = {
       id: `sub-${Date.now()}`,
       customerName: cleanCustomer,
+      phone: `+91 ${cleanPhone}`,
       discount: 'FLAT 30% OFF',
       couponCode: fallbackCode,
       status: 'APPROVED',
@@ -713,7 +720,7 @@ export default function PhotoBoothApp() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           customerName: cleanCustomer,
-          phone: phoneInput || '',
+          phone: cleanPhone,
           frameId: selectedFrameId,
           discount: 'FLAT 30% OFF',
         }),
@@ -1398,29 +1405,75 @@ export default function PhotoBoothApp() {
                           )}
                         </div>
 
-                        <div className="mt-4">
-                          <label className="block text-xs font-semibold text-cyan-100/90 mb-1">
-                            Phone Number (Optional - for SMS Coupon backup)
-                          </label>
-                          <input
-                            type="tel"
-                            placeholder="+91 98765 43210"
-                            value={phoneInput}
-                            onChange={(e) => setPhoneInput(e.target.value)}
-                            className="w-full py-3 px-4 rounded-xl bg-[#0b041c]/80 border border-cyan-400/30 text-white placeholder:text-white/30 text-xs focus:outline-none focus:border-cyan-400"
-                          />
+                        {/* Mandatory 10-Digit Mobile Number Input (Numbers Only) */}
+                        <div className="mt-4 text-left">
+                          <div className="flex items-center justify-between mb-1.5">
+                            <label className="text-xs font-bold text-cyan-100 flex items-center gap-1.5">
+                              <span>📱 Mobile Number</span>
+                              <span className="text-amber-400 font-extrabold text-[11px]">* (10 Digits Required)</span>
+                            </label>
+                            <span
+                              className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded-full border ${
+                                phoneInput.length === 10
+                                  ? 'bg-emerald-950/80 border-emerald-400 text-emerald-300'
+                                  : 'bg-black/60 border-amber-400/30 text-amber-300'
+                              }`}
+                            >
+                              {phoneInput.length} / 10 digits
+                            </span>
+                          </div>
+
+                          <div className="relative flex items-center">
+                            <div className="absolute left-3 px-2 py-1 rounded-lg bg-cyan-950/90 border border-cyan-400/40 text-cyan-300 font-mono font-bold text-xs pointer-events-none select-none">
+                              +91
+                            </div>
+                            <input
+                              type="tel"
+                              inputMode="numeric"
+                              pattern="[0-9]*"
+                              maxLength={10}
+                              placeholder="9876543210"
+                              value={phoneInput}
+                              onChange={(e) => {
+                                // Strictly allow ONLY numbers (digits 0-9) and limit to max 10 digits
+                                const numericOnly = e.target.value.replace(/\D/g, '').slice(0, 10);
+                                setPhoneInput(numericOnly);
+                              }}
+                              className={`w-full py-3.5 pl-16 pr-10 rounded-xl bg-[#0b041c]/90 border text-white placeholder:text-white/30 text-sm font-mono tracking-widest focus:outline-none transition shadow-inner ${
+                                phoneInput.length === 10
+                                  ? 'border-emerald-400 focus:border-emerald-300 focus:ring-2 focus:ring-emerald-400/30'
+                                  : 'border-cyan-400/40 focus:border-cyan-300 focus:ring-2 focus:ring-cyan-400/30'
+                              }`}
+                            />
+                            {phoneInput.length === 10 && (
+                              <div className="absolute right-3.5 text-emerald-400">
+                                <CheckCircle2 className="w-4 h-4 stroke-[2.5]" />
+                              </div>
+                            )}
+                          </div>
+                          <p className="text-[10px] text-cyan-200/70 mt-1 pl-1">
+                            Only numbers are allowed. Exactly 10 digits required to claim your coupon pass.
+                          </p>
                         </div>
                       </div>
 
                       <div className="space-y-2">
                         <button
                           onClick={handleSubmitVerification}
-                          disabled={!screenshotPreview || isSubmitting}
-                          className="w-full py-4 px-6 rounded-xl bg-gradient-to-r from-cyan-500 via-blue-600 to-indigo-600 hover:from-cyan-400 hover:to-blue-500 text-white font-sans font-black text-sm tracking-wide disabled:opacity-50 shadow-[0_0_25px_rgba(6,182,212,0.5)] flex items-center justify-center gap-2 transition"
+                          disabled={!screenshotPreview || phoneInput.length !== 10 || isSubmitting}
+                          className="w-full py-4 px-6 rounded-xl bg-gradient-to-r from-cyan-500 via-blue-600 to-indigo-600 hover:from-cyan-400 hover:to-blue-500 text-white font-sans font-black text-sm tracking-wide disabled:opacity-40 disabled:cursor-not-allowed shadow-[0_0_25px_rgba(6,182,212,0.5)] flex items-center justify-center gap-2 transition active:scale-[0.98]"
                         >
                           <ShieldCheck className="w-4 h-4 stroke-[2.5]" />
                           <span>{isSubmitting ? 'SUBMITTING...' : 'SUBMIT FOR VERIFICATION'}</span>
                         </button>
+
+                        {(!screenshotPreview || phoneInput.length !== 10) && (
+                          <p className="text-center text-[10px] text-amber-300/80 font-medium">
+                            {!screenshotPreview
+                              ? '⚠️ Please select a screenshot of your story above'
+                              : '⚠️ Enter full 10-digit mobile number to unlock coupon'}
+                          </p>
+                        )}
 
                         <button
                           onClick={() => setStep('share')}

@@ -12,6 +12,15 @@ export async function POST(request) {
     const { customerName, phone, frameId, discount, photoData, screenshotData } = body;
     const store = getStore();
 
+    // 10-digit phone number validation (digits only)
+    const cleanPhone = (phone || '').replace(/\D/g, '');
+    if (cleanPhone.length !== 10) {
+      return NextResponse.json(
+        { success: false, message: 'A valid 10-digit phone number is required' },
+        { status: 400 }
+      );
+    }
+
     const frame = store.frames.find((f) => f.id === frameId) || store.frames[0];
     const submissionId = `sub-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
     const cleanCustomer = (customerName || '').trim() || 'Valued Guest';
@@ -20,7 +29,7 @@ export async function POST(request) {
     const newSubmission = {
       id: submissionId,
       customerName: cleanCustomer,
-      phone: phone || '',
+      phone: `+91 ${cleanPhone}`,
       frameId: frame.id,
       frameName: frame.name,
       discount: discount || frame.discount || 'FLAT 30% OFF',

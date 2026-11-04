@@ -102,6 +102,36 @@
   ],
   "submissions": [
     {
+      "id": "sub-1793795504474-873",
+      "customerName": "Test",
+      "phone": "+91 9876543210",
+      "frameId": "frame-1",
+      "frameName": "Twin Royal Peacocks",
+      "discount": "FLAT 30% OFF",
+      "photoUrl": "",
+      "screenshotUrl": "",
+      "status": "APPROVED",
+      "couponCode": "DIWALI-TES-7218",
+      "createdAt": "2026-11-04T12:31:44.474Z",
+      "verifiedAt": "2026-11-04T12:31:44.474Z",
+      "isRedeemed": false
+    },
+    {
+      "id": "sub-1793793351550-670",
+      "customerName": "Test User",
+      "phone": "1234567890",
+      "frameId": "frame-1",
+      "frameName": "Twin Royal Peacocks",
+      "discount": "FLAT 30% OFF",
+      "photoUrl": "",
+      "screenshotUrl": "",
+      "status": "APPROVED",
+      "couponCode": "DIWALI-TES-1131",
+      "createdAt": "2026-11-04T11:55:51.550Z",
+      "verifiedAt": "2026-11-04T11:55:51.603Z",
+      "isRedeemed": false
+    },
+    {
       "id": "sub-101",
       "customerName": "Aanya Sharma",
       "phone": "+91 98765 43210",
@@ -134,9 +164,9 @@
   ],
   "stats": {
     "totalVisits": 158,
-    "photosCaptured": 89,
-    "sharesSubmitted": 52,
-    "couponsIssued": 41,
+    "photosCaptured": 90,
+    "sharesSubmitted": 54,
+    "couponsIssued": 43,
     "couponsRedeemed": 19
   }
 }
