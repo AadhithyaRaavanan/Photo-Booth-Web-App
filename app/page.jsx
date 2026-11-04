@@ -66,7 +66,6 @@ export default function PhotoBoothApp() {
 
   // Photos & Frame state
   const [selectedFrameId, setSelectedFrameId] = useState('frame-1');
-  const [isFrameDrawerOpen, setIsFrameDrawerOpen] = useState(false);
   const [capturedRawPhoto, setCapturedRawPhoto] = useState(null);
   const [brandedPhotoUrl, setBrandedPhotoUrl] = useState(null);
   const [storyPhotoUrl, setStoryPhotoUrl] = useState(null);
@@ -848,9 +847,12 @@ export default function PhotoBoothApp() {
                     <button
                       onClick={() => {
                         playChimeSound('click');
-                        setIsFrameDrawerOpen(true);
+                        const currIdx = ROYAL_FRAMES.findIndex((f) => f.id === selectedFrameId);
+                        const nextIdx = (currIdx + 1) % ROYAL_FRAMES.length;
+                        setSelectedFrameId(ROYAL_FRAMES[nextIdx].id);
                       }}
-                      className="px-3.5 py-1.5 rounded-full bg-gradient-to-r from-amber-500/25 to-pink-500/25 border border-amber-400/60 shadow-md text-amber-200 hover:text-white flex items-center gap-1.5 text-xs font-bold transition"
+                      title="Tap to switch frame"
+                      className="px-3.5 py-1.5 rounded-full bg-gradient-to-r from-amber-500/25 to-pink-500/25 border border-amber-400/60 shadow-md text-amber-200 hover:text-white flex items-center gap-1.5 text-xs font-bold transition active:scale-95"
                     >
                       <span>✨</span>
                       <span className="truncate max-w-[130px]">
@@ -1120,84 +1122,6 @@ export default function PhotoBoothApp() {
                       </div>
                     </div>
                   </div>
-
-                  {/* Mobile Slide-Over Frame Drawer */}
-                  <AnimatePresence>
-                    {isFrameDrawerOpen && (
-                      <>
-                        <motion.div
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          exit={{ opacity: 0 }}
-                          onClick={() => setIsFrameDrawerOpen(false)}
-                          className="md:hidden fixed inset-0 bg-black/85 z-50"
-                        />
-                        <motion.div
-                          initial={{ x: '100%' }}
-                          animate={{ x: 0 }}
-                          exit={{ x: '100%' }}
-                          transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-                          className="md:hidden fixed inset-y-0 right-0 w-80 max-w-[85%] bg-[#1a0210] border-l-2 border-amber-400/60 shadow-2xl z-55 p-5 flex flex-col"
-                        >
-                          <div className="flex items-center justify-between pb-3 border-b border-amber-400/30">
-                            <div className="flex items-center gap-2">
-                              <span className="text-amber-300 text-lg">🪔</span>
-                              <div>
-                                <h3 className="font-serif text-sm font-bold text-white">Choose Frame</h3>
-                                <p className="text-[10px] text-champagne/70">8 Royal Festive Designs</p>
-                              </div>
-                            </div>
-                            <button
-                              onClick={() => setIsFrameDrawerOpen(false)}
-                              className="p-2 rounded-full bg-white/10 hover:bg-white/20 text-white"
-                            >
-                              <X className="w-5 h-5" />
-                            </button>
-                          </div>
-
-                          <div className="flex-1 overflow-y-auto py-3 space-y-2.5">
-                            {ROYAL_FRAMES.map((f) => {
-                              const isSelected = selectedFrameId === f.id;
-                              return (
-                                <button
-                                  key={f.id}
-                                  onClick={() => {
-                                    playChimeSound('click');
-                                    setSelectedFrameId(f.id);
-                                    setIsFrameDrawerOpen(false);
-                                  }}
-                                  className={`w-full flex items-center gap-3 p-2.5 rounded-2xl text-left transition ${
-                                    isSelected
-                                      ? 'bg-amber-500/25 border-2 border-amber-400 shadow-lg'
-                                      : 'bg-black/50 border border-white/10'
-                                  }`}
-                                >
-                                  <div className="relative w-12 h-16 rounded-xl overflow-hidden shrink-0 border border-amber-400/40">
-                                    <picture className="w-full h-full">
-                                      <source srcSet={f.thumb} type="image/webp" />
-                                      <img
-                                        src={f.thumbPng || f.thumb}
-                                        alt={f.name}
-                                        loading="lazy"
-                                        decoding="async"
-                                        className="w-full h-full object-cover"
-                                      />
-                                    </picture>
-                                  </div>
-                                  <div className="flex-1 min-w-0">
-                                    <span className="text-xs font-bold text-amber-200 block truncate">{f.name}</span>
-                                    <span className="text-[10px] text-champagne/60 block line-clamp-2 mt-0.5">
-                                      {f.description}
-                                    </span>
-                                  </div>
-                                </button>
-                              );
-                            })}
-                          </div>
-                        </motion.div>
-                      </>
-                    )}
-                  </AnimatePresence>
                 </div>
               )}
 
