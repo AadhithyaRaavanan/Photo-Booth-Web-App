@@ -585,22 +585,26 @@ export default function PhotoBoothApp() {
             text: `Celebrating Diwali in style with ${shopConfig.shopName}! Tagging ${shopConfig.instagramTag} and ${shopConfig.partnerTag} to unlock an exclusive festive discount. 🪔✨`,
             files: [file],
           });
-          return;
         } catch (err) {
-          if (err.name === 'AbortError') return;
-          console.warn('Native mobile share sheet error:', err);
+          if (err.name !== 'AbortError') {
+            console.warn('Native mobile share sheet error:', err);
+          }
         }
+      } else {
+        // Fallback for older mobile browsers without Web Share Files support:
+        window.location.href = 'instagram://camera';
+        setTimeout(() => {
+          window.location.href = 'instagram://app';
+        }, 1200);
       }
-
-      // Fallback for older mobile browsers without Web Share Files support:
-      window.location.href = 'instagram://camera';
-      setTimeout(() => {
-        window.location.href = 'instagram://app';
-      }, 1200);
     } else {
       // 2. ON PC: 1080x1920 Story format downloaded, redirect to instagram.com
       window.open('https://www.instagram.com', '_blank');
     }
+
+    // Automatically trigger the 30% OFF Coupon Pass event right after download & share
+    playChimeSound('celebrate');
+    setShowCouponModal(true);
   };
 
   // Sharing Actions - WhatsApp (Exact 1080x1920 9:16 Status format)
@@ -645,21 +649,25 @@ export default function PhotoBoothApp() {
             text: shareCaption,
             files: [file],
           });
-          return;
         } catch (err) {
-          if (err.name === 'AbortError') return;
-          console.warn('Native mobile share sheet error:', err);
+          if (err.name !== 'AbortError') {
+            console.warn('Native mobile share sheet error:', err);
+          }
         }
+      } else {
+        // WhatsApp deep link fallback
+        window.location.href = `whatsapp://send?text=${text}`;
+        setTimeout(() => {
+          window.open(`https://api.whatsapp.com/send?text=${text}`, '_blank');
+        }, 1000);
       }
-
-      // WhatsApp deep link fallback
-      window.location.href = `whatsapp://send?text=${text}`;
-      setTimeout(() => {
-        window.open(`https://api.whatsapp.com/send?text=${text}`, '_blank');
-      }, 1000);
     } else {
       window.open(`https://api.whatsapp.com/send?text=${text}`, '_blank');
     }
+
+    // Automatically trigger the 30% OFF Coupon Pass event right after download & share
+    playChimeSound('celebrate');
+    setShowCouponModal(true);
   };
 
   return (
@@ -1137,8 +1145,8 @@ export default function PhotoBoothApp() {
                             </div>
                             <div>
                               <span className="block font-bold">SHARE ON INSTAGRAM STORY</span>
-                              <span className="block text-[10px] text-white/80 font-normal">
-                                Downloads 1080×1920 (9:16) Story · Opens Instagram
+                              <span className="block text-[10px] text-white/90 font-medium">
+                                Downloads 9:16 Story · Opens IG &amp; Unlocks {shopConfig.discountLabel || '30% OFF'} Pass
                               </span>
                             </div>
                           </div>
@@ -1153,8 +1161,8 @@ export default function PhotoBoothApp() {
                             <Share2 className="w-4 h-4 shrink-0" />
                             <div>
                               <span className="block font-bold">POST TO WHATSAPP STATUS</span>
-                              <span className="block text-[10px] text-black/75 font-normal">
-                                Downloads 1080×1920 (9:16) Status · Opens WhatsApp
+                              <span className="block text-[10px] text-black/85 font-medium">
+                                Downloads 9:16 Status · Opens WhatsApp &amp; Unlocks {shopConfig.discountLabel || '30% OFF'} Pass
                               </span>
                             </div>
                           </div>
@@ -1175,18 +1183,6 @@ export default function PhotoBoothApp() {
                           <span>OTHER MEDIA SIZES (REELS, SQUARE, FEED...)</span>
                         </div>
                         <ChevronRight className="w-5 h-5 text-cyan-400/80" />
-                      </button>
-
-                      {/* 30% OFF Coupon Pass Direct Claim */}
-                      <button
-                        onClick={() => {
-                          playChimeSound('celebrate');
-                          setShowCouponModal(true);
-                        }}
-                        className="w-full py-3.5 px-5 rounded-2xl bg-gradient-to-r from-cyan-500 via-blue-600 to-indigo-600 hover:from-cyan-400 hover:to-blue-500 text-white font-sans font-black text-xs sm:text-sm tracking-wide shadow-[0_0_25px_rgba(6,182,212,0.5)] flex items-center justify-center gap-2 transition active:scale-[0.98]"
-                      >
-                        <Gift className="w-4 h-4 stroke-[2.5]" />
-                        <span>CLAIM 30% OFF SALON PASS ✦</span>
                       </button>
 
                       {/* Back to Home Navigation */}
