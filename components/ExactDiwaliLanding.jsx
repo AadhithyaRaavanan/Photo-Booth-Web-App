@@ -24,10 +24,18 @@ import { playChimeSound } from './AudioChime';
  */
 function ExactDiwaliLanding({
   shopName = 'Dream Salon',
+  shopConfig = {},
   customerName = '',
   onEnterPhotoBooth = () => {},
   onOpenNameModal = () => {},
 }) {
+  const currentShopName = shopConfig.shopName || shopName || 'Dream Salon';
+  const currentTagline = shopConfig.shopTagline || 'ROYAL FESTIVE PHOTO BOOTH';
+  const currentHeadline = shopConfig.campaignHeadline || 'DIWALI PARTY';
+  const currentDiscount = shopConfig.discountLabel || (shopConfig.defaultDiscount ? `FLAT ${shopConfig.defaultDiscount} OFF` : 'FLAT 30% OFF');
+  const discountShort = shopConfig.defaultDiscount ? `${shopConfig.defaultDiscount.replace('%', '')}% OFF` : '30% OFF';
+  const currentSubtext = shopConfig.campaignSubtext || `Capture your radiant celebration at ${currentShopName}! Step into our royal photo booth, frame your portrait with authentic Diwali palace frames, and share to unlock your exclusive ${discountShort} salon pass.`;
+
   return (
     <div className="min-h-screen w-full relative z-10 flex flex-col justify-between text-white select-none overflow-x-hidden">
       {/* ---------------------------------------------------------------------
@@ -41,10 +49,10 @@ function ExactDiwaliLanding({
           </div>
           <div>
             <span className="font-serif font-black tracking-widest text-sm sm:text-base text-white block uppercase leading-none drop-shadow">
-              {shopName}
+              {currentShopName}
             </span>
             <span className="text-[10px] text-cyan-300 tracking-[0.22em] font-sans font-bold uppercase block mt-0.5">
-              ROYAL FESTIVE PHOTO BOOTH
+              {currentTagline}
             </span>
           </div>
         </div>
@@ -52,7 +60,7 @@ function ExactDiwaliLanding({
         {/* Right: Quick Festive Pass Badge */}
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#0a0319]/95 border border-cyan-400/35 text-xs text-cyan-200 shadow-[0_0_15px_rgba(6,182,212,0.25)]">
           <Sparkles className="w-3.5 h-3.5 text-cyan-300" />
-          <span className="font-bold text-amber-300">FLAT 30% OFF PASS</span>
+          <span className="font-bold text-amber-300">{currentDiscount} PASS</span>
         </div>
       </header>
 
@@ -95,20 +103,17 @@ function ExactDiwaliLanding({
 
             {/* Bold All-Caps Title */}
             <h1 className="font-sans font-black text-4xl sm:text-6xl md:text-7xl text-white tracking-tight leading-[1.05] uppercase drop-shadow-[0_4px_25px_rgba(0,0,0,0.9)]">
-              DIWALI PARTY
+              {currentHeadline}
             </h1>
 
             {/* Sub-Headline */}
             <h2 className="font-sans font-extrabold text-xs sm:text-sm md:text-base text-cyan-100/90 tracking-[0.25em] uppercase">
-              CELEBRATE WITH US &amp; UNLOCK EXCLUSIVE 30% REWARD!
+              CELEBRATE WITH US &amp; UNLOCK EXCLUSIVE {discountShort} REWARD!
             </h2>
 
             {/* Description Paragraph */}
             <p className="text-xs sm:text-sm md:text-base text-slate-200/85 max-w-xl leading-relaxed font-normal">
-              Capture your radiant celebration at{' '}
-              <strong className="text-white font-bold">{shopName}</strong>! Step into our royal
-              photo booth, frame your portrait with authentic Diwali palace frames, and share to
-              unlock your verified 30% OFF salon pass.
+              {currentSubtext}
             </p>
 
             {/* SINGLE CALL TO ACTION BUTTON (Directly opens Name Modal with Skip option) */}
@@ -152,13 +157,13 @@ function ExactDiwaliLanding({
                       DIWALI FESTIVE PASS
                     </span>
                     <span className="text-[10px] text-amber-300/80 uppercase font-bold tracking-wider">
-                      Dream Salon Exclusive
+                      {currentShopName} Exclusive
                     </span>
                   </div>
                 </div>
 
                 <span className="px-3 py-1 rounded-full bg-gradient-to-r from-[#e91e63] to-[#ff5722] text-white font-black text-xs tracking-wider uppercase shadow-md">
-                  30% OFF
+                  {discountShort}
                 </span>
               </div>
 
