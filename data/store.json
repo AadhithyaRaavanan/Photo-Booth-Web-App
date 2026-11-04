@@ -103,46 +103,12 @@
       "active": true
     }
   ],
-  "submissions": [
-    {
-      "id": "sub-1793812345746",
-      "customerName": "Deepika Patel",
-      "discount": "FLAT 30% OFF",
-      "couponCode": "DIWALI-DEE-30",
-      "platform": "Instagram_Story",
-      "status": "APPROVED",
-      "createdAt": "2026-11-04T17:12:25.746Z",
-      "verifiedAt": "2026-11-04T17:12:25.746Z",
-      "isRedeemed": false
-    },
-    {
-      "id": "sub-1793812337767",
-      "customerName": "Arjun Verma",
-      "discount": "FLAT 30% OFF",
-      "couponCode": "DIWALI-ARJ-30",
-      "platform": "WhatsApp_Status",
-      "status": "APPROVED",
-      "createdAt": "2026-11-04T17:12:17.767Z",
-      "verifiedAt": "2026-11-04T17:12:17.767Z",
-      "isRedeemed": false
-    },
-    {
-      "id": "sub-1793812327902",
-      "customerName": "Priya Sharma",
-      "discount": "FLAT 30% OFF",
-      "couponCode": "DIWALI-PRI-30",
-      "platform": "Instagram_Story",
-      "status": "APPROVED",
-      "createdAt": "2026-11-04T17:12:07.902Z",
-      "verifiedAt": "2026-11-04T17:12:07.902Z",
-      "isRedeemed": false
-    }
-  ],
+  "submissions": [],
   "stats": {
-    "totalVisits": 3,
-    "photosCaptured": 3,
-    "sharesSubmitted": 3,
-    "couponsIssued": 3,
+    "totalVisits": 0,
+    "photosCaptured": 0,
+    "sharesSubmitted": 0,
+    "couponsIssued": 0,
     "couponsRedeemed": 0
   }
 }

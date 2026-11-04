@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import { motion } from 'framer-motion';
 import {
   Camera,
@@ -10,6 +11,7 @@ import {
   Gift,
   Share2,
   CheckCircle2,
+  BarChart3,
 } from 'lucide-react';
 import { playChimeSound } from './AudioChime';
 
@@ -39,21 +41,32 @@ function ExactDiwaliLanding({
   return (
     <div className="min-h-screen w-full relative z-10 flex flex-col justify-between text-white select-none overflow-x-hidden">
       {/* ---------------------------------------------------------------------
-          1. CLEAN TOP BRANDING (NO NAVBAR - Clean & Minimal)
+          1. CLEAN TOP BRANDING & ADMIN BUTTON (Direct link to /admin)
          --------------------------------------------------------------------- */}
       <header className="relative z-20 w-full max-w-7xl mx-auto px-4 sm:px-8 pt-6 pb-2 flex items-center justify-between">
-        {/* Left: Brand Badge */}
-        <div className="flex items-center gap-2.5">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-cyan-400 via-blue-500 to-amber-400 flex items-center justify-center shadow-[0_0_20px_rgba(6,182,212,0.6)]">
-            <span className="text-base">🪔</span>
-          </div>
-          <div>
-            <span className="font-serif font-black tracking-widest text-sm sm:text-base text-white block uppercase leading-none drop-shadow">
-              {currentShopName}
-            </span>
-            <span className="text-[10px] text-cyan-300 tracking-[0.22em] font-sans font-bold uppercase block mt-0.5">
-              {currentTagline}
-            </span>
+        {/* Left: Admin Button + Brand Badge */}
+        <div className="flex items-center gap-2.5 sm:gap-3.5">
+          <Link
+            href="/admin"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#0a0319]/90 hover:bg-[#15072b] text-cyan-200 border border-cyan-400/40 hover:border-cyan-300 text-xs font-bold backdrop-blur-md transition shadow-[0_0_15px_rgba(6,182,212,0.25)] active:scale-95 group"
+            title="Go to Live Admin Analytics Dashboard"
+          >
+            <BarChart3 className="w-3.5 h-3.5 text-cyan-400 group-hover:scale-110 transition" />
+            <span>Admin</span>
+          </Link>
+
+          <div className="flex items-center gap-2 sm:gap-2.5">
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-tr from-cyan-400 via-blue-500 to-amber-400 flex items-center justify-center shadow-[0_0_20px_rgba(6,182,212,0.6)]">
+              <span className="text-sm sm:text-base">🪔</span>
+            </div>
+            <div>
+              <span className="font-serif font-black tracking-widest text-xs sm:text-base text-white block uppercase leading-none drop-shadow">
+                {currentShopName}
+              </span>
+              <span className="text-[9px] sm:text-[10px] text-cyan-300 tracking-[0.22em] font-sans font-bold uppercase block mt-0.5">
+                {currentTagline}
+              </span>
+            </div>
           </div>
         </div>
 
