@@ -71,7 +71,6 @@ export default function PhotoBoothApp() {
   // Rewards & Modals state
   const [activeCoupon, setActiveCoupon] = useState(null);
   const [showCouponModal, setShowCouponModal] = useState(false);
-  const [copiedTag, setCopiedTag] = useState(null);
 
   const videoRef = useRef(null);
   const fileInputRef = useRef(null);
@@ -663,17 +662,6 @@ export default function PhotoBoothApp() {
     }
   };
 
-  // Quick Copy Helper for Story Tagging Handles
-  const handleCopyTag = (tagText, tagKey) => {
-    if (!tagText) return;
-    playChimeSound('click');
-    if (typeof navigator !== 'undefined' && navigator.clipboard) {
-      navigator.clipboard.writeText(tagText).catch(() => {});
-    }
-    setCopiedTag(tagKey);
-    setTimeout(() => setCopiedTag(null), 2500);
-  };
-
   return (
     <>
       {/* =========================================================================
@@ -1069,17 +1057,25 @@ export default function PhotoBoothApp() {
                  --------------------------------------------------------------- */}
               {(step === 'preview' || step === 'share') && (
                 <div className="w-full flex-1 flex flex-col justify-center py-2 sm:py-4">
-                  <div className="text-center pb-3">
-                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-400/15 border border-amber-400/40 text-amber-300 text-xs font-semibold mb-1.5 shadow-[0_0_15px_rgba(255,215,0,0.2)]">
-                      <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-                      <span>Festive Portrait Ready</span>
-                    </div>
-                    <h2 className="font-serif text-2xl sm:text-3xl font-bold text-white tracking-wide">
+                  <div className="text-center pb-4 max-w-2xl mx-auto px-3">
+                    <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl font-bold text-white tracking-wide drop-shadow">
                       Your Festive Portrait
                     </h2>
-                    <p className="text-xs sm:text-sm text-cyan-100/80 max-w-md mx-auto mt-0.5">
-                      Framed with {shopConfig.shopName || 'Dream Salon'} royal Diwali honors.
-                    </p>
+
+                    {/* BIG BOLD TEXT DIRECTLY UNDER THE FESTIVE PORTRAIT TITLE */}
+                    <div className="mt-2.5 sm:mt-3 px-4 py-2 sm:py-2.5 rounded-2xl bg-amber-400/10 border border-amber-400/35 inline-block shadow-[0_0_20px_rgba(255,215,0,0.15)]">
+                      <p className="text-sm sm:text-lg md:text-xl font-black text-amber-300 tracking-wide drop-shadow flex items-center justify-center gap-1.5 sm:gap-2 flex-wrap">
+                        <span>Tag</span>
+                        <span className="text-white bg-gradient-to-r from-pink-500 to-purple-600 px-2 py-0.5 rounded-lg text-xs sm:text-base font-black shadow-sm">
+                          {shopConfig.instagramTag}
+                        </span>
+                        <span>and</span>
+                        <span className="text-slate-950 bg-gradient-to-r from-cyan-400 to-blue-400 px-2 py-0.5 rounded-lg text-xs sm:text-base font-black shadow-sm">
+                          {shopConfig.partnerTag}
+                        </span>
+                        <span>in your story! 🪔✨</span>
+                      </p>
+                    </div>
                   </div>
 
                   <div className="w-full flex flex-col md:flex-row items-center md:items-start justify-center gap-6 lg:gap-8 my-auto">
@@ -1180,91 +1176,6 @@ export default function PhotoBoothApp() {
                         </div>
                         <ChevronRight className="w-5 h-5 text-cyan-400/80" />
                       </button>
-
-                      {/* =========================================================================
-                          BIG, EYE-CATCHING STORY TAGGING BANNER
-                          Vibrant, prominent, interactive with 1-tap copy & visual feedback
-                         ========================================================================= */}
-                      <div className="w-full p-4 sm:p-5 rounded-2xl bg-gradient-to-b from-[#1c082e] via-[#10031c] to-[#07010f] border-2 border-amber-400/90 shadow-[0_0_35px_rgba(255,215,0,0.35)] relative overflow-hidden text-center space-y-3">
-                        {/* Festive Atmospheric Glows */}
-                        <div className="absolute -top-10 -right-10 w-28 h-28 bg-pink-500/25 rounded-full blur-xl pointer-events-none" />
-                        <div className="absolute -bottom-10 -left-10 w-28 h-28 bg-cyan-500/25 rounded-full blur-xl pointer-events-none" />
-
-                        {/* Top Golden Pill */}
-                        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-400/20 border border-amber-300 text-amber-200 text-[11px] font-black uppercase tracking-widest shadow-sm">
-                          <Sparkles className="w-3.5 h-3.5 text-amber-300 animate-pulse" />
-                          <span>MANDATORY STEP · UNLOCK {shopConfig.discountLabel || '30% OFF'}</span>
-                        </div>
-
-                        {/* Headline */}
-                        <div>
-                          <h3 className="font-serif font-black text-lg sm:text-xl text-white tracking-wide uppercase drop-shadow flex items-center justify-center gap-2">
-                            <span>📸</span>
-                            <span>Tag Us In Your Story!</span>
-                            <span>✨</span>
-                          </h3>
-                          <p className="text-xs text-amber-100/90 mt-0.5 font-medium">
-                            Tag both official accounts on your Instagram Story or WhatsApp Status:
-                          </p>
-                        </div>
-
-                        {/* Interactive Handle Cards with One-Tap Copy */}
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
-                          {/* Instagram Handle Card */}
-                          <button
-                            type="button"
-                            onClick={() => handleCopyTag(shopConfig.instagramTag, 'insta')}
-                            className="p-3 rounded-xl bg-gradient-to-r from-pink-950/80 via-purple-950/80 to-pink-900/60 border border-pink-400/60 hover:border-pink-300 flex items-center justify-between gap-2 transition active:scale-95 shadow-md group"
-                            title="Tap to copy Instagram handle"
-                          >
-                            <div className="flex items-center gap-2.5 text-left min-w-0">
-                              <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-[#e1306c] to-[#fd1d1d] flex items-center justify-center text-white shrink-0 shadow-sm font-bold text-xs">
-                                IG
-                              </div>
-                              <div className="min-w-0">
-                                <span className="text-[10px] text-pink-300 font-bold block uppercase tracking-wider">
-                                  Store Handle
-                                </span>
-                                <span className="text-sm sm:text-base font-black text-white truncate block font-mono">
-                                  {shopConfig.instagramTag}
-                                </span>
-                              </div>
-                            </div>
-                            <div className="shrink-0 px-2 py-1 rounded-md bg-white/10 group-hover:bg-white/20 text-[10px] font-bold text-pink-200 border border-pink-400/30">
-                              {copiedTag === 'insta' ? '✓ COPIED!' : 'TAP TO COPY'}
-                            </div>
-                          </button>
-
-                          {/* Partner Handle Card */}
-                          <button
-                            type="button"
-                            onClick={() => handleCopyTag(shopConfig.partnerTag, 'partner')}
-                            className="p-3 rounded-xl bg-gradient-to-r from-cyan-950/80 via-blue-950/80 to-indigo-950/60 border border-cyan-400/60 hover:border-cyan-300 flex items-center justify-between gap-2 transition active:scale-95 shadow-md group"
-                            title="Tap to copy partner handle"
-                          >
-                            <div className="flex items-center gap-2.5 text-left min-w-0">
-                              <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-cyan-400 to-blue-600 flex items-center justify-center text-slate-950 shrink-0 font-bold text-xs shadow-sm">
-                                ✦
-                              </div>
-                              <div className="min-w-0">
-                                <span className="text-[10px] text-cyan-300 font-bold block uppercase tracking-wider">
-                                  Partner Tag
-                                </span>
-                                <span className="text-sm sm:text-base font-black text-white truncate block font-mono">
-                                  {shopConfig.partnerTag}
-                                </span>
-                              </div>
-                            </div>
-                            <div className="shrink-0 px-2 py-1 rounded-md bg-white/10 group-hover:bg-white/20 text-[10px] font-bold text-cyan-200 border border-cyan-400/30">
-                              {copiedTag === 'partner' ? '✓ COPIED!' : 'TAP TO COPY'}
-                            </div>
-                          </button>
-                        </div>
-
-                        <p className="text-[11px] text-champagne/70 italic">
-                          💡 Tap any handle to copy directly to your clipboard, then mention or paste onto your story!
-                        </p>
-                      </div>
 
                       {/* 30% OFF Coupon Pass Direct Claim */}
                       <button
